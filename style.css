@@ -1,11 +1,18 @@
 :root {
     --primary-bg-color-light: #f2f2f2;
-    --header-bg-color: #333;
+    --header-bg-color: #d55845;
     --header-text-color: #fff;
+    --header-text-mobile-color: rgb(15, 11, 11);
     --sidebar-bg-color: #eee;
     --content-bg-color: #fff;
     --footer-bg-color: #333;
     --link-color: #007bff;
+}
+
+*,
+::after,
+::before {
+    box-sizing: border-box;
 }
 
 body {
@@ -29,11 +36,89 @@ body {
     padding: 20px;
 }
 
-header {
+/* Основні стилі для заголовка та навігаційного меню */
+.ar-header {
     background-color: var(--header-bg-color);
+    height: 60px;
     color: var(--header-text-color);
-    text-align: center;
     padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ar-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Основні стилі для заголовка */
+.ar-header h1 {
+    margin: 0;
+}
+
+/* Основні стилі для мобільного меню (по замовчуванню приховані) */
+#mobile-menu {
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#mobile-menu-button {
+    background-color: transparent;
+    color: var(--header-text-color);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    display: none;
+}
+
+/* Основні стилі для навігаційного меню */
+nav ul {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin-right: 20px;
+    margin-bottom: 5px; /* Відступ між іконкою та текстом */
+}
+
+nav ul li:last-child {
+    margin-right: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--header-text-color);
+    font-weight: bold;
+    transition: color 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+nav ul li a:hover {
+    color: var(--link-color);
+}
+
+/* Основні стилі для кнопки зміни теми */
+#theme-toggle {
+    background-color: transparent;
+    color: var(--header-text-color);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#theme-toggle:hover {
+    color: var(--link-color);
 }
 
 main {
@@ -43,7 +128,7 @@ main {
 
 .grid {
     display: grid;
-    grid-template-columns: 25% 50% 25%;
+    grid-template-columns: 25% 60% 25%;
     gap: 10px;
 }
 
@@ -62,6 +147,34 @@ main {
     height: 40%; /* Фіксована висота 40% */
 }
 
+.left-sidebar .section_1 .header {
+    margin: -10px -10px 10px -10px;
+    display: flex;
+    justify-content: center;
+}
+
+.section_1 .header .circle {
+    width: 100px;
+    height: 100px;
+    margin-top: 50px;
+    display: flex;
+}
+
+.circle {
+    border-radius: 50%;
+    border: solid 4px #ccc;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.circle img {
+    max-height: 100%;
+    border-radius: 50%;
+}
+
 .left-sidebar .section_2 {
     background-color: var(--content-bg-color);
     border: 1px solid #ddd;
@@ -70,6 +183,13 @@ main {
 }
 
 /* content */
+.centered-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+}
 .content {
 }
 
@@ -295,10 +415,28 @@ footer {
     --link-color: #007bff;
 }
 
+input {
+    padding: 8px;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+}
+
+.input-group-text.search {
+    background-color: var(--primary-bg-color-light);
+    border: solid var(--primary-bg-color-light);
+}
+
+.section_1 .header {
+    background-color: var(--header-bg-color);
+    height: 120px;
+}
+
 @media screen and (max-width: 1200px) {
     /* Якщо екран ширший або рівний 768px */
     .grid {
-        grid-template-columns: 25% 75%;
+        grid-template-columns: 15% 70% 15%;
         gap: 10px;
     }
     .left-sidebar {
@@ -316,6 +454,65 @@ footer {
         grid-template-columns: 100%;
         gap: 10px;
     }
+    .ar-header {
+        background-color: var(--header-bg-color);
+        color: var(--header-text-color);
+        text-align: center;
+        padding: 10px 0;
+        position: relative; /* Додайте позицію relative для батьківського контейнера */
+    }
+
+    #mobile-menu-button {
+        position: absolute; /* Розмістіть кнопку в абсолютному положенні */
+        top: 10px; /* Задайте відстань від верхнього краю */
+        right: 10px; /* Задайте відстань від правого краю */
+    }
+    #mobile-menu {
+        display: flex;
+    }
+
+    .menu.open ul {
+        display: block;
+        background-color: #fff;
+        position: absolute;
+        width: 100%;
+        top: 60px; /* Встановіть відстань від верхнього краю, яка вам підходить */
+        left: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    nav ul {
+        display: none; /* Приховати основне меню на мобільних пристроях */
+    }
+
+    nav ul li a {
+        color: var(--header-text-mobile-color);
+    }
+
+    nav ul.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background-color: var(--header-bg-color);
+        z-index: 1;
+    }
+
+    nav ul.active li {
+        text-align: right;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    nav ul.active li:last-child {
+        margin-bottom: 0;
+    }
+
+    #mobile-menu-button {
+        display: block;
+    }
+
     .left-sidebar {
     }
     .content {
