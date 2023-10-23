@@ -1,0 +1,325 @@
+:root {
+    --primary-bg-color-light: #f2f2f2;
+    --header-bg-color: #333;
+    --header-text-color: #fff;
+    --sidebar-bg-color: #eee;
+    --content-bg-color: #fff;
+    --footer-bg-color: #333;
+    --link-color: #007bff;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--primary-bg-color-light);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.dark-theme body {
+    background-color: #111;
+    color: #fff;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: var(--header-bg-color);
+    color: var(--header-text-color);
+    text-align: center;
+    padding: 10px 0;
+}
+
+main {
+    flex: 1;
+    padding: 20px 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+    gap: 10px;
+}
+
+.left-sidebar > div {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--sidebar-bg-color);
+    padding: 10px;
+}
+
+.left-sidebar .section_1 {
+    background-color: var(--content-bg-color);
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+    height: 40%; /* Фіксована висота 40% */
+}
+
+.left-sidebar .section_2 {
+    background-color: var(--content-bg-color);
+    border: 1px solid #ddd;
+    padding: 10px;
+    height: 50%; /* Фіксована висота 60% */
+}
+
+/* content */
+.content {
+}
+
+.content .section_say {
+    background-color: var(--content-bg-color);
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.content .posts {
+    display: flex;
+    flex-direction: column;
+    height: 90%; /* Встановіть бажану висоту */
+    overflow: auto; /* Включіть прокрутку, якщо контент виходить за межі блоку */
+}
+
+/* Стилі для секцій у правому сайдбарі */
+.right-sidebar > div {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--sidebar-bg-color);
+    padding: 10px;
+}
+
+.right-sidebar .section_1,
+.right-sidebar .section_2,
+.right-sidebar .section_3 {
+    background-color: var(--content-bg-color);
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+/* Основні стилі для картки посту */
+.post {
+    background-color: var(--content-bg-color);
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Стилі для аватара користувача */
+.post-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Стилі для інформації про користувача та часу публікації */
+.user-info h2 {
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.user-info p {
+    color: #888;
+    margin: 0;
+}
+
+/* Стилі для контенту посту */
+.post-content {
+    margin-top: 10px;
+    font-size: 1.1em;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--footer-bg-color); /* Застосуйте вашу змінну для футера */
+    color: var(--header-text-color); /* Застосуйте вашу змінну для тексту */
+    font-size: 14px;
+}
+
+.post-actions .left {
+    flex: 1; /* Займає доступний простір по ліву сторону */
+    text-align: left;
+}
+
+.post-actions .right {
+    flex: 1; /* Займає доступний простір по праву сторону */
+    text-align: right;
+    display: flex;
+    justify-content: flex-end; /* Розмістити блоки справа в один рядок */
+}
+
+.post-actions .like-count,
+.post-actions .comment-count,
+.post-actions .share-count {
+    margin: 0;
+}
+
+.post-actions .like-count::before {
+    content: "\1F44D"; /* Іконка палець вгору */
+    margin-right: 5px;
+}
+
+.post-actions .comment-count::before {
+    content: "\1F4AC"; /* Іконка коментаря */
+    margin-right: 5px;
+}
+
+.content .share-count::before {
+    content: "\2713"; /* Символ "поділитись" */
+    margin-left: 5px;
+}
+
+/* post footer */
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--footer-bg-color); /* Застосуйте вашу змінну для футера */
+    color: var(--header-text-color); /* Застосуйте вашу змінну для тексту */
+    font-size: 14px;
+}
+
+/* Стилі для кнопок подобається, коментувати та поділитись */
+.post-footer button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.post-footer div {
+    margin-right: 20px;
+}
+
+.post-footer div:last-child {
+    margin-right: 0;
+}
+
+/* carousel user */
+.carousel-container {
+    overflow: hidden;
+    width: 100%;
+}
+
+.carousel-wrapper {
+    display: flex;
+    transition: transform 0.5s ease;
+    background-color: var(--content-bg-color);
+}
+
+.user-card {
+    flex: 0 0 300px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.user-card img {
+    max-width: 100%;
+    border-radius: 50%;
+}
+
+.add-friend-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Стилі для секції коментарів */
+.comments {
+    margin-top: 20px;
+    display: none;
+}
+
+.comment {
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+}
+
+.comment img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.comment-info h3 {
+    font-size: 1em;
+    margin: 0;
+}
+
+.comment-info p {
+    color: #888;
+    margin: 0;
+}
+
+.comment-text {
+    margin-top: 5px;
+}
+
+/* Додаткові стилі за потреби */
+
+footer {
+    background-color: var(--footer-bg-color);
+    color: var(--header-text-color);
+    text-align: center;
+    padding: 10px 0;
+}
+
+.dark-theme {
+    --primary-bg-color-light: #333;
+    --header-bg-color: #444;
+    --sidebar-bg-color: #555;
+    --content-bg-color: #444;
+    --footer-bg-color: #222;
+    --link-color: #007bff;
+}
+
+@media screen and (max-width: 1200px) {
+    /* Якщо екран ширший або рівний 768px */
+    .grid {
+        grid-template-columns: 25% 75%;
+        gap: 10px;
+    }
+    .left-sidebar {
+    }
+    .content {
+    }
+    .right-sidebar {
+    }
+}
+
+/* Використання адаптивних медіа-запитів для зміни кількості блоків в ряду */
+@media screen and (max-width: 768px) {
+    /* Якщо екран ширший або рівний 768px */
+    .grid {
+        grid-template-columns: 100%;
+        gap: 10px;
+    }
+    .left-sidebar {
+    }
+    .content {
+    }
+    .right-sidebar {
+    }
+}
