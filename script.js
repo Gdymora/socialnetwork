@@ -37,15 +37,14 @@ const circleCount = circles.length;
 
 // Обчислити загальний розмір маржі, щоб розташувати круги у рядок
 const totalMargin = containerWidth - circleCount * circles[0].offsetWidth;
-if (circleCount > 3 && circleCount < 12) {
+if (circleCount > 3 && circleCount <= 12) {
   // Визначити відступ для кожного круга
   const margin = 5 - circleCount * 6;
   // Встановити відступ для всіх кругів, за винятком останнього
   for (let i = 0; i < circleCount - 1; i++) {
     circles[i].style.marginRight = `${margin}px`;
   }
-} else {
-  alert(circleCount);
+} else if(circleCount > 12) { 
   const margin = -46;
   for (let i = 0; i < circleCount - 1; i++) {
     circles[i].style.marginRight = `${margin}px`;
