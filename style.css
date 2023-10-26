@@ -1,6 +1,7 @@
 :root {
     --primary-bg-color-light: #f2f2f2;
     --header-bg-color: #d55845;
+    --section-bg-color: #e4e6eb;
     --header-text-color: #fff;
     --header-text-mobile-color: rgb(15, 11, 11);
     --body-bg-color: #f3e0d7;
@@ -13,6 +14,7 @@
     --success: #7ad69c;
     --danger: #d55845;
     --primary: #69a2f3;
+    --border-color-section: #ddd;
 }
 
 *,
@@ -69,9 +71,11 @@ body {
 }
 
 .ar-px img {
-    max-height: 100%;
+    max-width: 100%; /* Ця властивість забезпечить, що ширина картинки не перевищує ширину батьківського елемента */
+    height: auto; /* Це дозволить зберігати пропорції картинки */
 }
-.ar-px a {
+
+a {
     text-decoration: none;
     color: #c84c39;
 }
@@ -82,6 +86,22 @@ body {
 
 .ar-header h1 {
     margin: 0;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .ar-px h2 {
@@ -97,19 +117,26 @@ body {
     font-weight: bold;
 }
 
-.ar-px .border-block-end {
+.ar-px .border-block-end,
+.ar-px-profile .border-block-end {
     border-block-end: 2px solid black;
 }
+.bg-danger-bottom {
+    border-bottom: 5px solid var(--header-bg-color);
+}
+.color-danger {
+    color: var(--danger);
+}
 
-.ar-px .color-orange {
+.color-orange {
     color: orange;
 }
 
-.ar-px .color-yellow {
+.color-yellow {
     color: yellow;
 }
 
-.ar-px .color-white {
+.color-white {
     color: white;
 }
 
@@ -227,7 +254,10 @@ main {
 }
 
 .circle img {
-    max-height: 100%;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 50%;
 }
 
@@ -375,7 +405,7 @@ button.button-icon {
 /* Content section say */
 .content .section_say {
     background-color: var(--content-bg-color);
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color-section);
     padding: 13px;
     margin-bottom: 20px;
     display: grid;
@@ -412,10 +442,19 @@ button.button-icon {
 
 /* Основні стилі для картки посту */
 .content .posts .post {
+    max-width: 100%;
     background-color: var(--content-bg-color);
     border: 1px solid #ddd;
     padding: 20px;
     margin-bottom: 20px;
+}
+
+.content .posts .post img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    object-position: 50% 50%;
+    border-radius: 10px;
 }
 
 .content .posts .post .post-header {
@@ -584,7 +623,11 @@ button.button-icon {
 .right-sidebar .section_1 .header {
     height: 50px;
 }
-
+.right-sidebar .section_1 .header img {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+}
 .right-sidebar .section_2 {
     height: 300px;
 }
@@ -663,11 +706,18 @@ input {
     position: fixed;
     bottom: 20px;
     right: 60px;
+    z-index: 9999;
 }
 
 .note-count {
     position: relative;
     margin-bottom: 20px;
+}
+
+.note-count img {
+    display: block;
+    width: 100%;
+    object-fit: cover;
 }
 
 .note-count .circle {
@@ -693,17 +743,26 @@ input {
 
 .hashtag {
     display: inline-block;
-    padding: 4px; 
-    border: 1px solid #999999; 
-    border-radius: 10px;  
-    color: #b9c0c7;  
-    text-decoration: none;  
-    margin: 1px;  
+    padding: 4px;
+    border: 1px solid #999999;
+    border-radius: 10px;
+    color: #b9c0c7;
+    text-decoration: none;
+    margin: 1px;
 }
 
-.hashtag:hover {
+.hashtag:hover,
+.button-tag:hover {
     cursor: pointer;
     /* text-decoration: underline;   */
+}
+
+.button-tag {
+    border-radius: 5px;
+    background-color: var(--section-bg-color);
+    padding: 10px;
+    margin: 9px;
+    height: 40px;
 }
 
 /* ------Bootstrap None-------- */
