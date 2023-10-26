@@ -1,6 +1,8 @@
 const themeToggle = document.getElementById("theme-toggle");
 const body = document.body;
+if(themeToggle ){
 
+}
 themeToggle.addEventListener("click", () => {
   body.classList.toggle("dark-theme");
 });
@@ -50,4 +52,3 @@ if (circleCount > 3 && circleCount <= 12) {
     circles[i].style.marginRight = `${margin}px`;
   }
 }
-/*  */

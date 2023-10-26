@@ -7,6 +7,7 @@
     --sidebar-bg-color: #eee;
     --content-bg-color: #fff;
     --footer-bg-color: #333;
+    --button-icon-bg-color: rgb(111, 106, 106);
     --link-color: #007bff;
     --text-light: #919090;
     --success: #7ad69c;
@@ -53,6 +54,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 999;
 }
 
 .ar-header .container {
@@ -86,11 +88,12 @@ body {
     font-size: 20px;
 }
 
-.ar-px .text-light {
+.ar-px .text-light,
+.ar-px-galery .text-light {
     color: var(--text-light) !important;
 }
 
-.ar-px .bold {
+.bold {
     font-weight: bold;
 }
 
@@ -156,7 +159,7 @@ body {
 }
 
 /* Основні стилі для навігаційного меню */
-nav ul {
+nav.menu ul {
     display: flex;
     align-items: center;
     height: 100%;
@@ -165,16 +168,16 @@ nav ul {
     padding: 0;
 }
 
-nav ul li {
+nav.menu ul li {
     margin-right: 20px;
     margin-bottom: 5px; /* Відступ між іконкою та текстом */
 }
 
-nav ul li:last-child {
+nav.menu ul li:last-child {
     margin-right: 0;
 }
 
-nav ul li a {
+nav.menu ul li a {
     text-decoration: none;
     color: var(--header-text-color);
     font-weight: bold;
@@ -185,7 +188,7 @@ nav ul li a {
     text-align: center;
 }
 
-nav ul li a:hover {
+nav.menu ul li a:hover {
     color: var(--link-color);
 }
 
@@ -213,7 +216,6 @@ main {
     gap: 10px;
 }
 
-
 .circle {
     border-radius: 50%;
     border: solid 4px var(--content-bg-color);
@@ -228,7 +230,6 @@ main {
     max-height: 100%;
     border-radius: 50%;
 }
-
 
 /* Flex */
 
@@ -316,7 +317,6 @@ main {
     margin-top: 40px;
 }
 
-
 /*left-sidebar section_2 */
 
 .left-sidebar .section_2 {
@@ -356,7 +356,7 @@ main {
 button.button-icon {
     background: none;
     border: none;
-    color: var(--body-bg-color);
+    color: var(--button-icon-bg-color);
     padding-block: 0px;
     padding-inline: 0px;
     line-height: normal;
@@ -479,7 +479,8 @@ button.button-icon {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px; 
+    padding: 10px;
+    color: var(--header-text-color);
     font-size: 14px;
 }
 
@@ -620,6 +621,7 @@ footer {
     color: var(--header-text-color);
     text-align: center;
     padding: 10px 0;
+    z-index: 999;
 }
 
 .dark-theme {
@@ -628,7 +630,10 @@ footer {
     --sidebar-bg-color: #555;
     --content-bg-color: #444;
     --footer-bg-color: #222;
+    --content-bg-color: #555;
+    --body-bg-color: #555;
     --link-color: #007bff;
+    --button-icon-bg-color: #ccc;
 }
 
 input {
@@ -685,6 +690,22 @@ input {
     top: -4px;
     left: 29px;
 }
+
+.hashtag {
+    display: inline-block;
+    padding: 4px; 
+    border: 1px solid #999999; 
+    border-radius: 10px;  
+    color: #b9c0c7;  
+    text-decoration: none;  
+    margin: 1px;  
+}
+
+.hashtag:hover {
+    cursor: pointer;
+    /* text-decoration: underline;   */
+}
+
 /* ------Bootstrap None-------- */
 textarea:focus,
 textarea.form-control:focus,

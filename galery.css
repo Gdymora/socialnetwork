@@ -1,0 +1,197 @@
+.ar-px-galery {
+    display: flex;
+    width: 100%;
+    margin-top: 40px;
+    min-height: 80vh;
+}
+
+.ar-px-galery .sidebar {
+    width: 20%;  
+    background-color: var(--body-bg-color);
+    border: 1px solid #ccc;
+    color: var(--content-bg-color);
+    padding: 20px;
+    transition: width 0.5s;  
+}
+/* sxss */
+.ar-px-galery-menu {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    height: calc(90% - 60px);
+    width: 60px;
+    overflow: hidden;
+    background: var(--header-bg-color);
+    transition: width 0.05s linear;
+    -webkit-transition: width 0.05s linear;
+    z-index: 10;
+    padding-top: 10px;
+}
+
+.ar-px-galery-menu:hover {
+    width: 220px;
+    overflow: visible;
+}
+
+.ar-px-galery-menu > ul > li {
+    position: relative;
+    display: block;
+    width: 180px;
+}
+
+.ar-px-galery-menu > ul > li > a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: var(--header-text-color);
+    font-size: 1rem;
+    transition: all 0.1s linear;
+    -webkit-transition: all 0.1s linear;
+    padding: 10px 0;
+}
+
+nav.ar-px-galery-menu {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+}
+
+nav.ar-px-galery-menu > ul,
+nav.ar-px-galery-menu > ul > li {
+    outline: 0;
+    padding-left: 0;
+}
+
+nav.ar-px-galery-menu > ul > li > a {
+    text-decoration: none;
+}
+
+.ar-px-galery-menu .nav-icon {
+    width: 60px;
+    height: 20px;
+    font-size: 20px;
+    text-align: center; 
+}
+
+.ar-px-galery-menu .nav-text {
+    width: 120px;
+    height: 20px;
+    font-family: "Mulish", sans-serif;
+}
+
+.ar-px-galery-menu .logout {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+.ar-px-galery-menu li:hover > a,
+.ar-px-galery-menu li.active > a,
+.ar-px-galery-menu li > a:focus {
+    text-decoration: none;
+    color: #fff;
+    background-color: rgb(29, 79, 215, 0.7);
+}
+/* dsswd */
+
+.ar-px-galery .content {
+    background-color: var(--body-bg-color);
+    width: 100%;
+    padding: 20px 20px 20px 60px;
+    transition: width 0.5s;
+}
+
+/* Galery card */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(300px, 1fr)
+    );  
+    grid-gap: 20px;  
+}
+
+/* Додаткові стилі для карток як у попередньому прикладі */
+
+.gallery-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 300px;
+    background-color: var(--content-bg-color);
+}
+
+.gallery-card .header {
+    display: grid;
+    grid-template-columns: 1fr 8fr 1fr;
+    margin: 8px;
+}
+
+.gallery-card .header .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-inline-end: 10px;
+}
+
+.gallery-card .header p {
+    font-size: 10px;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+.gallery-card .header .circle {
+    width: 30px;
+    height: 30px;
+}
+
+.gallery-card .media img {
+    width: 100%;
+    max-height: 250px;  
+    object-fit: cover;  
+}
+
+.gallery-card .description p {
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+.gallery-card .footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.like-button,
+.comment-button {
+    background-color: #007bff;
+    color: var(--content-bg-color);
+    border: none;
+    padding: 2px 4px;
+    cursor: pointer;
+}
+
+.like-button:hover,
+.comment-button:hover {
+    background-color: #0056b3;
+}
+
+/* Респонсивність */
+
+@media (max-width: 900px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .gallery-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

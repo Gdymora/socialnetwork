@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Art-Pixel</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <!-- Option 1: Include in HTML -->
+    <!-- https://icons.getbootstrap.com/ -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="galery.css" />
+  </head>
+  <body>
+    <header class="ar-header">
+      <div class="container">
+        <h1>Art-Pixel</h1>
+        <div class="col-md-3 mx-auto">
+          <div class="input-group search">
+            <input class="form-control border" type="search" placeholder="Search..." />
+            <span class="input-group-text search"><i class="bi bi-search"></i></span>
+          </div>
+        </div>
+        <nav class="menu">
+          <ul>
+            <li>
+              <a href="http://127.0.0.1:5500/index.html"><i class="bi bi-house-door-fill"></i>Головна</a>
+            </li>
+            <li>
+              <a href="#"><i class="bi bi-person-fill"></i>Профіль</a>
+            </li>
+            <li>
+              <a href="http://127.0.0.1:5500/users.html"><i class="bi bi-people-fill"></i>Друзі</a>
+            </li>    
+            <li>
+              <a href="#"><i class="bi bi-chat-square-text-fill"></i>Повідомлення</a>
+            </li>
+            <li>
+              <a href="#"><i class="bi bi-gear-fill"></i>Налаштування</a>
+            </li>
+            <li>
+              <button id="theme-toggle">
+                <i class="bi bi-brightness-alt-high-fill"></i
+                ><!-- <i class="bi bi-brightness-alt-high"></i> -->
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <button id="mobile-menu-button">Меню</button>
+    </header>
+    <main>
+      <div class="ar-px-galery">
+        <nav class="ar-px-galery-menu">
+          <ul>
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-house-door-fill"></i>
+                <span class="nav-text">Home</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-chat-square-text-fill"></i>
+                <span class="nav-text">Gallery</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-chat-square-text-fill"></i>
+                <span class="nav-text">Blog</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-chat-square-text-fill"></i>
+                <span class="nav-text">Messages</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-chat-square-text-fill"></i>
+                <span class="nav-text">Notification</span>
+              </a>
+            </li>
+          </ul>
+
+          <ul class="logout">
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-chat-square-text-fill"></i>
+                <span class="nav-text">Settings</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-chat-square-text-fill"></i>
+                <span class="nav-text"> Logout </span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="content">
+          <div class="gallery-grid">
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/noimg.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">сонце</span> <span class="hashtag">природа</span>
+                  <span class="hashtag">літо</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Подобається</button>
+                <button class="comment-button">Коментувати</button>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/noimg.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">сонце</span> <span class="hashtag">природа</span>
+                  <span class="hashtag">літо</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Подобається</button>
+                <button class="comment-button">Коментувати</button>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/noimg.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">сонце</span> <span class="hashtag">природа</span>
+                  <span class="hashtag">літо</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Подобається</button>
+                <button class="comment-button">Коментувати</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div class="container">
+        <p>&copy; 2023 Соціальна мережа</p>
+      </div>
+    </footer>
+    <script src="script_galery.js"></script>
+  </body>
+</html>
