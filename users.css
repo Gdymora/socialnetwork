@@ -5,46 +5,9 @@
     min-height: 80vh;
 }
 
-.sidebar {
-    width: 20%;
-    background-color: var(--body-bg-color);
-    border: 1px solid #ccc;
-    color: var(--content-bg-color);
-    padding: 20px;
-    transition: width 0.5s;
-}
-
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.expanded {
-    list-style-type: none;
-    display: block;
-}
-
-.expanded li {
-    display: block;
-}
-
-.menu button {
-    background: none;
-    border: none;
-    color: var(--content-bg-color);
-    cursor: pointer;
-    font-size: 16px;
-    text-align: left;
-}
-
-.menu button:hover {
-    text-decoration: underline;
-}
-
 .ar-px-user-galery .content {
     background-color: var(--body-bg-color);
-    width: 80%;
+    width: 100%;
     padding: 20px 20px 20px 60px;
     transition: width 0.5s;
 }
@@ -54,6 +17,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
     grid-gap: 20px;
+    justify-content: center;
 }
 
 .user-grid .user-galery-card {
@@ -116,13 +80,4 @@
     color: #6b7280;
 }
 
-/* Респонсивність */
-@media screen and (max-width: 768px) {
-    .menu ul.expanded {
-        display: none;
-    }
 
-    .menu.expanded button {
-        display: block;
-    }
-}

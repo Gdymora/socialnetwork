@@ -1,0 +1,5 @@
+.ar-px-workshop .grid {
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+    gap: 10px;
+}

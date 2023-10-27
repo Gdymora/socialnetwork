@@ -5,23 +5,16 @@
     min-height: 80vh;
 }
 
-.ar-px-galery .sidebar {
-    width: 20%;
-    background-color: var(--body-bg-color);
-    border: 1px solid #ccc;
-    color: var(--content-bg-color);
-    padding: 20px;
-    transition: width 0.5s;
-}
 /* sxss */
 .ar-px-galery-menu {
     position: fixed;
     top: 60px;
     left: 0;
-    height: calc(90% - 60px);
-    width: 60px;
+    height: 100vh;
+    width: 57px;
     overflow: hidden;
     background: var(--header-bg-color);
+    opacity: 0.5;
     transition: width 0.05s linear;
     -webkit-transition: width 0.05s linear;
     z-index: 10;
@@ -29,14 +22,14 @@
 }
 
 .ar-px-galery-menu:hover {
-    width: 220px;
+    width: var(--galery-menu-width);
     overflow: visible;
 }
 
 .ar-px-galery-menu > ul > li {
     position: relative;
     display: block;
-    width: 180px;
+    width: var(--galery-menu-width);
 }
 
 .ar-px-galery-menu > ul > li > a {
@@ -77,15 +70,15 @@ nav.ar-px-galery-menu > ul > li > a {
 }
 
 .ar-px-galery-menu .nav-text {
-    width: 120px;
-    height: 20px;
+    width: 168px;
+    height: 15px;
     font-family: "Mulish", sans-serif;
 }
 
 .ar-px-galery-menu .logout {
     position: absolute;
     left: 0;
-    bottom: 0;
+    bottom: 200px;
 }
 
 .ar-px-galery-menu li:hover > a,
@@ -151,7 +144,7 @@ nav.ar-px-galery-menu > ul > li > a {
     height: 250px;
 }
 .gallery-card .media img {
-    width: 100%; 
+    width: 100%;
     aspect-ratio: 4/3;
     object-fit: cover;
     object-position: 50% 50%;
@@ -173,32 +166,4 @@ nav.ar-px-galery-menu > ul > li > a {
     display: flex;
     justify-content: space-between;
     padding: 10px;
-}
-
-.like-button,
-.comment-button {
-    background-color: #007bff;
-    color: var(--content-bg-color);
-    border: none;
-    padding: 2px 4px;
-    cursor: pointer;
-}
-
-.like-button:hover,
-.comment-button:hover {
-    background-color: #0056b3;
-}
-
-/* Респонсивність */
-
-@media (max-width: 900px) {
-    .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 500px) {
-    .gallery-grid {
-        grid-template-columns: repeat(1, 1fr);
-    }
 }
