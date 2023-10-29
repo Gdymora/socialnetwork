@@ -1,0 +1,83 @@
+.ar-px-user-galery {
+    display: flex;
+    width: 100%;
+    margin-top: 40px;
+    min-height: 80vh;
+}
+
+.ar-px-user-galery .content {
+    background-color: var(--body-bg-color);
+    width: 100%;
+    padding: 20px 20px 20px 60px;
+    transition: width 0.5s;
+}
+
+/* Galery card */
+.user-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+    grid-gap: 20px;
+    justify-content: center;
+}
+
+.user-grid .user-galery-card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 196px; 
+    background-color: var(--content-bg-color);
+    cursor: pointer;
+}
+
+.user-grid .user-galery-card > a {
+    text-decoration: none;
+}
+
+.user-grid .user-galery-card img {
+    width: 100%; 
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    object-position: 50% 50%;
+    filter: contrast(70%);
+    transition: all 0.6s cubic-bezier(0.43, 0.41, 0.22, 0.91);
+}
+
+.user-card-footer {
+    flex-direction: column;
+}
+
+.user-card-footer button {
+    margin: 5px 0;
+    width: 100%;
+}
+.user-grid .user-galery-card > img:hover {
+    filter: contrast(100%);
+}
+
+.user-grid .user-card-content {
+    margin-top: 10px;
+}
+
+.user-grid .user-card-content > p {
+    margin-bottom: 10px;
+}
+
+.user-grid .user-card-content > p:nth-child(1) {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #1e40af;
+}
+
+.user-grid .user-card-content > p:nth-child(2) {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #6b7280;
+}
+
+

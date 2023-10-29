@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Galery</title>
+    <!-- <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    /> -->
+    <!-- Option 1: Include in HTML -->
+    <!-- https://icons.getbootstrap.com/ -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" type="text/css" href="users.css" />
+    <link rel="stylesheet" type="text/css" href="galery.css" />
+    <link rel="stylesheet" type="text/css" href="profile.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <header class="ar-header">
+      <div class="container">
+        <h1>Art-Pixel</h1>
+        <div class="col-md-3 mx-auto">
+          <div class="input-group search">
+            <input class="form-control border" type="search" placeholder="Search..." />
+            <span class="input-group-text search"><i class="bi bi-search"></i></span>
+          </div>
+        </div>
+        <nav class="menu">
+          <ul>
+            <li>
+              <a href="http://127.0.0.1:5500/index.html"><i class="bi bi-house-door-fill"></i>Home</a>
+            </li>
+            <li>
+              <a href="http://127.0.0.1:5500/profile.html"><i class="bi bi-person-fill"></i>Profile</a>
+            </li>
+            <li>
+              <a href="http://127.0.0.1:5500/users.html"><i class="bi bi-people-fill"></i>Frends</a>
+            </li>
+            <li>
+              <a href="http://127.0.0.1:5500/galery.html"><i class="bi bi-people-fill"></i>Galery</a>
+            </li>
+            <li>
+              <a href="http://127.0.0.1:5500/workshop.html"><i class="bi bi-hammer"></i></i>Workshop</a>
+            </li>
+            <li>
+              <a href="#"><i class="bi bi-chat-square-text-fill"></i>Message</a>
+            </li>
+            <li>
+              <a href="#"><i class="bi bi-gear-fill"></i>Settings</a>
+            </li>
+            <li>
+              <button id="theme-toggle">
+                <i class="bi bi-brightness-alt-high-fill"></i
+                ><!-- <i class="bi bi-brightness-alt-high"></i> -->
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <button id="mobile-menu-button">Меню</button>
+    </header>
+    <main>
+      <div class="ar-px-galery">
+        <nav class="ar-px-galery-menu">
+          <ul>
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-house-door-fill"></i>
+                <span class="nav-text">Gallery</span>
+              </a>
+            </li> 
+            
+
+       <!--    <ul class="logout">
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-chat-square-text-fill"></i>
+                <span class="nav-text">Settings</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="#">
+                <i class="nav-icon bi bi-chat-square-text-fill"></i>
+                <span class="nav-text"> Logout </span>
+              </a>
+            </li>
+          </ul> -->
+        </nav>
+
+        <div class="content">
+          <div class="gallery-grid">
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/colob.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">sun</span> <span class="hashtag">nature</span>
+                  <span class="hashtag">summer</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Like</button>
+                <button class="comment-button">Comment</button>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/clever.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">sun</span> <span class="hashtag">nature</span>
+                  <span class="hashtag">summer</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Like</button>
+                <button class="comment-button">Comment</button>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/dino.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">sun</span> <span class="hashtag">nature</span>
+                  <span class="hashtag">summer</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Like</button>
+                <button class="comment-button">Comment</button>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/ledy.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">sun</span> <span class="hashtag">nature</span>
+                  <span class="hashtag">summer</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Like</button>
+                <button class="comment-button">Comment</button>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/ten.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">sun</span> <span class="hashtag">nature</span>
+                  <span class="hashtag">summer</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Like</button>
+                <button class="comment-button">Comment</button>
+              </div>
+            </div>
+
+            <div class="gallery-card">
+              <div class="header">
+                <div class="circle">
+                  <img src="assets/images/noimg.png" alt="" />
+                </div>
+                <div class="text">
+                  <p class="bold">Alex Petroff</p>
+                  <p class="text-light">5 october о 14:58 public</p>
+                </div>
+                <div class="flex justify-content-right">
+                  <button class="button-icon">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="media">
+                <img src="assets/images/galery/valy.png" alt="Фото або відео" />
+              </div>
+              <div class="description">
+                <p>
+                  <span class="hashtag">sun</span> <span class="hashtag">nature</span>
+                  <span class="hashtag">summer</span>
+                  <span class="hashtag">Piople</span>
+                </p>
+              </div>
+              <div class="footer">
+                <button class="like-button">Like</button>
+                <button class="comment-button">Comment</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div class="container">
+        <p>&copy; 2023 Social network</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+<!--     <script src="script_galery.js"></script> -->
+  </body>
+</html>
