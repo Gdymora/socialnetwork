@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'test',
             'email' => 'test@example.com',
             'password' => 'secret',
-        ]);
+        ]); 
+        $this->call(PostSeeder::class);
+        $this->call(FollowerSeeder::class);
+        $this->call(CommentSeeder::class);        
+        // php artisan db:seed --class=CommentSeeder
     }
 }

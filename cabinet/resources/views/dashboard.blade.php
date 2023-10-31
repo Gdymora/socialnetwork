@@ -3,7 +3,7 @@
     {{ __('Dashboard') }}
 @endsection
 @section('css')
-     
+    z
 @endsection
 @section('content')
     <header class="ar-header">
@@ -174,7 +174,77 @@
                     </div>
                     <!--  -->
 
+
                     <div class="posts">
+                        @foreach ($posts as $post)
+                            <div class="post">
+                                <div class="post-header">
+                                    <div class="circle">
+                                        <img src="{{ $post->author->profile_image_url ?? asset('assets/images/noimg.png') }}"
+                                            alt="image {{ $post->author->name }}" />
+                                    </div>
+                                    <div class="text">
+                                        <p class="bold">{{ $post->author->name }}</p>
+                                        <p class="text-light">5 october о 14:58 public</p>
+                                    </div>
+                                    <div class="flex justify-content-right">
+                                        <button class="button-icon">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="post-content">
+                                    <p>{{ $post->title }}</p>
+                                    <p>{{ $post->content }}</p>
+                                    <div class=""><a href="">View more</a></div>
+                                </div>
+
+                                <div class="post-actions flex">
+                                    <div class="left">
+                                        <i class="bi bi-hand-thumbs-up-fill color-orange icon-30 mr-1"></i> 42
+                                        <!--  <i class="bi bi-hand-thumbs-down-fill color-orange"></i> 12 -->
+
+                                    </div>
+                                    <div class="flex justify-content-center align-items-center">
+                                        <i class="bi bi-chat icon-30 mr-1"></i> 12
+                                    </div>
+                                    <div class="right align-items-center">
+                                        <i class="bi bi-reply icon-30 mr-1"></i> 5
+                                    </div>
+                                </div>
+
+                                <div class="post-footer">
+                                    <div class="flex justify-content-center align-items-center">
+                                        <button class="like-button">Like</button>
+                                    </div>
+                                    <div class="flex justify-content-center align-items-center">
+                                        <button class="like-button comment-button">Comment</button>
+                                    </div>
+                                    <div class="flex justify-content-center align-items-center">
+                                        <button class="like-button">Share</button>
+                                    </div>
+                                </div>
+                                <input type="text" placeholder="write coment" />
+                                <div class="comments">
+                                    <!-- Секція для коментарів -->
+
+                                    @foreach ($post->comments as $comment)
+                                        <div class="comment">
+                                            <img src="user-avatar.jpg" alt="Аватар користувача" />
+                                            <div class="comment-info">
+                                                <h3>Ім'я користувача</h3>
+                                                <p>Час коментаря: 24 жовтня 2023, 16:00</p>
+                                            </div>
+                                            <p class="comment-text"> {{ $comment->content }} </p>
+                                        </div>
+                                    @endforeach
+
+
+                                    <!-- Додайте інші коментарі тут -->
+                                </div>
+                            </div>
+                        @endforeach
                         <div class="post">
                             <div class="post-header">
                                 <div class="circle">
@@ -215,8 +285,8 @@
                                     <button class="like-button">Like</button>
                                 </div>
                                 <!--  <div class="flex justify-content-center align-items-center">
-                      <button class="like-button">Comment</button>
-                    </div> -->
+                                                      <button class="like-button">Comment</button>
+                                                    </div> -->
                                 <div class="flex justify-content-center align-items-center">
                                     <button class="like-button">Share</button>
                                 </div>
@@ -277,8 +347,8 @@
                                     <button class="like-button">Like</button>
                                 </div>
                                 <!--  <div class="flex justify-content-center align-items-center">
-                      <button class="like-button">Comment</button>
-                    </div> -->
+                                                      <button class="like-button">Comment</button>
+                                                    </div> -->
                                 <div class="flex justify-content-center align-items-center">
                                     <button class="like-button">Share</button>
                                 </div>

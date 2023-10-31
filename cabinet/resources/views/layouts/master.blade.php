@@ -30,5 +30,5 @@
         <p>&copy; 2023 Соціальна мережа</p>
     </div>
 </footer>
-
+<script src="assets/js/script.js"></script>
 </html>
