@@ -19,13 +19,21 @@ class MainController extends Controller
      */
     public function index(): View
     {
-        $user = Auth::user();
+        $user = User::select('id', 'name', 'last_name', 'profile_image_url')->with('aboutMe')->find(Auth::id());
+
         $posts = $this->showPostsForUser($user);
-        // $user = User::find(1); // Знайдіть поточного користувача
+        $friendsForFriendship = $this->getFriendsForFriendship();
         $followingUsers = $user->following; // Користувачі, на яких він підписаний 
-        $followers = $user->followers; // Користувачі, які підписані на нього
-       // dd($followers, count($followingUsers), $user->following);
-        return view('dashboard', compact('posts'));
+        $followersUsers = $user->followers; // Користувачі, які підписані на нього
+        $postMostViewed = $this->postMostViewed();
+        $follower = [
+            'following' => $followingUsers,
+            'followingCount' => count($followingUsers),
+            'followers' => $followersUsers,
+            'followersCount' => count($followersUsers)
+        ];
+        // dd($followers, count($followingUsers), $user->following);
+        return view('dashboard', compact('posts', 'follower', 'user', 'friendsForFriendship', 'postMostViewed'));
     }
 
     public function showPostsForUser(User $user)
@@ -51,7 +59,42 @@ class MainController extends Controller
                    }) */;
         })->with(['comments', 'author'])
             ->get();
+        // dd($posts[0]->comments[0]->authorComments);
         return $posts;
+    }
+
+    private function postMostViewed($count = 10)
+    {
+        //найбільше переглянуті
+        $mostViewedPosts = Post::orderBy('viewed', 'desc')->take($count)->get();
+        return $mostViewedPosts;
+    }
+
+    private function getFriendsForFriendship($count = 10)
+    {
+        $randomUsers = User::select('id', 'name', 'last_name', 'profile_image_url')->where('id', '!=', Auth::id())
+            ->whereDoesntHave('followers', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->whereDoesntHave('following', function ($query) {
+                $query->where('friend_id', Auth::id());
+            })
+            ->where('status', 'activated')
+            ->inRandomOrder()
+            ->take($count)
+            ->with('aboutMe')
+            ->get();
+        return $randomUsers;
+    }
+
+    private function getUser()
+    {
+        $user = Auth::user();
+        if ($user) {
+            return $user->select('id', 'name', 'last_name', 'profile_image_url')->first();
+        } else {
+            return;
+        }
     }
 
 

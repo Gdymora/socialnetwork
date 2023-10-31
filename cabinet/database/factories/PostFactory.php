@@ -19,7 +19,10 @@ class PostFactory extends Factory
 
         return [
             'title' => fake()->name(),
-            'content' => fake()->text()
+            'content' => fake()->text(),
+            'viewed' => fake()->numberBetween(0, 1000),
+            'likes' => fake()->numberBetween(0, 500),
+            'share' => fake()->numberBetween(0, 200),
         ];
     }
 

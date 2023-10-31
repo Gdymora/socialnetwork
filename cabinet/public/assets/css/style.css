@@ -56,7 +56,7 @@ body {
     padding: 20px;
 }
 .ar-px-workshop.container {
-    max-width: 90%; 
+    max-width: 90%;
     padding: 20px;
 }
 /* Основні стилі для заголовка та навігаційного меню */
@@ -318,6 +318,10 @@ main {
     text-align: right;
     display: flex;
     justify-content: flex-end; /* Розмістити блоки справа в один рядок */
+}
+
+.flex-item {
+    flex: 1 1 auto; /* Перший елемент */
 }
 
 /*  */
@@ -589,24 +593,22 @@ button.button-icon {
     display: none;
 }
 
+.comments .comment .circle {
+    width: 40px;
+    height: 40px;
+    margin: 4px;
+}
+
 .comment {
     background-color: #f2f2f2;
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 10px;
-    display: flex;
-}
-
-.comment img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
 }
 
 .comment-info h3 {
     font-size: 1em;
-    margin: 0;
+    margin: 0 3px;
 }
 
 .comment-info p {
@@ -617,7 +619,10 @@ button.button-icon {
 .comment-text {
     margin-top: 5px;
 }
-
+.comment .ansvered {
+    color: #007bff;
+    margin: 0 3px;
+}
 /* Right sidebar Стилі для секцій у правому сайдбарі */
 .right-sidebar > div {
     display: flex;
@@ -637,8 +642,8 @@ button.button-icon {
     width: 50px;
     object-fit: cover;
 }
-.right-sidebar .section_2 {
-    height: 300px;
+.right-sidebar .section_2 {   
+    height: auto;
 }
 
 .item_right_sidebar_section_2 {
@@ -653,8 +658,8 @@ button.button-icon {
     margin-block-end: 0px;
 }
 
-.right-sidebar .section_3 {
-    height: 300px;
+.right-sidebar .section_3 {   
+    height: auto;
 }
 
 .right-sidebar .section_1,
@@ -1001,7 +1006,6 @@ select {
 /*  */
 
 @media screen and (max-width: 1200px) {
-    
     .ar-px .grid {
         display: grid;
         grid-template-columns: 25% 50% 25%;
@@ -1059,13 +1063,13 @@ select {
         color: var(--header-text-color);
         text-align: center;
         padding: 10px 0;
-        position: relative;  
+        position: relative;
     }
 
     #mobile-menu-button {
-        position: absolute;  
-        top: 10px;  
-        right: 10px;  
+        position: absolute;
+        top: 10px;
+        right: 10px;
     }
     #mobile-menu {
         display: flex;

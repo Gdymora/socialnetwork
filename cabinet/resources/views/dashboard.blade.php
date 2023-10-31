@@ -62,24 +62,24 @@
                         </div>
                         <div class="section centered-container">
                             <div>
-                                <h2 class="bold">Alex Petroff</h2>
+                                <h2 class="bold">{{ $user->name }} {{ $user->last_name }}</h2>
                             </div>
                             <div>
-                                <p class="text-light">Web develodiver at Self Emdivloed</p>
+                                <p class="text-light">{{ $user->aboutMe->occupations }}</p>
                             </div>
                             <div class="border-block-end"></div>
                             <div>
                                 <h2 class="text-light">Folowing</h2>
                             </div>
                             <div>
-                                <h2 class="bold">34</h2>
+                                <h2 class="bold">{{ $follower['followingCount'] }}</h2>
                             </div>
                             <div class="border-block-end"></div>
                             <div>
                                 <h2 class="text-light">Followers</h2>
                             </div>
                             <div>
-                                <h2 class="bold">155</h2>
+                                <h2 class="bold">{{ $follower['followersCount'] }}</h2>
                             </div>
                             <div class="border-block-end"></div>
                             <div class=""><a href="">View Profile</a></div>
@@ -96,35 +96,27 @@
                         <div class="section centered-container">
                             <div class="border-block-end"></div>
 
-                            <div class="item_left_sidebar_section_2">
-                                <div class="circle">
-                                    <img src="assets/images/galery/pexels-photo-18784917.webp" alt="" />
+                            @foreach ($friendsForFriendship as $friend)
+                                <div class="item_left_sidebar_section_2">
+                                    <div class="circle">
+                                        <img src="{{ $friend->profile_image_url ?? asset('assets/images/noimg.png') }}"
+                                            alt="" />
+                                    </div>
+                                    <div class="text">
+                                        <p class="bold">{{ $friend->name }} {{ $friend->last_name }}</p>
+                                        <p class="text-light">{{ $friend->aboutMe->occupations }}</p>
+                                    </div>
+                                    <div class="flex">
+                                        <button class="button-icon right-top">
+                                            <i class="bi bi-plus-square" style="font-size: 25px"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="text">
-                                    <p class="bold">Alex Petroff</p>
-                                    <p class="text-light">Web develodiver</p>
-                                </div>
-                                <div class="flex">
-                                    <button class="button-icon right-top">
-                                        <i class="bi bi-plus-square" style="font-size: 25px"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="item_left_sidebar_section_2">
-                                <div class="circle">
-                                    <img src="assets/images/noimg.png" alt="" />
-                                </div>
-                                <div class="text">
-                                    <p class="bold">Alex Petroff</p>
-                                    <p class="text-light">Web develodiver</p>
-                                </div>
-                                <div class="flex">
-                                    <button class="button-icon right-top">
-                                        <i class="bi bi-plus-square" style="font-size: 25px"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="item_left_sidebar_section_2">
+                            @endforeach
+
+
+
+                            {{--                 <div class="item_left_sidebar_section_2">
                                 <div class="circle">
                                     <img src="assets/images/noimg.png" alt="" />
                                 </div>
@@ -152,6 +144,20 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="item_left_sidebar_section_2">
+                                <div class="circle">
+                                    <img src="assets/images/noimg.png" alt="" />
+                                </div>
+                                <div class="text">
+                                    <p class="bold">Alex Petroff</p>
+                                    <p class="text-light">Web develodiver</p>
+                                </div>
+                                <div class="flex">
+                                    <button class="button-icon right-top">
+                                        <i class="bi bi-plus-square" style="font-size: 25px"></i>
+                                    </button>
+                                </div>
+                            </div> --}}
 
                             <div class=""><a href="">View Profile</a></div>
                         </div>
@@ -184,8 +190,9 @@
                                             alt="image {{ $post->author->name }}" />
                                     </div>
                                     <div class="text">
-                                        <p class="bold">{{ $post->author->name }}</p>
-                                        <p class="text-light">5 october о 14:58 public</p>
+                                        <p class="bold">{{ $post->author->name }} {{ $post->author->last_name }}</p>
+                                        <p class="text-light">{{ $post->created_at->format('d.m.Y H:i:s') }}
+                                            {{ $post->visibility }} </p>
                                     </div>
                                     <div class="flex justify-content-right">
                                         <button class="button-icon">
@@ -225,21 +232,53 @@
                                         <button class="like-button">Share</button>
                                     </div>
                                 </div>
-                                <input type="text" placeholder="write coment" />
+                                <input type="text" placeholder="write comment" />
                                 <div class="comments">
                                     <!-- Секція для коментарів -->
-
                                     @foreach ($post->comments as $comment)
                                         <div class="comment">
-                                            <img src="user-avatar.jpg" alt="Аватар користувача" />
-                                            <div class="comment-info">
-                                                <h3>Ім'я користувача</h3>
-                                                <p>Час коментаря: 24 жовтня 2023, 16:00</p>
+                                            <!-- Виведення інформації про автора батьківського коментаря -->
+                                            <div class="header flex">
+                                                <div class="circle">
+                                                    <img src="{{ $comment->authorComments->profile_image_url ?? asset('assets/images/noimg.png') }}"
+                                                        alt="Avatar {{ $comment->authorComments->name }}" />
+                                                </div>
+                                                <div class="comment-info flex align-items-center">
+                                                    <h3>{{ $comment->authorComments->name }}
+                                                        {{ $comment->authorComments->last_name }}</h3>
+                                                    <p>{{ $comment->created_at->format('d.m.Y H:i:s') }}</p>
+                                                </div>
                                             </div>
                                             <p class="comment-text"> {{ $comment->content }} </p>
+
+                                            <!-- Виведення дочірніх коментарів, якщо вони є -->
+                                            @if ($comment->childComments->isNotEmpty())
+                                                <div class="child-comments">
+                                                    @foreach ($comment->childComments as $childComment)
+                                                        <div class="header flex">
+                                                            <div class="circle">
+                                                                <img src="{{ $childComment->authorComments->profile_image_url ?? asset('assets/images/noimg.png') }}"
+                                                                    alt="Avatar {{ $childComment->authorComments->name }}" />
+                                                            </div>
+                                                            <div class="comment-info flex align-items-center">
+                                                                <h3>{{ $childComment->authorComments->name }}
+                                                                    {{ $childComment->authorComments->last_name }}</h3>
+
+                                                                </p> <span class="ansvered">answered
+                                                                </span>
+                                                                <h3>{{ $comment->authorComments->name }}
+                                                                    {{ $comment->authorComments->last_name }}</h3>
+                                                                <p>{{ $childComment->created_at->format('d.m.Y H:i:s') }}
+                                                            </div>
+                                                        </div>
+                                                        <p class="comment-text"> {{ $childComment->content }} </p>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                     @endforeach
 
+                                    <input type="text" placeholder="write comment" />
 
                                     <!-- Додайте інші коментарі тут -->
                                 </div>
@@ -285,8 +324,8 @@
                                     <button class="like-button">Like</button>
                                 </div>
                                 <!--  <div class="flex justify-content-center align-items-center">
-                                                      <button class="like-button">Comment</button>
-                                                    </div> -->
+                                                                                                                                              <button class="like-button">Comment</button>
+                                                                                                                                            </div> -->
                                 <div class="flex justify-content-center align-items-center">
                                     <button class="like-button">Share</button>
                                 </div>
@@ -347,8 +386,8 @@
                                     <button class="like-button">Like</button>
                                 </div>
                                 <!--  <div class="flex justify-content-center align-items-center">
-                                                      <button class="like-button">Comment</button>
-                                                    </div> -->
+                                                                                                                                              <button class="like-button">Comment</button>
+                                                                                                                                            </div> -->
                                 <div class="flex justify-content-center align-items-center">
                                     <button class="like-button">Share</button>
                                 </div>
@@ -469,31 +508,20 @@
                         <div class="section centered-container">
                             <div class="border-block-end"></div>
 
-                            <div class="item_right_sidebar_section_2">
-                                <div class="">1</div>
-                                <div class="text">
-                                    <p class="bold">Alex Petroff</p>
-                                    <p class="text-light">Web develodiver</p>
+                            @foreach ($postMostViewed as $post)
+                                <div class="item_right_sidebar_section_2">
+                                    <div class="">{{ $post->viewed }}</div>
+                                    <div class="text">
+                                        <p class="bold">{{ $post->author->name }} {{ $post->author->last_name }}</p>
+                                        <p class="text-light">{{ $post->preview($post->content, $limit = 50) }}</p>
+                                    </div>
+                                    <div class="flex">
+                                        <button class="button-icon right-top">
+                                            <i class="bi bi-plus-square" style="font-size: 25px"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="flex">
-                                    <button class="button-icon right-top">
-                                        <i class="bi bi-plus-square" style="font-size: 25px"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="item_right_sidebar_section_2">
-                                <div class="">2</div>
-                                <div class="text">
-                                    <p class="bold">Alex Petroff</p>
-                                    <p class="text-light">Web develodiver</p>
-                                </div>
-                                <div class="flex">
-                                    <button class="button-icon right-top">
-                                        <i class="bi bi-plus-square" style="font-size: 25px"></i>
-                                    </button>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>

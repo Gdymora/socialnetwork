@@ -43,14 +43,14 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function aboutMe()
+    {
+        return $this->hasOne(UserAdditionalData::class);
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);
-    }
-
-    public function friends()
-    {
-        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
     }
 
     public function followers()

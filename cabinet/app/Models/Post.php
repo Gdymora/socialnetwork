@@ -13,11 +13,6 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'author_id')->select('id', 'name', 'last_name', 'profile_image_url');
     }
-
-    public function authorComments()
-    {
-        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'last_name', 'profile_image_url');
-    }
     public function comments()
     {
         return $this->hasMany(Comment::class, 'post_id');
@@ -32,5 +27,9 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'friends', 'post_id', 'friend_id')->select('id', 'name', 'last_name', 'birthdate', 'profile_image_url')->where('status', 'activated');
     }
 
+    public function preview($text, $limit = 100, $end = '...')
+    {
+        return \Illuminate\Support\Str::limit($text, $limit, $end);
+    }
 
 }
