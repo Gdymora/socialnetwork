@@ -3,7 +3,7 @@
     {{ __('Dashboard') }}
 @endsection
 @section('css')
-    z
+    
 @endsection
 @section('content')
     <header class="ar-header">
@@ -35,8 +35,20 @@
                     <li>
                         <a href="#"><i class="bi bi-chat-square-text-fill"></i>Message</a>
                     </li>
-                    <li>
-                        <a href="#"><i class="bi bi-gear-fill"></i>Settings</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="bi bi-gear-fill"></i> Settings
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <!-- Другие пункты меню настройки могут быть добавлены здесь -->
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </div>
                     </li>
                     <li>
                         <button id="theme-toggle">
@@ -62,24 +74,24 @@
                         </div>
                         <div class="section centered-container">
                             <div>
-                                <h2 class="bold">{{ $user->name }} {{ $user->last_name }}</h2>
+                                <h2 class="bold">{{ $profileData->name }} {{ $profileData->last_name }}</h2>
                             </div>
                             <div>
-                                <p class="text-light">{{ $user->aboutMe->occupations }}</p>
+                                <p class="text-light">{{ $profileData->aboutMe->occupations }}</p>
                             </div>
                             <div class="border-block-end"></div>
                             <div>
                                 <h2 class="text-light">Folowing</h2>
                             </div>
                             <div>
-                                <h2 class="bold">{{ $follower['followingCount'] }}</h2>
+                                <h2 class="bold">{{ $friendsAndFollowers['followingCount'] }}</h2>
                             </div>
                             <div class="border-block-end"></div>
                             <div>
                                 <h2 class="text-light">Followers</h2>
                             </div>
                             <div>
-                                <h2 class="bold">{{ $follower['followersCount'] }}</h2>
+                                <h2 class="bold">{{ $friendsAndFollowers['followersCount'] }}</h2>
                             </div>
                             <div class="border-block-end"></div>
                             <div class=""><a href="">View Profile</a></div>
@@ -96,7 +108,7 @@
                         <div class="section centered-container">
                             <div class="border-block-end"></div>
 
-                            @foreach ($friendsForFriendship as $friend)
+                            @foreach ($randomUsersForFriendship as $friend)
                                 <div class="item_left_sidebar_section_2">
                                     <div class="circle">
                                         <img src="{{ $friend->profile_image_url ?? asset('assets/images/noimg.png') }}"
@@ -113,52 +125,6 @@
                                     </div>
                                 </div>
                             @endforeach
-
-
-
-                            {{--                 <div class="item_left_sidebar_section_2">
-                                <div class="circle">
-                                    <img src="assets/images/noimg.png" alt="" />
-                                </div>
-                                <div class="text">
-                                    <p class="bold">Alex Petroff</p>
-                                    <p class="text-light">Web develodiver</p>
-                                </div>
-                                <div class="flex">
-                                    <button class="button-icon right-top">
-                                        <i class="bi bi-plus-square" style="font-size: 25px"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="item_left_sidebar_section_2">
-                                <div class="circle">
-                                    <img src="assets/images/noimg.png" alt="" />
-                                </div>
-                                <div class="text">
-                                    <p class="bold">Alex Petroff</p>
-                                    <p class="text-light">Web develodiver</p>
-                                </div>
-                                <div class="flex">
-                                    <button class="button-icon right-top">
-                                        <i class="bi bi-plus-square" style="font-size: 25px"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="item_left_sidebar_section_2">
-                                <div class="circle">
-                                    <img src="assets/images/noimg.png" alt="" />
-                                </div>
-                                <div class="text">
-                                    <p class="bold">Alex Petroff</p>
-                                    <p class="text-light">Web develodiver</p>
-                                </div>
-                                <div class="flex">
-                                    <button class="button-icon right-top">
-                                        <i class="bi bi-plus-square" style="font-size: 25px"></i>
-                                    </button>
-                                </div>
-                            </div> --}}
-
                             <div class=""><a href="">View Profile</a></div>
                         </div>
                     </div>

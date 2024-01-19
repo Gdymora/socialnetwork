@@ -72,4 +72,39 @@ class User extends Authenticatable
     {
         $this->following()->detach($users);
     }
+    public function getUserProfileData()
+    {
+        return $this->select('id', 'name', 'last_name', 'profile_image_url')
+            ->with('aboutMe')
+            ->find(\Auth::id());
+    }
+    public function getFriendsAndFollowers()
+    {
+        $followingUsers = $this->following;
+        $followersUsers = $this->followers;
+
+        return [
+            'following' => $followingUsers,
+            'followingCount' => count($followingUsers),
+            'followers' => $followersUsers,
+            'followersCount' => count($followersUsers)
+        ];
+    }
+
+    public static function getRandomUsersForFriendship($count = 10)
+    {
+        return self::select('id', 'name', 'last_name', 'profile_image_url')
+            ->where('id', '!=', \Auth::id())
+            ->whereDoesntHave('followers', function ($query) {
+                $query->where('user_id', \Auth::id());
+            })
+            ->whereDoesntHave('following', function ($query) {
+                $query->where('friend_id', \Auth::id());
+            })
+            ->where('status', 'activated')
+            ->inRandomOrder()
+            ->take($count)
+            ->with('aboutMe')
+            ->get();
+    }
 }

@@ -32,4 +32,23 @@ class Post extends Model
         return \Illuminate\Support\Str::limit($text, $limit, $end);
     }
 
+    public static function getPostsForUser(User $user)
+    {
+        return self::where(function ($query) use ($user) {
+            $query->where('visibility', 'public')
+                ->orWhere(function ($subquery) use ($user) {
+                    $subquery->where('visibility', 'private')
+                        ->where('author_id', \Auth::id());
+                })
+                // Add other conditions as needed
+                ->with(['comments', 'author'])
+                ->get();
+        });
+    }
+
+    public static function getMostViewedPosts($count = 10)
+    {
+        return self::orderBy('viewed', 'desc')->take($count)->get();
+    }
+
 }

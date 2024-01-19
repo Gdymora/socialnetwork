@@ -44,6 +44,16 @@ return [
             'throw' => false,
         ],
 
+        'foto' => [
+            'driver' => 'local',
+            'root' => storage_path('app/usersfile/foto'),
+        ],
+
+        'video' => [
+            'driver' => 'local',
+            'root' => storage_path('app/usersfile/video'), // 'video' - назва вашої папки
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
