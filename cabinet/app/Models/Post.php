@@ -31,20 +31,45 @@ class Post extends Model
     {
         return \Illuminate\Support\Str::limit($text, $limit, $end);
     }
+    /* Привязка автора до коментара поста */
+    public function getPostsWithComments()
+    {
+        return self::with(['comments.authorComments'])->get();
+    }
 
+
+    /**
+     * Method to get posts for a specific user based on visibility.
+     *
+     * @param User $user
+     * @return Collection
+     */
     public static function getPostsForUser(User $user)
     {
         return self::where(function ($query) use ($user) {
             $query->where('visibility', 'public')
                 ->orWhere(function ($subquery) use ($user) {
                     $subquery->where('visibility', 'private')
-                        ->where('author_id', \Auth::id());
+                        ->where('author_id', $user->id); // Only author can see private posts
                 })
-                // Add other conditions as needed
-                ->with(['comments', 'author'])
-                ->get();
-        });
+                ->orWhere(function ($subquery) use ($user) {
+                    $subquery->where('visibility', 'friends')
+                        ->whereHas('author.following', function ($friendQuery) use ($user) {
+                            $friendQuery->where('friends.friend_id', $user->id);
+                        });
+                })
+                ->orWhere(function ($subquery) use ($user) {
+                    $subquery->where('author_id', $user->id); // User can see their own posts
+                })
+                ->orWhere(function ($subquery) use ($user) {
+                    $subquery->where('visibility', 'custom')
+                        ->where('user_access', 'LIKE', '%"' . $user->id . '"%');
+                });
+        })
+            ->with(['comments.authorComments', 'author']) // додано вкладення
+            ->get();
     }
+
 
     public static function getMostViewedPosts($count = 10)
     {

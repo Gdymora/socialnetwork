@@ -1,9 +1,9 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { PageProps } from "@/types";
-import { PostsList } from "./Partials/PostsList";
-import { SuggestionsList } from "./Partials/SuggestionsList";
-import UserProfile from "./Partials/UserProfile";
+import { PageProps } from "@/types"; 
+import { SuggestionsList } from "./Partials/LeftSidebar/SuggestionsList";
+import UserProfile from "./Partials/LeftSidebar/UserProfile";
+import PostsList from "./Partials/Post/PostList";
 // Dashboard.tsx
 // інші необхідні імпорти
 
