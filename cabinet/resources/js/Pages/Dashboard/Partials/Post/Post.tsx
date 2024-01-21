@@ -1,16 +1,20 @@
 import { useState } from "react";
- 
+
 import PostContent from "./PostContent";
 import PostFooter from "./PostFooter";
 import PostHeader from "./PostHeader";
 import PostActions from "./PostActions";
 import CommentsList from "./CommentsList";
+import { PostType } from "@/types";
+import Carousel from "./Carousel";
+interface PostProps {
+    post: PostType;
+}
 
-export default function Post({ post }) {
+export default function Post({ post }: PostProps) {
     const [showComments, setShowComments] = useState(false);
 
     const toggleComments = () => {
-        console.log(showComments)
         setShowComments(!showComments);
     };
     return (
@@ -35,7 +39,11 @@ export default function Post({ post }) {
                 // onLike={...}
                 // onShare={...}
             />
-            <CommentsList comments={post.comments} showComments={showComments}/>
+            <CommentsList
+                comments={post.comments}
+                showComments={showComments}
+            />
+            {/* <Carousel users={randomUsersForFriendship}/> */}
         </div>
     );
 }

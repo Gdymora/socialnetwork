@@ -1,6 +1,7 @@
+import { Comments } from "@/types";
 import moment from "moment";
 
-export default function Comment({ comment }) {
+export default function Comment({ comment }: { comment: Comments }) {
     const defaultImageUrl = "assets/images/noimg.png";
     const dateString = comment.created_at;
     const formattedDate = moment(dateString).format("DD.MM.YYYY HH:mm:ss");

@@ -1,4 +1,6 @@
-export function SuggestionsList({ randomUsersForFriendship }) {
+import {  RandomUserForFriendship } from "@/types";
+
+export function SuggestionsList({ randomUsersForFriendship }: { randomUsersForFriendship: RandomUserForFriendship[] }) {
     return (
         <div className="section_2">
             <div className="header-card">
@@ -12,7 +14,7 @@ export function SuggestionsList({ randomUsersForFriendship }) {
             <div className="section centered-container">
                 <div className="border-block-end"></div>
                 {/* Map over the users array to render each user */}
-                {randomUsersForFriendship.map((friend) => (
+                {randomUsersForFriendship.map((friend:RandomUserForFriendship ) => (
                     <div
                         className="item_left_sidebar_section_2"
                         key={friend.id}

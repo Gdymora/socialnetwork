@@ -1,6 +1,7 @@
+import { Comments } from "@/types";
 import Comment from "./Comment";
 
-export default function CommentsList({ comments, showComments }) {
+export default function CommentsList({ comments, showComments }: { comments: Comments[], showComments: boolean }) {
     const commentsStyle = {
         display: showComments ? 'block' : 'none'
     };

@@ -1,16 +1,25 @@
-import moment from 'moment';
+import { Author } from "@/types";
+import moment from "moment";
 
+export default function PostHeader({
+    author,
+    createdAt,
+    visibility,
+}: {
+    author: Author;
+    createdAt: string;
+    visibility: string;
+}) {
+    const dateString = createdAt;
+    const formattedDate = moment(dateString).format("DD.MM.YYYY HH:mm:ss");
 
-export default function PostHeader({ author, createdAt, visibility }) {
-    const profileImageUrl =
-        author.profile_image_url || "assets/images/noimg.png";
-        const dateString = createdAt;
-        const formattedDate = moment(dateString).format('DD.MM.YYYY HH:mm:ss');
-       
     return (
         <div className="post-header">
             <div className="circle">
-                <img src={profileImageUrl} alt={`image ${author.name}`} />
+                <img
+                    src={author.profile_image_url || "assets/images/noimg.png"}
+                    alt={`image ${author.name}`}
+                />
             </div>
             <div className="text">
                 <p className="bold">

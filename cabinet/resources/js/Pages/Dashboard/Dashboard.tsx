@@ -1,12 +1,29 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { PageProps } from "@/types"; 
+import {
+    Auth,
+    ProfileData,
+    FriendsAndFollowers,
+    PageProps,
+    PostType,
+    RandomUserForFriendship,
+    postMostViewed,
+} from "@/types";
 import { SuggestionsList } from "./Partials/LeftSidebar/SuggestionsList";
 import UserProfile from "./Partials/LeftSidebar/UserProfile";
 import PostsList from "./Partials/Post/PostList";
+import SayPost from "./Partials/Post/SayPost";
+import RightSidebar from "./Partials/RightSidebar/RightSidebar";
 // Dashboard.tsx
 // інші необхідні імпорти
-
+interface DashboardProps {
+    auth: Auth;
+    posts: PostType[];
+    friendsAndFollowers: FriendsAndFollowers;
+    profileData: ProfileData;
+    postMostViewed: postMostViewed;
+    randomUsersForFriendship: RandomUserForFriendship[];
+}
 export default function Dashboard({
     auth,
     posts,
@@ -14,7 +31,7 @@ export default function Dashboard({
     profileData,
     postMostViewed,
     randomUsersForFriendship,
-}) {
+}: DashboardProps) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -30,6 +47,7 @@ export default function Dashboard({
             <main>
                 <div className="container ar-px">
                     <div className="grid">
+                        
                         <div className="left-sidebar">
                             <div className="section_1">
                                 <UserProfile
@@ -45,8 +63,14 @@ export default function Dashboard({
                                 />
                             </div>
                         </div>
+
                         <div className="content">
+                            <SayPost profileData={profileData} />
                             <PostsList posts={posts} />
+                        </div>
+
+                        <div className="right-sidebar">
+                            <RightSidebar />
                         </div>
                     </div>
                     {/* Інші компоненти, які використовують ці дані */}

@@ -1,4 +1,12 @@
-export default function UserProfile({ profileData, friendsAndFollowers }) {
+import { FriendsAndFollowers, ProfileData } from "@/types";
+
+export default function UserProfile({
+    profileData,
+    friendsAndFollowers,
+}: {
+    profileData: ProfileData;
+    friendsAndFollowers: FriendsAndFollowers;
+}) {
     return (
         <div className="section_1">
             <div className="header">
@@ -6,16 +14,16 @@ export default function UserProfile({ profileData, friendsAndFollowers }) {
                     {/* Ensure that profileData.profileImageUrl is provided */}
                     <img
                         src={
-                            profileData.profileImageUrl ||
+                            profileData.profile_image_url ||
                             "assets/images/noimg.png"
                         }
-                        alt={`${profileData?.name} ${profileData?.lastName}`}
+                        alt={`${profileData?.name} ${profileData?.last_name}`}
                     />
                 </div>
             </div>
             <div className="section centered-container">
                 <h2 className="bold">
-                    {profileData.name} {profileData.lastName}
+                    {profileData.name} {profileData.last_name}
                 </h2>
                 {/* Conditional rendering in case aboutMe or occupations is not provided */}
                 {profileData.aboutMe?.occupations && (

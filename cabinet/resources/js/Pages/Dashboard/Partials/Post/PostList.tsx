@@ -1,6 +1,11 @@
+import { PostType, RandomUserForFriendship } from "@/types";
 import Post from "./Post";
 
-export default function PostsList({ posts }) {
+interface PostsListProps {
+    posts: PostType[];
+}
+
+export default function PostsList({ posts }: PostsListProps) {
     return (
         <div className="posts">
             {posts.map((post) => (

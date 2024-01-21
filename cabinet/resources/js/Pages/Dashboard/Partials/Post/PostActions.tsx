@@ -1,4 +1,4 @@
-export default function PostActions({ likes, comments, share }) {
+export default function PostActions({ likes, comments, share }: { likes: number, comments: number, share: number }) {
   return (
     <div className="post-actions flex">
       <div className="left">
