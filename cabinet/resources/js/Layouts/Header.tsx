@@ -1,4 +1,5 @@
 import Dropdown from "@/Components/Dropdown";
+import NavLink from "@/Components/NavLink";
 
 export default function Header() {
     return (
@@ -21,33 +22,36 @@ export default function Header() {
                     <ul>
                         {/* ... інші елементи меню */}
                         <li>
-                            <a href={route('dashboard')}>
+                            <a href={route("dashboard")}>
                                 <i className="bi bi-house-door-fill"></i>Home
                             </a>
-                        </li>
-                        <li>
-                            <a href="http://127.0.0.1:5500/profile.html">
+                        </li><li>
+                        <NavLink href={route('dashboard')} active={route().current('dashboard.index')}>
+                        <i className="bi bi-house-door-fill"></i>Home
+</NavLink>
+</li>          <li>
+                            <a href={route("user-home")}>
                                 <i className="bi bi-person-fill"></i>Profile
                             </a>
                         </li>
                         <li>
-                            <a href="http://127.0.0.1:5500/users.html">
+                            <a href={route("frends")}>
                                 <i className="bi bi-people-fill"></i>Frends
                             </a>
                         </li>
                         <li>
-                            <a href="http://127.0.0.1:5500/galery.html">
+                            <a href={route("galery")}>
                                 <i className="bi bi-people-fill"></i>Galery
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href={route("message")}>
                                 <i className="bi bi-chat-square-text-fill"></i>
                                 Message
                             </a>
                         </li>
                         <li>
-                            <a href="http://127.0.0.1:5500/workshop.html">
+                            <a href={route("work-shop")}>
                                 <i className="bi bi-hammer"></i>Workshop
                             </a>
                         </li>
@@ -93,4 +97,4 @@ export default function Header() {
             <button id="mobile-menu-button">Меню</button>
         </header>
     );
-}; 
+}

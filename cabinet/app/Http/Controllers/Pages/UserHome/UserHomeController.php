@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Pages\UserHome;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
@@ -11,7 +11,7 @@ use Illuminate\View\View;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class MainController extends Controller
+class UserHomeController extends Controller
 {
     /* Display the dashboard page.
      *
@@ -25,7 +25,7 @@ class MainController extends Controller
         $posts = Post::getPostsForUser($user);
         $postMostViewed = Post::getMostViewedPosts();
         $randomUsersForFriendship = User::getRandomUsersForFriendship();
-        return Inertia::render('Dashboard', [
+        return Inertia::render('UserHome', [
             'posts' => $posts,
             'friendsAndFollowers' => $friendsAndFollowers,
             'profileData' => $profileData,

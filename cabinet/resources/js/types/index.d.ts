@@ -34,8 +34,7 @@ export interface Pivot {
     friend_id: number;
 }
 
-export interface postMostViewed {
-    array: PostType[];
+export interface postMostViewed extends PostType {
 }
 export interface FriendsAndFollowers extends Followers, Following {
     followersCount: number | null;

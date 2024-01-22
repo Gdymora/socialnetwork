@@ -1,11 +1,15 @@
 <?php
 
-use App\Http\Controllers\Dashboard\MainController;
+use App\Http\Controllers\Pages\Frends\FrendsController;
+use App\Http\Controllers\Pages\Message\MessageController;
+use App\Http\Controllers\Pages\Dashboard\DashboardController;  
+use App\Http\Controllers\Pages\Galery\GaleryController;
+use App\Http\Controllers\Pages\UserHome\UserHomeController;
+use App\Http\Controllers\Pages\WorkShop\WorkShopController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,7 +41,12 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
  */
-Route::get('/dashboard',  [MainController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard',  [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/user-home',  [UserHomeController::class, 'index'])->middleware(['auth', 'verified'])->name('user-home');
+Route::get('/message',  [MessageController::class, 'index'])->middleware(['auth', 'verified'])->name('message');
+Route::get('/galery',  [GaleryController::class, 'index'])->middleware(['auth', 'verified'])->name('galery');
+Route::get('/frends',  [FrendsController::class, 'index'])->middleware(['auth', 'verified'])->name('frends');
+Route::get('/work-shop',  [WorkShopController::class, 'index'])->middleware(['auth', 'verified'])->name('work-shop');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

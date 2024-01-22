@@ -17,9 +17,9 @@ export default function Authenticated({
     return (
         <>
             <Header /> 
-            <body data-mode="light" data-sidebar-size="lg">
+            <div className="body" data-mode="light" data-sidebar-size="lg">
                 <main>{children}</main>
-            </body>
+            </div>
         </>
 
         /*   <div className="min-h-screen bg-gray-100 dark:bg-gray-900">

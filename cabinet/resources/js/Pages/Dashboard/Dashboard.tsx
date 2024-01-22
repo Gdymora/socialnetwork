@@ -12,8 +12,8 @@ import {
 import { SuggestionsList } from "./Partials/LeftSidebar/SuggestionsList";
 import UserProfile from "./Partials/LeftSidebar/UserProfile";
 import PostsList from "./Partials/Post/PostList";
-import SayPost from "./Partials/Post/SayPost";
 import RightSidebar from "./Partials/RightSidebar/RightSidebar";
+import ParentSayPost from "./Partials/ModalSay/ParentSayPost";
 // Dashboard.tsx
 // інші необхідні імпорти
 interface DashboardProps {
@@ -21,7 +21,7 @@ interface DashboardProps {
     posts: PostType[];
     friendsAndFollowers: FriendsAndFollowers;
     profileData: ProfileData;
-    postMostViewed: postMostViewed;
+    postMostViewed: postMostViewed[];
     randomUsersForFriendship: RandomUserForFriendship[];
 }
 export default function Dashboard({
@@ -32,6 +32,7 @@ export default function Dashboard({
     postMostViewed,
     randomUsersForFriendship,
 }: DashboardProps) {
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -47,7 +48,6 @@ export default function Dashboard({
             <main>
                 <div className="container ar-px">
                     <div className="grid">
-                        
                         <div className="left-sidebar">
                             <div className="section_1">
                                 <UserProfile
@@ -65,12 +65,12 @@ export default function Dashboard({
                         </div>
 
                         <div className="content">
-                            <SayPost profileData={profileData} />
+                            <ParentSayPost profileData={profileData} />
                             <PostsList posts={posts} />
                         </div>
 
                         <div className="right-sidebar">
-                            <RightSidebar />
+                            <RightSidebar postMostViewed={postMostViewed} />
                         </div>
                     </div>
                     {/* Інші компоненти, які використовують ці дані */}
