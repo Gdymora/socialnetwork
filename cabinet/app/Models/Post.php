@@ -37,6 +37,15 @@ class Post extends Model
         return self::with(['comments.authorComments'])->get();
     }
 
+    /**
+     * Method для встановлення поліморфного звязку з Media.
+     * 
+     */
+    public function media()
+    {
+        return $this->morphMany(Media::class, 'mediable');
+    }
+
 
     /**
      * Method to get posts for a specific user based on visibility.
@@ -66,7 +75,7 @@ class Post extends Model
                         ->where('user_access', 'LIKE', '%"' . $user->id . '"%');
                 });
         })
-            ->with(['comments.authorComments', 'author']) // додано вкладення
+            ->with(['comments.authorComments', 'author' , 'media']) // додано вкладення
             ->get();
     }
 

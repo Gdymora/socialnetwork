@@ -26,6 +26,9 @@ return [
     |
     | Supported Drivers: "local", "ftp", "sftp", "s3"
     |
+    # storagesudo 
+     chown -R www-data:www-data storage
+     sudo chmod -R 755 storage
     */
 
     'disks' => [
@@ -39,19 +42,29 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
 
-        'foto' => [
+        'images' => [
             'driver' => 'local',
-            'root' => storage_path('app/usersfile/foto'),
+            'root' => storage_path('app/usersfile'),
         ],
 
         'video' => [
             'driver' => 'local',
-            'root' => storage_path('app/usersfile/video'), // 'video' - назва вашої папки
+            'root' => storage_path('app/usersfile'), // 'video' - назва вашої папки
+        ],
+        // $path = $file->store('images', 'post_images');
+        'post_images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/posts'),
+        ],
+
+        'post_videos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/posts'),
         ],
 
         's3' => [

@@ -58,7 +58,7 @@ export default function Modal({
                 >
                     <Dialog.Panel
                         className={`mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
-                    >
+                    >                        
                         {children}
                     </Dialog.Panel>
                 </Transition.Child>

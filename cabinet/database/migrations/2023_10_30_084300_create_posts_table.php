@@ -13,7 +13,7 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->text('content');
             $table->timestamps();
-            $table->unsignedBigInteger('author_id'); // Зв'язок з автором
+            $table->unsignedBigInteger('author_id');  
             $table->foreign('author_id')->references('id')->on('users');
             $table->integer('likes')->default(0);
             $table->integer('share')->default(0);

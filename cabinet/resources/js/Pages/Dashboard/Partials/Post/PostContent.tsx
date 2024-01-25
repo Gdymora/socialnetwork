@@ -1,11 +1,14 @@
+import { Media } from "@/types";
 import { useState } from "react";
 
 export default function PostContent({
     title,
     content,
+    media,
     maxLength,
 }: {
     title: string;
+    media: Media[];
     content: string;
     maxLength: number;
 }) {
@@ -24,12 +27,29 @@ export default function PostContent({
 
     return (
         <div className="post-content">
+            {media.map((mediaItem) => (
+                <div key={mediaItem.id}>
+                    {mediaItem.type === "image" && (
+                        <img
+                            src={`/media/${mediaItem.url}`}
+                            alt="Media"
+                            loading="lazy"
+                        />
+                    )}
+                    {mediaItem.type === "video" && (
+                        <video src={`/media/${mediaItem.url}`} controls />
+                    )}
+                </div>
+            ))}
             <p>{renderContent()}</p>
             {content.length > maxLength && (
                 <div>
-                    <a href="#" onClick={toggleExpanded}>
+                    <span
+                        onClick={toggleExpanded}
+                        style={{ cursor: "pointer", color: "blue" }}
+                    >
                         {isExpanded ? "View less" : "View more"}
-                    </a>
+                    </span>
                 </div>
             )}
         </div>

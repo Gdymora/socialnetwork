@@ -1,13 +1,17 @@
+import Button from "@/Components/Button";
+import TextInput from "@/Components/TextInput";
 import { ProfileData } from "@/types";
 
-interface SayPostProps {
+interface SayPostProps { 
+    onFileClick: () => void;
     onTextClick: () => void;
     onJobClick: () => void;
     profileData: ProfileData;
 }
 export default function SayPost({
     profileData,
-    onTextClick,
+    onTextClick, 
+    onFileClick,
     onJobClick,
 }: SayPostProps) {
     return (
@@ -23,23 +27,19 @@ export default function SayPost({
                     />
                 </div>
                 <div className="form flex align-items-center">
-                <input type="text" onClick={onTextClick} />
+                    <TextInput onClick={onTextClick} />
                 </div>
+
                 <div className="flex align-items-center post_message">
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={onJobClick}
-                    >
-                        Post a Job
-                    </button>
-                    <button
-                        type="button"
+                    <Button
                         className="but btn btn-danger"
-                        onClick={onTextClick}
+                        onClick={onFileClick}
                     >
-                        Post a message
-                    </button>
+                        Image/Video
+                    </Button> 
+                    <Button className="btn btn-secondary" onClick={onJobClick}>
+                        Job
+                    </Button>
                 </div>
             </div>
         </>

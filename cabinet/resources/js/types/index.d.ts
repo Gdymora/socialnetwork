@@ -41,10 +41,20 @@ export interface FriendsAndFollowers extends Followers, Following {
     followingCount: number | null;
 }
 
+export interface Media {
+    created_at: string;
+    id: number;
+    mediable_id: number;
+    mediable_type: string;
+    type: "image" | "video";
+    updated_at: string;
+    url: string;
+}
 export interface PostType {
     id: number;
     title: string;
     content: string;
+    media: Media[];
     created_at: string;
     updated_at: string;
     author: Author;
@@ -98,3 +108,5 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
         user: User;
     };
 };
+
+export type OnChangeFunction = (file: File | null) => void;
