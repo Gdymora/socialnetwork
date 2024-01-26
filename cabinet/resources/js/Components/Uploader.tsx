@@ -55,8 +55,8 @@ const Uploader = ({ onChange, style, className }: UploaderProps) => {
     };
 
     const imageVideoStyle: React.CSSProperties = {
-        //height: '100%', // Висота картинки чи відео
-        //objectFit: 'contain', // Збереження пропорцій без спотворення
+        height: '100%', // Висота картинки чи відео
+        objectFit: 'contain', // Збереження пропорцій без спотворення
     };
 
     return (
@@ -74,16 +74,6 @@ const Uploader = ({ onChange, style, className }: UploaderProps) => {
                 onChange={handleFileChange}
             />
             Клікніть або перетягніть файл сюди
-            {/* {file && (
-                <div>
-                    {file.type.startsWith("image/") && (
-                        <img src={previewUrl} alt="Preview" />
-                    )}
-                    {file.type.startsWith("video/") && (
-                        <video src={previewUrl} controls />
-                    )}
-                </div>
-            )} */}
             {file && (
                 <div style={uploaderWindowStyle}>
                     {file.type.startsWith("image/") && (

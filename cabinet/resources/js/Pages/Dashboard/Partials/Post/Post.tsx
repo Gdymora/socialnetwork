@@ -27,6 +27,7 @@ export default function Post({ post }: PostProps) {
             <PostContent
                 title={post.title}
                 media={post.media}
+                links={post.links}
                 content={post.content}
                 maxLength={100}
             />

@@ -50,11 +50,20 @@ export interface Media {
     updated_at: string;
     url: string;
 }
+
+export interface LinkData {
+    site_name: string;
+    title: string;
+    description: string;
+    image: string;
+    url: string;
+}
 export interface PostType {
     id: number;
     title: string;
     content: string;
     media: Media[];
+    links: LinkData[];
     created_at: string;
     updated_at: string;
     author: Author;

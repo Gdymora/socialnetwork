@@ -2,16 +2,18 @@ import Button from "@/Components/Button";
 import TextInput from "@/Components/TextInput";
 import { ProfileData } from "@/types";
 
-interface SayPostProps { 
+interface SayPostProps {
     onFileClick: () => void;
     onTextClick: () => void;
+    onLinkClick: () => void;
     onJobClick: () => void;
     profileData: ProfileData;
 }
 export default function SayPost({
     profileData,
-    onTextClick, 
+    onTextClick,
     onFileClick,
+    onLinkClick,
     onJobClick,
 }: SayPostProps) {
     return (
@@ -36,7 +38,10 @@ export default function SayPost({
                         onClick={onFileClick}
                     >
                         Image/Video
-                    </Button> 
+                    </Button>
+                    <Button className="btn btn-secondary" onClick={onLinkClick}>
+                        Link
+                    </Button>
                     <Button className="btn btn-secondary" onClick={onJobClick}>
                         Job
                     </Button>

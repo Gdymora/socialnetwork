@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\LinkPreviewController;
 use App\Http\Controllers\Pages\Frends\FrendsController;
 use App\Http\Controllers\Pages\Message\MessageController;
 use App\Http\Controllers\Pages\Dashboard\DashboardController;
 use App\Http\Controllers\Pages\Galery\GaleryController;
 use App\Http\Controllers\Pages\UserHome\UserHomeController;
 use App\Http\Controllers\Pages\WorkShop\WorkShopController;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostMediaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,11 @@ use Inertia\Inertia;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+*/ 
+// Враховуючи, що {url} - це параметр, який може містити слеші
+Route::get('/link-preview/{url}', [LinkPreviewController::class, 'show'])
+    ->where('url', '.*'); // Дозволяє URL містити будь-які символи, включно із слешами
+
 Route::get('/', function () {
     if (!Auth::check()) {
         return redirect('/login');
@@ -61,7 +66,7 @@ Route::get('/media/{type}/{filename}', function ($type, $filename) {
 })->where('filename', '.*');
 
 Route::middleware('auth')->group(function () {
-    Route::post('/posts', [PostController::class, 'store'])->name('posts');
+    Route::post('/posts', [PostMediaController::class, 'store'])->name('posts');
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
     Route::get('/user-home', [UserHomeController::class, 'index'])->middleware(['auth', 'verified'])->name('user-home');
     Route::get('/message', [MessageController::class, 'index'])->middleware(['auth', 'verified'])->name('message');

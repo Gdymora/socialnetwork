@@ -1,14 +1,17 @@
-import { Media } from "@/types";
+import { LinkData, Media } from "@/types";
 import { useState } from "react";
+import LinkPreviewPost from "./LinkPreviewPost";
 
 export default function PostContent({
     title,
     content,
     media,
+    links,
     maxLength,
 }: {
     title: string;
     media: Media[];
+    links: LinkData[];
     content: string;
     maxLength: number;
 }) {
@@ -41,6 +44,13 @@ export default function PostContent({
                     )}
                 </div>
             ))}
+
+            {links.map((linksItem, index) => (
+                <div key={index}>
+                    <LinkPreviewPost linkData={linksItem} />
+                </div>
+            ))}
+
             <p>{renderContent()}</p>
             {content.length > maxLength && (
                 <div>

@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
             $table->string('url');
-            $table->string('type')->comment('image, video, link');
+            $table->string('type')->comment('image, video');
             $table->string('mediable_type')->comment('ім\'я моделі, до якої прив\'язане медіа');
             $table->unsignedBigInteger('mediable_id')->comment('ID моделі');
             $table->timestamps();

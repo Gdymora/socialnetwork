@@ -11,6 +11,7 @@ import SelectButton from "@/Components/SelectButton";
 import FileTabContent from "./FileTabContent";
 import { useForm } from "@inertiajs/react";
 import axios from "axios";
+import LinkTabContent from "./LinkTabContent";
 
 export default function ParentSayPost({
     profileData,
@@ -25,11 +26,10 @@ export default function ParentSayPost({
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState("text");
-
     const [selectedOption, setSelectedOption] = useState<string | number>("");
-
     const [fileData, setFileData] = useState<File | null>(null);
     const [textData, setTextData] = useState("");
+    const [linkData, setLinkData] = useState("");
 
     useEffect(() => {
         console.log(isModalOpen);
@@ -37,6 +37,8 @@ export default function ParentSayPost({
 
     const fileClick = () => handleOpenModal("file");
     const jobClick = () => handleOpenModal("job");
+    const linkClick = () => handleOpenModal("link");
+
     const handleOpenModal = (content: string) => {
         setModalContent(content);
         setIsModalOpen(true);
@@ -50,18 +52,21 @@ export default function ParentSayPost({
     const handleFileChange = (data: File | null) => {
         setFileData(data);
     };
-
+    const handleLinkChange = (data: string) => {
+        setLinkData(data);
+    };
     const handleTextChange = (data: string) => {
         setTextData(data);
     };
 
     const formData = new FormData();
     formData.append("textData", textData);
+    formData.append("linkData", JSON.stringify(linkData));
     formData.append("selectedOption", selectedOption as string);
 
     if (fileData) {
         formData.append("fileData", fileData);
-         console.log(formData); 
+        console.log(formData);
     }
 
     const handleSubmit = () => {
@@ -99,6 +104,7 @@ export default function ParentSayPost({
                 profileData={profileData}
                 onTextClick={() => handleOpenModal("text")}
                 onFileClick={() => handleOpenModal("file")}
+                onLinkClick={() => handleOpenModal("link")}
                 onJobClick={() => handleOpenModal("job")}
             />
             {isModalOpen && (
@@ -165,6 +171,16 @@ export default function ParentSayPost({
                                         onChange={handleFileChange}
                                     />
                                 )}
+                                {modalContent === "link" && (
+                                    <LinkTabContent
+                                        className={
+                                            modalContent === "link"
+                                                ? styles.linkTabContentActive
+                                                : styles.linkTabContent
+                                        }
+                                        onChange={handleLinkChange}
+                                    />
+                                )}
                                 {modalContent === "job" && (
                                     <JobTabContent
                                         className={
@@ -183,6 +199,12 @@ export default function ParentSayPost({
                                     onClick={fileClick}
                                 >
                                     Image/Video
+                                </Button>
+                                <Button
+                                    className="btn btn-secondary"
+                                    onClick={linkClick}
+                                >
+                                    Link
                                 </Button>
                                 <Button
                                     className="btn btn-secondary"
