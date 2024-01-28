@@ -5,10 +5,7 @@ export interface User {
     email_verified_at: string;
 }
 
-interface User extends UserProfile {
-    followers: Following[];
-    following: Following[];
-}
+interface User extends UserProfile { }
 export interface Auth {
     user: User;
 }
@@ -36,9 +33,11 @@ export interface Pivot {
 
 export interface postMostViewed extends PostType {
 }
-export interface FriendsAndFollowers extends Followers, Following {
-    followersCount: number | null;
-    followingCount: number | null;
+export interface FriendsAndFollowers {
+    followers: Followers[];
+    following: Following[];
+    followersCount: number;
+    followingCount: number;
 }
 
 export interface Media {
@@ -105,10 +104,10 @@ export interface AboutMe {
     user_id: number;
 }
 export interface ProfileData extends Author {
-    aboutMe: AboutMe;
+    about_me: AboutMe;
 }
 export interface RandomUserForFriendship extends Author {
-    aboutMe: AboutMe;
+    about_me: AboutMe;
 }
 
 

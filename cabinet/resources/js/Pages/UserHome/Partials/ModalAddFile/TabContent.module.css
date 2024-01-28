@@ -1,0 +1,10 @@
+/* TabContent.module.css */
+.text-tab-content, .job-tab-content {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+  }
+  
+  .text-tab-content-active, .job-tab-content-active {
+    opacity: 1;
+  }
+  

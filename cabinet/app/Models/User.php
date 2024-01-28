@@ -72,6 +72,15 @@ class User extends Authenticatable
     {
         $this->following()->detach($users);
     }
+
+     /**
+     * Method для встановлення поліморфного звязку з UserFile.
+     * 
+     */
+    public function userFile()
+    {
+        return $this->morphMany(Media::class, 'userfilable');
+    }
     public function getUserProfileData()
     {
         return $this->select('id', 'name', 'last_name', 'profile_image_url')

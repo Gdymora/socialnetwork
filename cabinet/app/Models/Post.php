@@ -87,6 +87,24 @@ class Post extends Model
             ->get();
     }
 
+    /**
+     * Method to get posts for a specific user based on visibility.
+     *
+     * @param User $user
+     * @return Collection
+     */
+    public static function getPostsUser(User $user)
+    {
+        return self::where(function ($query) use ($user) {
+            $query->where(function ($subquery) use ($user) {
+                $subquery->where('author_id', $user->id); // User can see their own posts
+            });
+        })
+            ->with(['comments.authorComments', 'author', 'media', 'links']) // додано вкладення
+            ->get();
+    }
+
+
 
     public static function getMostViewedPosts($count = 10)
     {

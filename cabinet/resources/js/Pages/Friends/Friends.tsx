@@ -5,7 +5,7 @@ interface UsePageProps {
     auth: Auth; 
 }
 // Припускаємо, що NewPageProps визначено десь в іншому місці
-export default function Frends({ auth }: UsePageProps) {
+export default function Friends({ auth }: UsePageProps) {
     return (
         <AuthenticatedLayout
             user={auth.user}

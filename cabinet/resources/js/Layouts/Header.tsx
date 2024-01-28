@@ -35,8 +35,8 @@ export default function Header() {
                             </a>
                         </li>
                         <li>
-                            <a href={route("frends")}>
-                                <i className="bi bi-people-fill"></i>Frends
+                            <a href={route("friends")}>
+                                <i className="bi bi-people-fill"></i>Friends
                             </a>
                         </li>
                         <li>

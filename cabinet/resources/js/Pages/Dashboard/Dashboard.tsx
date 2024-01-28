@@ -14,6 +14,7 @@ import UserProfile from "./Partials/LeftSidebar/UserProfile";
 import PostsList from "./Partials/Post/PostList";
 import RightSidebar from "./Partials/RightSidebar/RightSidebar";
 import ParentSayPost from "./Partials/ModalSay/ParentSayPost";
+import MenegmentPost from "../UserHome/Partials/MenegmentPost";
 // Dashboard.tsx
 // інші необхідні імпорти
 interface DashboardProps {
@@ -32,7 +33,6 @@ export default function Dashboard({
     postMostViewed,
     randomUsersForFriendship,
 }: DashboardProps) {
-
     return (
         <AuthenticatedLayout
             user={auth.user}

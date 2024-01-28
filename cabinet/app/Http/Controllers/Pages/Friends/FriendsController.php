@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Pages\Frends;
+namespace App\Http\Controllers\Pages\Friends;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
@@ -11,7 +11,7 @@ use Illuminate\View\View;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class FrendsController extends Controller
+class FriendsController extends Controller
 {
     /* Display the dashboard page.
      *
@@ -25,7 +25,7 @@ class FrendsController extends Controller
         $posts = Post::getPostsForUser($user);
         $postMostViewed = Post::getMostViewedPosts();
         $randomUsersForFriendship = User::getRandomUsersForFriendship();
-        return Inertia::render('Frends', [
+        return Inertia::render('Friends', [
             'posts' => $posts,
             'friendsAndFollowers' => $friendsAndFollowers,
             'profileData' => $profileData,

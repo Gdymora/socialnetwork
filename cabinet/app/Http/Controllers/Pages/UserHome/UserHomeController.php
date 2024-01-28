@@ -22,16 +22,18 @@ class UserHomeController extends Controller
         $user = Auth::user();
         $profileData = $user->getUserProfileData();
         $friendsAndFollowers = $user->getFriendsAndFollowers();
-        $posts = Post::getPostsForUser($user);
-        $postMostViewed = Post::getMostViewedPosts();
-        $randomUsersForFriendship = User::getRandomUsersForFriendship();
+        $posts = Post::getPostsUser($user);
+       /*  dd([
+            'posts' => $posts,
+            'friendsAndFollowers' => $friendsAndFollowers,
+            'profileData' => $profileData,
+        ]); */
         return Inertia::render('UserHome', [
             'posts' => $posts,
             'friendsAndFollowers' => $friendsAndFollowers,
             'profileData' => $profileData,
-            'postMostViewed' => $postMostViewed,
-            'randomUsersForFriendship' => $randomUsersForFriendship
         ]);
+
         //return view('dashboard', compact('posts', 'friendsAndFollowers', 'profileData', 'postMostViewed', 'randomUsersForFriendship'));
     }
 

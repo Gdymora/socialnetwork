@@ -47,15 +47,22 @@ return [
             'throw' => false,
         ],
 
-        'images' => [
+        // $path = $file->store('images', 'usersfile_images');
+        'usersfile_images' => [
             'driver' => 'local',
             'root' => storage_path('app/usersfile'),
         ],
 
-        'video' => [
+        'usersfile_videos' => [
             'driver' => 'local',
             'root' => storage_path('app/usersfile'), // 'video' - назва вашої папки
         ],
+
+        'usersfile_music' => [
+            'driver' => 'local',
+            'root' => storage_path('app/usersfile'),
+        ],
+
         // $path = $file->store('images', 'post_images');
         'post_images' => [
             'driver' => 'local',

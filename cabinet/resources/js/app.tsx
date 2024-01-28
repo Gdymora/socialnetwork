@@ -5,7 +5,7 @@ import '../css/galery.css';
 import '../css/profile.css';
 import '../css/users.css';
 import '../css/workshop.css';
-
+import '../css/audioAndVideo.css';
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';

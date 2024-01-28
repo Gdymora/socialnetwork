@@ -1,4 +1,12 @@
-export default function SidebarItem({ number, name, description }) {
+export default function SidebarItem({
+    number,
+    name,
+    description,
+}: {
+    number: number;
+    name: string;
+    description: string;
+}) {
     return (
         <div className="item_right_sidebar_section_2">
             <div className="">{number}</div>
