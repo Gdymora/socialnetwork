@@ -14,9 +14,11 @@ export default function UserProfile({
                     {/* Ensure that profileData.profileImageUrl is provided */}
                     <img
                         src={
-                            profileData.profile_image_url ||
-                            "assets/images/noimg.png"
-                        }
+                            profileData.profile_image_url
+                                ? `/user-file/${profileData.profile_image_url}`
+                                : "assets/images/noimg.png"
+                        } 
+                        loading="lazy"
                         alt={`${profileData?.name} ${profileData?.last_name}`}
                     />
                 </div>
@@ -26,9 +28,9 @@ export default function UserProfile({
                     {profileData.name} {profileData.last_name}
                 </h2>
                 {/* Conditional rendering in case aboutMe or occupations is not provided */}
-                {profileData.aboutMe?.occupations && (
+                {profileData.about_me?.occupations && (
                     <p className="text-light">
-                        {profileData.aboutMe.occupations}
+                        {profileData.about_me.occupations}
                     </p>
                 )}
                 <div className="border-block-end"></div>

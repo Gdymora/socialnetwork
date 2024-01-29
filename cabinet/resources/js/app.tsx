@@ -15,10 +15,8 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => {
-        console.log(name)//Auth/Login Dashboard
         const parts = name.split('/');
         const path = parts.length > 1 ?  `${name}`: `${name}/${name}`;
-        console.log(path)//Auth/Login Dashb
         return resolvePageComponent(`./Pages/${path}.tsx`, import.meta.glob('./Pages/**/*.tsx'));
     },
     setup({ el, App, props }) {

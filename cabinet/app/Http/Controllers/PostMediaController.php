@@ -63,7 +63,7 @@ class PostMediaController extends Controller
                     $path = $file->store('images', 'post_images');
                     $media->type = 'image';
                 } elseif (str_contains($file->getMimeType(), 'video')) {
-                    $path = $file->store('video', 'post_videos');
+                    $path = $file->store('videos', 'post_videos');
                     $media->type = 'video';
                 }
 

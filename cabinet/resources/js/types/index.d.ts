@@ -57,6 +57,26 @@ export interface LinkData {
     image: string;
     url: string;
 }
+
+export interface UserFile {
+    created_at: string;
+    description: string;
+    friends: string;
+    id: number;
+    title: string;
+    type: string;
+    updated_at: string;
+    url: string;
+    userfilable_id: number;
+    userfilable_type: string;
+    visible: 'public' | 'private';
+}
+
+export interface UserFileFilteredByVisibility {
+    public: UserFile[];
+    private: UserFile[];
+    friends: UserFile[];
+}
 export interface PostType {
     id: number;
     title: string;

@@ -9,13 +9,13 @@ const Fotos = ({
         <div className="flex space-between align-items-center fotos">
             <h2>Fotos</h2>
             <div className="section">
-                <button onClick={onAddFotos}>
+                <button className="link-button" onClick={onAddFotos}>
                     Add Fotos
                 </button>
             </div>
 
             <div className="section">
-                <button onClick={handleShowFotos}>
+                <button className="link-button" onClick={handleShowFotos}>
                     View all fotos
                 </button>
             </div>

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\LinkPreviewController; 
+use App\Http\Controllers\LinkPreviewController;
 use App\Http\Controllers\Pages\Friends\FriendsController;
 use App\Http\Controllers\Pages\Message\MessageController;
 use App\Http\Controllers\Pages\Dashboard\DashboardController;
@@ -9,6 +9,7 @@ use App\Http\Controllers\Pages\UserHome\UserHomeController;
 use App\Http\Controllers\Pages\WorkShop\WorkShopController;
 use App\Http\Controllers\PostMediaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserAboutMeController;
 use App\Http\Controllers\UserFileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -71,8 +72,7 @@ Route::get('/user-file/{type}/{filename}', function ($type, $filename) {
         abort(404);
     }
 
-    $filePath = "userfile/{$type}/" . $filename;
-
+    $filePath = "usersfile/{$type}/" . $filename;
     if (!Storage::disk('local')->exists($filePath)) {
         abort(404);
     }
@@ -95,6 +95,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/friends', [FriendsController::class, 'index'])->middleware(['auth', 'verified'])->name('friends');
     Route::get('/work-shop', [WorkShopController::class, 'index'])->middleware(['auth', 'verified'])->name('work-shop');
     //
+    Route::patch('/user-about-me', [UserAboutMeController::class, 'update'])->name('user-about-me.update');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -23,18 +23,17 @@ class UserHomeController extends Controller
         $profileData = $user->getUserProfileData();
         $friendsAndFollowers = $user->getFriendsAndFollowers();
         $posts = Post::getPostsUser($user);
-       /*  dd([
-            'posts' => $posts,
-            'friendsAndFollowers' => $friendsAndFollowers,
-            'profileData' => $profileData,
-        ]); */
+
+        $userFile['private'] = $user->getFilesFilteredByVisibility('private');
+        $userFile['public'] = $user->getFilesFilteredByVisibility('public');
+        $userFile['friends'] = $user->getFilesFilteredByVisibility('friends');
+
         return Inertia::render('UserHome', [
+            'userFile' => $userFile,
             'posts' => $posts,
             'friendsAndFollowers' => $friendsAndFollowers,
             'profileData' => $profileData,
         ]);
-
-        //return view('dashboard', compact('posts', 'friendsAndFollowers', 'profileData', 'postMostViewed', 'randomUsersForFriendship'));
     }
 
 }

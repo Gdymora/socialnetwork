@@ -33,7 +33,6 @@ export default function ParentModalFile({
     const [fileData, setFileData] = useState<File | null>(null);
 
     useEffect(() => {
-        console.log(isModalOpen);
     });
 
     const handleOpenModal = (content: string) => {
@@ -54,8 +53,7 @@ export default function ParentModalFile({
     formData.append("titleData", data.titleData);
     formData.append("descriptionData", data.descriptionData);
     if (fileData) {
-        formData.append("fileData", fileData);
-        console.log(formData);
+        formData.append("fileData", fileData); 
     }
 
     const handleSubmit = () => {

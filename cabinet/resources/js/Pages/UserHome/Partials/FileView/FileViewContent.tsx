@@ -1,60 +1,42 @@
-import { LinkData, Media } from "@/types";
-import { useState } from "react"; 
+import CustomAudioPlayer from "@/Components/CustomAudioPlayer";
+import { LinkData, Media, UserFile } from "@/types";
+import { CSSProperties, useState } from "react";
 
-export default function FileViewContent({
-    title,
-    content,
-    media,
-    links,
-    maxLength,
-}: {
-    title: string;
-    media: Media[];
-    links: LinkData[];
-    content: string;
-    maxLength: number;
-}) {
+export default function FileViewContent({ media }: { media: UserFile }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleExpanded = () => {
         setIsExpanded(!isExpanded);
     };
 
-    const renderContent = () => {
-        if (isExpanded || content.length <= maxLength) {
-            return content;
-        }
-        return content.substring(0, maxLength) + "...";
+    const fileCard: CSSProperties = {
+        overflow: "hidden",
+        width: "100%",
+        height: "auto",
     };
-
     return (
-        <div className="post-content">
-            {media.map((mediaItem) => (
-                <div key={mediaItem.id}>
-                    {mediaItem.type === "image" && (
+        <div className="section">
+            <div key={media.id}>
+                {media.type === "image" && (
+                    <div style={fileCard}>
                         <img
-                            src={`/user-file/${mediaItem.url}`}
+                            src={`/user-file/${media.url}`}
                             alt="Media"
                             loading="lazy"
                         />
-                    )}
-                    {mediaItem.type === "video" && (
-                        <video src={`/user-file/${mediaItem.url}`} controls />
-                    )}
-                </div>
-            ))}
-
-            <p>{renderContent()}</p>
-            {content.length > maxLength && (
-                <div>
-                    <span
-                        onClick={toggleExpanded}
-                        style={{ cursor: "pointer", color: "blue" }}
-                    >
-                        {isExpanded ? "View less" : "View more"}
-                    </span>
-                </div>
-            )}
+                    </div>
+                )}
+                {media.type === "video" && (
+                    <div style={fileCard}>
+                        <video src={`/user-file/${media.url}`} controls />
+                    </div>
+                )}
+                {media.type === "music" && (
+                    <div style={fileCard}>
+                        <CustomAudioPlayer src={`/user-file/${media.url}`} />
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

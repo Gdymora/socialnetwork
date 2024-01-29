@@ -9,13 +9,13 @@ const Music = ({
         <div className="flex space-between align-items-center fotos">
             <h2>Music</h2>
             <div className="section">
-                <button onClick={onAddMusics}>
+                <button className="link-button" onClick={onAddMusics}>
                     Add musics
                 </button>
             </div>
 
             <div className="section">
-                <button onClick={handleShowMusics}>
+                <button className="link-button" onClick={handleShowMusics}>
                     View all music{" "}
                 </button>
             </div>

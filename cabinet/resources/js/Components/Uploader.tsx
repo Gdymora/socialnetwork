@@ -38,7 +38,9 @@ const Uploader = ({ onChange, style, className }: UploaderProps) => {
     useEffect(() => {
         //URL.revokeObjectURL()
         if (file) {
-            {console.log(file.type)}
+            {
+                console.log(file.type);
+            }
             onChange(file);
         }
     }, [file]); // Залежить від зміни file
@@ -57,12 +59,12 @@ const Uploader = ({ onChange, style, className }: UploaderProps) => {
     };
 
     const imageVideoStyle: React.CSSProperties = {
-        height: "100%", // Висота картинки чи відео
-        objectFit: "contain", // Збереження пропорцій без спотворення
+        height: "100%",
+        objectFit: "contain",
     };
     const audioStyle: React.CSSProperties = {
-        height: "100%", // Висота картинки чи відео
-        objectFit: "contain", // Збереження пропорцій без спотворення
+        height: "100%",
+        objectFit: "contain",
     };
     return (
         <div
@@ -97,11 +99,7 @@ const Uploader = ({ onChange, style, className }: UploaderProps) => {
                     )}
 
                     {file.type.startsWith("audio/") && (
-                        <audio
-                            src={previewUrl}
-                            controls
-                            style={audioStyle}
-                        /> 
+                        <audio src={previewUrl} controls style={audioStyle} />
                     )}
                 </div>
             )}

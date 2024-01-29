@@ -16,16 +16,19 @@ export default function SayPost({
     onLinkClick,
     onJobClick,
 }: SayPostProps) {
+    console.log(profileData);
     return (
         <>
             <div className="section_say">
                 <div className="circle">
                     <img
                         src={
-                            profileData.profile_image_url ||
-                            "assets/images/noimg.png"
+                            profileData.profile_image_url
+                                ? `/user-file/${profileData.profile_image_url}`
+                                : "assets/images/noimg.png"
                         }
-                        alt=""
+                        alt="Media"
+                        loading="lazy"
                     />
                 </div>
                 <div className="form flex align-items-center">

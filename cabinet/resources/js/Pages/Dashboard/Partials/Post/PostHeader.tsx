@@ -17,8 +17,12 @@ export default function PostHeader({
         <div className="post-header">
             <div className="circle">
                 <img
-                    src={author.profile_image_url || "assets/images/noimg.png"}
+                    src={ author.profile_image_url
+                        ? `/user-file/${author.profile_image_url}`
+                        : "assets/images/noimg.png"
+                    }
                     alt={`image ${author.name}`}
+                    loading="lazy"
                 />
             </div>
             <div className="text">

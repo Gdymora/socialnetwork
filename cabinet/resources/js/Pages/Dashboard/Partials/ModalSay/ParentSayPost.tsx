@@ -31,8 +31,7 @@ export default function ParentSayPost({
     const [textData, setTextData] = useState("");
     const [linkData, setLinkData] = useState("");
 
-    useEffect(() => {
-        console.log(isModalOpen);
+    useEffect(() => { 
     });
 
     const fileClick = () => handleOpenModal("file");
@@ -65,21 +64,14 @@ export default function ParentSayPost({
     formData.append("selectedOption", selectedOption as string);
 
     if (fileData) {
-        formData.append("fileData", fileData);
-        console.log(formData);
+        formData.append("fileData", fileData); 
     }
 
     const handleSubmit = () => {
-        // Обробка даних форми
-        console.log("Відправлення форми з даними:", {
-            textData,
-            selectedOption,
-            fileData,
-            formData,
-        });
-        for (let [key, value] of formData.entries()) {
+        // Обробка даних форми/*  
+       /*  for (let [key, value] of formData.entries()) {
             console.log(key, value);
-        }
+        } */
         axios
             .post(route("posts"), formData, {
                 headers: {

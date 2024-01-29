@@ -6,6 +6,8 @@ import {
     PostType,
     ProfileData,
     RandomUserForFriendship,
+    UserFile,
+    UserFileFilteredByVisibility,
     postMostViewed,
 } from "@/types";
 import AboutMe from "./Partials/AboutMe";
@@ -14,7 +16,7 @@ import ParentSayPost from "../Dashboard/Partials/ModalSay/ParentSayPost";
 import PostsList from "../Dashboard/Partials/Post/PostList";
 import ParentModalFile from "./Partials/ParentModalFile";
 import FileViewList from "./Partials/FileView/FileViewList";
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 import MenegmentPost from "./Partials/MenegmentPost";
 interface UserPageProps {
     auth: Auth;
@@ -23,6 +25,7 @@ interface UserPageProps {
     profileData: ProfileData;
     postMostViewed: postMostViewed[];
     randomUsersForFriendship: RandomUserForFriendship[];
+    userFile: UserFileFilteredByVisibility;
 }
 // Припускаємо, що NewPageProps визначено десь в іншому місці
 export default function UserHome({
@@ -30,13 +33,8 @@ export default function UserHome({
     posts,
     friendsAndFollowers,
     profileData,
+    userFile,
 }: UserPageProps) {
-    /* 
-    
-
-    const handleShowFiles = (show: boolean, type: string) => {
-        setShowFiles(show);
-    }; */
     const [typeFiles, setTypeFiles] = useState("");
     const [showFiles, setShowFiles] = useState<boolean>(false);
 
@@ -44,10 +42,10 @@ export default function UserHome({
         shouldShowFiles: boolean,
         shouldTypeFiles: string
     ) => {
-        console.log(shouldShowFiles, shouldTypeFiles);
         setShowFiles(shouldShowFiles);
         setTypeFiles(shouldTypeFiles);
     };
+    console.log(userFile);
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -83,7 +81,13 @@ export default function UserHome({
                                     <PostsList posts={posts} />
                                 </>
                             )}
-                            {showFiles && <FileViewList files={posts} />}
+                            {showFiles && (
+                                <div className="posts">
+                                    <div className="post">
+                                        <FileViewList files={userFile} />
+                                    </div>{" "}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

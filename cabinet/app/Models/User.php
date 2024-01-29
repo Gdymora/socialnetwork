@@ -73,13 +73,59 @@ class User extends Authenticatable
         $this->following()->detach($users);
     }
 
-     /**
+    /**
      * Method для встановлення поліморфного звязку з UserFile.
      * 
      */
     public function userFile()
     {
-        return $this->morphMany(Media::class, 'userfilable');
+        return $this->morphMany(UserFile::class, 'userfilable');
+    }
+
+    /**
+     * Отримує усі файли користувача
+     * @return \Illuminate\Database\Eloquent\Collection Колекція отриманих файлів.
+     */
+    public function getUserFileAll()
+    {
+        return $this->userFile()->get();
+    }
+
+    /**
+     * Отримує усі файли користувача за видимістю.
+     *
+     * @param  string|null $visibility Рівень видимості файлу ('public', 'private', 'friends').
+     * @return \Illuminate\Database\Eloquent\Collection Колекція отриманих файлів.
+     */
+    public function getFilesFilteredByVisibility($visibility = null)
+    {
+        $userFilesQuery = $this->userFile()
+            ->when($visibility, function ($query) use ($visibility) {
+                // Додавання умови за видимістю, якщо параметр $visibility не null
+                $query->where('visible', $visibility);
+            });
+        return $userFilesQuery->get();
+    }
+
+    /**
+     * Отримує файли користувача за вказаним типом та видимістю.
+     *
+     * @param  string|null $type Тип файлу ( 'image', 'video', 'music').
+     * @param  string|null $visibility Рівень видимості файлу ('public', 'private', 'friends').
+     * @return \Illuminate\Database\Eloquent\Collection Колекція отриманих файлів.
+     */
+    public function getUserFileType($type = null, $visibility = null)
+    {
+        $userFilesQuery = $this->userFile()
+            ->when($type, function ($query) use ($type) {
+                // Додавання умови за типом, якщо параметр $type не null
+                $query->where('type', $type);
+            })
+            ->when($visibility, function ($query) use ($visibility) {
+                // Додавання умови за видимістю, якщо параметр $visibility не null
+                $query->where('visible', $visibility);
+            });
+        return $userFilesQuery->get();
     }
     public function getUserProfileData()
     {

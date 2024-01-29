@@ -3,7 +3,7 @@ const Posts = ({ handleShowPosts }: { handleShowPosts: () => void }) => {
         <div className="flex space-between align-items-center fotos">
             <h2>Posts</h2>
             <div className="section">
-                <button onClick={handleShowPosts}>
+                <button className="link-button" onClick={handleShowPosts}>
                     View all posts
                 </button>
             </div>

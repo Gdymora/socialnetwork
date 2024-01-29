@@ -20,7 +20,7 @@ const Friends = ({
                     <p>{friendsCount}</p>
                 </div>
                 <div className="right-top">
-                    <a href="">View all friends</a>
+                    <button className="link-button">View all friends</button>
                 </div>
             </div>
             <div className="section">

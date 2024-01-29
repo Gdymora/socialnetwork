@@ -15,8 +15,7 @@ export default function ({ profileData }: { profileData: ProfileData }) {
         //TODO add sceleton
         return <div>Loading...</div>;
     }
-    useEffect(() => {
-        console.log(profileData.about_me);
+    useEffect(() => { 
     }, [profileData.about_me]);
 
     return (

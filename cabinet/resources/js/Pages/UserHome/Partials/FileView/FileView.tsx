@@ -1,37 +1,41 @@
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 
-import { PostType } from "@/types";
+import { PostType, UserFile } from "@/types";
 import FileViewHeader from "./FileViewHeader";
 import FileViewContent from "./FileViewContent";
 import FileViewFooter from "./FileViewFooter";
-interface PostProps {
-    file: PostType;
+interface UserFileProps {
+    file: UserFile;
 }
 
-export default function FileView({ file }: PostProps) {
+export default function FileView({ file }: UserFileProps) {
     const [showComments, setShowComments] = useState(false);
 
     const toggleComments = () => {
         setShowComments(!showComments);
     };
+
+    const postFile: CSSProperties = {
+        maxWidth: "100%",
+        backgroundColor: "var(--content-bg-color)",
+        border: "1px solid #ddd",
+        padding: "7px",
+        margin: "4px",
+    };
+
     return (
-        <div className="post">
+        <div style={postFile}>
             <FileViewHeader
-                author={file.author}
-                createdAt={file.created_at}
-                visibility={file.visibility}
-            />
-            <FileViewContent
                 title={file.title}
-                media={file.media}
-                links={file.links}
-                content={file.content}
-                maxLength={100}
+                createdAt={file.created_at}
+                visibility={file.visible}
+                type={file.type}
+                url={file.url}
             />
+            <FileViewContent media={file} />
             <FileViewFooter
                 onToggleComments={toggleComments}
-                // onLike={...}
-                // onShare={...}
+                description={file.description}
             />
             {/* <Carousel users={randomUsersForFriendship}/> */}
         </div>
