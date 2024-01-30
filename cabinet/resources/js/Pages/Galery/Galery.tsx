@@ -52,7 +52,7 @@ export default function Galery({ auth }: UsePageProps) {
             <div className="gallery-card">
               <div className="header">
                 <div className="circle">
-                  <img src="assets/images/noimg.png" alt="" />
+                  <img src="/assets/images/noimg.png" alt="" />
                 </div>
                 <div className="text">
                   <p className="bold">Alex Petroff</p>
@@ -82,7 +82,7 @@ export default function Galery({ auth }: UsePageProps) {
             <div className="gallery-card">
               <div className="header">
                 <div className="circle">
-                  <img src="assets/images/noimg.png" alt="" />
+                  <img src="/assets/images/noimg.png" alt="" />
                 </div>
                 <div className="text">
                   <p className="bold">Alex Petroff</p>
@@ -112,7 +112,7 @@ export default function Galery({ auth }: UsePageProps) {
             <div className="gallery-card">
               <div className="header">
                 <div className="circle">
-                  <img src="assets/images/noimg.png" alt="" />
+                  <img src="/assets/images/noimg.png" alt="" />
                 </div>
                 <div className="text">
                   <p className="bold">Alex Petroff</p>
@@ -142,7 +142,7 @@ export default function Galery({ auth }: UsePageProps) {
             <div className="gallery-card">
               <div className="header">
                 <div className="circle">
-                  <img src="assets/images/noimg.png" alt="" />
+                  <img src="/assets/images/noimg.png" alt="" />
                 </div>
                 <div className="text">
                   <p className="bold">Alex Petroff</p>
@@ -172,7 +172,7 @@ export default function Galery({ auth }: UsePageProps) {
             <div className="gallery-card">
               <div className="header">
                 <div className="circle">
-                  <img src="assets/images/noimg.png" alt="" />
+                  <img src="/assets/images/noimg.png" alt="" />
                 </div>
                 <div className="text">
                   <p className="bold">Alex Petroff</p>
@@ -202,7 +202,7 @@ export default function Galery({ auth }: UsePageProps) {
             <div className="gallery-card">
               <div className="header">
                 <div className="circle">
-                  <img src="assets/images/noimg.png" alt="" />
+                  <img src="/assets/images/noimg.png" alt="" />
                 </div>
                 <div className="text">
                   <p className="bold">Alex Petroff</p>

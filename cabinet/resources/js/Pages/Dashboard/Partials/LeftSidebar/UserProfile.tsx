@@ -16,7 +16,7 @@ export default function UserProfile({
                         src={
                             profileData.profile_image_url
                                 ? `/user-file/${profileData.profile_image_url}`
-                                : "assets/images/noimg.png"
+                                : "/assets/images/noimg.png"
                         } 
                         loading="lazy"
                         alt={`${profileData?.name} ${profileData?.last_name}`}

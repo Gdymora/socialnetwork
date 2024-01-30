@@ -123,7 +123,7 @@ export default function ParentSayPost({
                                         <img
                                             src={
                                                 profileData.profile_image_url ||
-                                                "assets/images/noimg.png"
+                                                "/assets/images/noimg.png"
                                             }
                                             alt={profileData.name || "noimage"}
                                         />

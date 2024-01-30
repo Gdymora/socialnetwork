@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\LinkPreviewController;
 use App\Http\Controllers\Pages\Friends\FriendsController;
+use App\Http\Controllers\Pages\Friends\ProfileFriendController;
 use App\Http\Controllers\Pages\Message\MessageController;
 use App\Http\Controllers\Pages\Dashboard\DashboardController;
-use App\Http\Controllers\Pages\Galery\GaleryController;
+use App\Http\Controllers\Pages\Galery\GaleryController; 
 use App\Http\Controllers\Pages\UserHome\UserHomeController;
 use App\Http\Controllers\Pages\WorkShop\WorkShopController;
 use App\Http\Controllers\PostMediaController;
@@ -84,6 +85,8 @@ Route::get('/user-file/{type}/{filename}', function ($type, $filename) {
 })->where('filename', '.*');
 
 Route::middleware('auth')->group(function () {
+    //friend
+    Route::get('/profile-friend/{id}', [ProfileFriendController::class, 'index'])->middleware(['auth', 'verified'])->name('profile-friend');
     // file
     Route::post('/posts', [PostMediaController::class, 'store'])->name('posts');
     Route::post('/user-file', [UserFileController::class, 'store'])->name('user-file');

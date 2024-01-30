@@ -19,7 +19,7 @@ export default function PostHeader({
                 <img
                     src={ author.profile_image_url
                         ? `/user-file/${author.profile_image_url}`
-                        : "assets/images/noimg.png"
+                        : "/assets/images/noimg.png"
                     }
                     alt={`image ${author.name}`}
                     loading="lazy"

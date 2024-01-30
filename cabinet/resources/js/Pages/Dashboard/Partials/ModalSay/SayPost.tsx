@@ -25,7 +25,7 @@ export default function SayPost({
                         src={
                             profileData.profile_image_url
                                 ? `/user-file/${profileData.profile_image_url}`
-                                : "assets/images/noimg.png"
+                                : "/assets/images/noimg.png"
                         }
                         alt="Media"
                         loading="lazy"

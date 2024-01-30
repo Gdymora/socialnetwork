@@ -32,8 +32,7 @@ export default function ParentModalFile({
     const [selectedOption, setSelectedOption] = useState<string | number>("");
     const [fileData, setFileData] = useState<File | null>(null);
 
-    useEffect(() => {
-    });
+    useEffect(() => {});
 
     const handleOpenModal = (content: string) => {
         setIsModalOpen(true);
@@ -53,7 +52,7 @@ export default function ParentModalFile({
     formData.append("titleData", data.titleData);
     formData.append("descriptionData", data.descriptionData);
     if (fileData) {
-        formData.append("fileData", fileData); 
+        formData.append("fileData", fileData);
     }
 
     const handleSubmit = () => {
@@ -120,8 +119,9 @@ export default function ParentModalFile({
                                     >
                                         <img
                                             src={
-                                                profileData.profile_image_url ||
-                                                "assets/images/noimg.png"
+                                                profileData.profile_image_url
+                                                    ? `/user-file/${profileData.profile_image_url}`
+                                                    : "/assets/images/noimg.png"
                                             }
                                             alt={profileData.name || "noimage"}
                                         />

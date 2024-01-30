@@ -32,7 +32,6 @@ class FriendsController extends Controller
             'postMostViewed' => $postMostViewed,
             'randomUsersForFriendship' => $randomUsersForFriendship
         ]);
-        //return view('dashboard', compact('posts', 'friendsAndFollowers', 'profileData', 'postMostViewed', 'randomUsersForFriendship'));
     }
 
 }

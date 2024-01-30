@@ -24,9 +24,9 @@ export function SuggestionsList({ randomUsersForFriendship }: { randomUsersForFr
                         <div className="circle">
                             {/* Use a placeholder image if profile_image_url is not available */}
                             <img
-                                src={
-                                    friend.profile_image_url ||
-                                    "assets/images/noimg.png"
+                                src={friend.profile_image_url
+                                    ? `/user-file/${friend.profile_image_url}`
+                                    : "/assets/images/noimg.png"
                                 }
                                 alt={`${friend.name} ${friend.last_name}`}
                             />
@@ -36,9 +36,9 @@ export function SuggestionsList({ randomUsersForFriendship }: { randomUsersForFr
                                 {friend.name} {friend.last_name}
                             </p>
                             {/* Check if aboutMe and occupations exist before rendering */}
-                            {friend.aboutMe && friend.aboutMe.occupations && (
+                            {friend.about_me && friend.about_me.occupations && (
                                 <p className="text-light">
-                                    {friend.aboutMe.occupations}
+                                    {friend.about_me.occupations}
                                 </p>
                             )}
                         </div>
