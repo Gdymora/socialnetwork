@@ -36,6 +36,8 @@ export interface postMostViewed extends PostType {
 export interface FriendsAndFollowers {
     followers: Followers[];
     following: Following[];
+    friends: Following[];
+    friendsCount: number;
     followersCount: number;
     followingCount: number;
 }

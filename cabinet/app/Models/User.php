@@ -131,18 +131,25 @@ class User extends Authenticatable
     {
         return $this->select('id', 'name', 'last_name', 'profile_image_url')
             ->with('aboutMe')
-            ->find(\Auth::id());
+            ->find($this->id);
     }
     public function getFriendsAndFollowers()
     {
-        $followingUsers = $this->following;
-        $followersUsers = $this->followers;
+        $followingUsersIds = $this->following()->pluck('users.id')->toArray();
+        $followersUsersIds = $this->followers()->pluck('users.id')->toArray();
+
+        // Знаходимо спільних користувачів у обох масивах
+        $friendsIds = array_intersect($followingUsersIds, $followersUsersIds);
+
+        $friends = User::whereIn('id', $friendsIds)->get();
 
         return [
-            'following' => $followingUsers,
-            'followingCount' => count($followingUsers),
-            'followers' => $followersUsers,
-            'followersCount' => count($followersUsers)
+            'friends' => $friends,
+            'friendsCount' => count($friends),
+            'following' => User::whereIn('id', $followingUsersIds)->get(),
+            'followingCount' => count($followingUsersIds),
+            'followers' => User::whereIn('id', $followersUsersIds)->get(),
+            'followersCount' => count($followersUsersIds)
         ];
     }
 

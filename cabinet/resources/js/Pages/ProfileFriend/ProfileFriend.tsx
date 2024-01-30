@@ -11,13 +11,12 @@ import {
     postMostViewed,
 } from "@/types";
 import Friends from "./Partials/Friends";
-import ParentSayPost from "../Dashboard/Partials/ModalSay/ParentSayPost";
 import PostsList from "../Dashboard/Partials/Post/PostList";
 import FileViewList from "./Partials/FileView/FileViewList";
 import { useState } from "react";
-import MenegmentPost from "./Partials/MenegmentPost";
 import AboutFriend from "./Partials/AboutFriend";
 import FriendFile from "./Partials/FriendlFile";
+import FriendCard from "./Partials/FriendCard";
 interface UserPageProps {
     auth: Auth;
     posts: PostType[];
@@ -45,7 +44,6 @@ export default function ProfileFriend({
         setShowFiles(shouldShowFiles);
         setTypeFiles(shouldTypeFiles);
     };
-    console.log(userFile);
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -76,6 +74,9 @@ export default function ProfileFriend({
                             {/*  <!--  --> */}
                             {!showFiles && (
                                 <>
+                                    <div className="post-item">
+                                        <FriendCard profileData={profileData} />
+                                    </div>
                                     <PostsList posts={posts} />
                                 </>
                             )}

@@ -6,12 +6,8 @@ const Friends = ({
 }: {
     friendsAndFollowers: FriendsAndFollowers;
 }) => {
-    const friends = [
-        ...friendsAndFollowers.followers,
-        ...friendsAndFollowers.following,
-    ];
-    const friendsCount =
-        friendsAndFollowers.followersCount + friendsAndFollowers.followingCount;
+    const friends = friendsAndFollowers.friends || [];
+    const friendsCount = friendsAndFollowers.friendsCount;
     return (
         <div className="frends">
             <div className="flex space-between align-items-center">

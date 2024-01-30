@@ -29,7 +29,7 @@
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin: 10px;
-    width: 196px; 
+    width: 196px;
     background-color: var(--content-bg-color);
     cursor: pointer;
 }
@@ -38,8 +38,9 @@
     text-decoration: none;
 }
 
-.user-grid .user-galery-card img {
-    width: 100%; 
+.user-grid .user-galery-card img,
+.user-galery-card img {
+    width: 100%;
     aspect-ratio: 4/3;
     object-fit: cover;
     object-position: 50% 50%;
@@ -63,21 +64,22 @@
     margin-top: 10px;
 }
 
-.user-grid .user-card-content > p {
+.user-grid .user-card-content > p,
+.user-card-content > p {
     margin-bottom: 10px;
 }
 
-.user-grid .user-card-content > p:nth-child(1) {
+.user-grid .user-card-content > p:nth-child(1),
+.user-card-content > p:nth-child(1) {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 10px;
     color: #1e40af;
 }
 
-.user-grid .user-card-content > p:nth-child(2) {
+.user-grid .user-card-content > p:nth-child(2),
+.user-card-content > p:nth-child(2) {
     font-size: 0.8rem;
     font-weight: 400;
     color: #6b7280;
 }
-
-

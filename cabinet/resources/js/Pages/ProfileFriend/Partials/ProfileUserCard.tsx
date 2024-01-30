@@ -1,4 +1,4 @@
-import { Author, Pivot, RandomUserForFriendship, UserProfile } from "@/types";
+import { Pivot, UserProfile } from "@/types";
 
 type Friend = UserProfile & Pivot;
 export default function ProfileUserCard({ user }: { user: Friend }) {

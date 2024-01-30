@@ -41,7 +41,7 @@ class ProfileFriendController extends Controller
         $userFile['private'] = $user->getFilesFilteredByVisibility('private');
         $userFile['public'] = $user->getFilesFilteredByVisibility('public');
         $userFile['friends'] = $user->getFilesFilteredByVisibility('friends');
-
+//dd($friendsAndFollowers);
         return Inertia::render('ProfileFriend', [
             'userFile' => $userFile,
             'posts' => $posts,
