@@ -17,9 +17,8 @@ class ProfileFriendController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index(Request $request, $id): Response
+    public function index(Request $request, $userId): Response
     {
-        $userId = $id; 
         $user = User::find($userId);
 
         if (!$user) {
@@ -36,7 +35,7 @@ class ProfileFriendController extends Controller
             ]);
         }
 
-        $friendsAndFollowers = $user->getFriendsAndFollowers();
+        $friendsAndFollowers = $user->getFriendsAndFollowers($authUser->id);
         $posts = Post::getPostsUser($user);
         $userFile['private'] = $user->getFilesFilteredByVisibility('private');
         $userFile['public'] = $user->getFilesFilteredByVisibility('public');

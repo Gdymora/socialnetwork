@@ -1,11 +1,12 @@
 <?php
-
 use App\Http\Controllers\LinkPreviewController;
 use App\Http\Controllers\Pages\Friends\FriendsController;
 use App\Http\Controllers\Pages\Friends\ProfileFriendController;
+use App\Http\Controllers\Pages\Friends\FollowController;
+use App\Http\Controllers\Pages\Friends\UnFollowController;
 use App\Http\Controllers\Pages\Message\MessageController;
 use App\Http\Controllers\Pages\Dashboard\DashboardController;
-use App\Http\Controllers\Pages\Galery\GaleryController; 
+use App\Http\Controllers\Pages\Galery\GaleryController;
 use App\Http\Controllers\Pages\UserHome\UserHomeController;
 use App\Http\Controllers\Pages\WorkShop\WorkShopController;
 use App\Http\Controllers\PostMediaController;
@@ -95,7 +96,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/user-home', [UserHomeController::class, 'index'])->middleware(['auth', 'verified'])->name('user-home');
     Route::get('/message', [MessageController::class, 'index'])->middleware(['auth', 'verified'])->name('message');
     Route::get('/galery', [GaleryController::class, 'index'])->middleware(['auth', 'verified'])->name('galery');
+
     Route::get('/friends', [FriendsController::class, 'index'])->middleware(['auth', 'verified'])->name('friends');
+    Route::patch('/friends/{id}/follow', FollowController::class)->middleware(['auth', 'verified']);
+    Route::patch('/friends/{id}/unfollow', UnFollowController::class)->middleware(['auth', 'verified']);
+
     Route::get('/work-shop', [WorkShopController::class, 'index'])->middleware(['auth', 'verified'])->name('work-shop');
     //
     Route::patch('/user-about-me', [UserAboutMeController::class, 'update'])->name('user-about-me.update');

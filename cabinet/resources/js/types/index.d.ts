@@ -33,7 +33,13 @@ export interface Pivot {
 
 export interface postMostViewed extends PostType {
 }
-export interface FriendsAndFollowers {
+
+export interface isFriendAndFollow {
+    isFriend: boolean;
+    isFollowing: boolean;
+    isFollower: boolean;
+}
+export interface FriendsAndFollowers extends isFriendAndFollow {
     followers: Followers[];
     following: Following[];
     friends: Following[];

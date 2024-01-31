@@ -1,11 +1,30 @@
-import { ProfileData } from "@/types";
+import React, { useState, useEffect } from 'react';
+import { isFriendAndFollow, ProfileData } from "@/types"; 
+import useAxios from '@/Hooks/useAxios';
 
 export default function FriendCard({
     profileData,
+    isFriendAndFollow,
 }: {
     profileData: ProfileData;
+    isFriendAndFollow: isFriendAndFollow;
 }) {
     const { id, name, last_name, profile_image_url } = profileData;
+    const { isFriend } = isFriendAndFollow;
+    const [isFriendStatus, setIsFriendStatus] = useState(isFriend);
+    const { sendRequest } = useAxios(''); // Використовуйте хук тут
+
+    const handleAddFriend = () => {
+        sendRequest('patch', {}, { url: `/friends/${id}/follow` });
+        setIsFriendStatus(true);
+        // Ваша логіка після успішного запиту
+    };
+
+    const handleDeleteFriend = () => {
+        sendRequest('patch', {}, { url: `/friends/${id}/unfollow` });
+        setIsFriendStatus(false);
+        // Ваша логіка після успішного запиту
+    };
 
     return (
         <div className="user-galery-card">
@@ -20,15 +39,17 @@ export default function FriendCard({
                 />
                 <div className="user-card-content">
                     <a href="">
-                        {" "}
-                        {name} {last_name}{" "}
+                        {name} {last_name}
                     </a>
-                    <p>{profileData.about_me.hobbies}</p>
+                    <p>{profileData.about_me?.hobbies}</p>
                 </div>
             </a>
             <div className="user-card-footer">
-                <button className="like-button">Add to friends</button>
-                <button className="comment-button">Delete</button>
+                {!isFriendStatus ? (
+                    <button className="like-button" onClick={handleAddFriend}>Add to friends</button>
+                ) : (
+                    <button className="comment-button" onClick={handleDeleteFriend}>Delete</button>
+                )}
             </div>
         </div>
     );

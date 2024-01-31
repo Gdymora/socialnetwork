@@ -37,6 +37,7 @@ export default function ProfileFriend({
     const [typeFiles, setTypeFiles] = useState("");
     const [showFiles, setShowFiles] = useState<boolean>(false);
 
+    const { isFriend, isFollowing, isFollower } = friendsAndFollowers;
     const handleToggleFiles = (
         shouldShowFiles: boolean,
         shouldTypeFiles: string
@@ -44,6 +45,7 @@ export default function ProfileFriend({
         setShowFiles(shouldShowFiles);
         setTypeFiles(shouldTypeFiles);
     };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -75,7 +77,14 @@ export default function ProfileFriend({
                             {!showFiles && (
                                 <>
                                     <div className="post-item">
-                                        <FriendCard profileData={profileData} />
+                                        <FriendCard
+                                            profileData={profileData}
+                                            isFriendAndFollow={{
+                                                isFriend,
+                                                isFollowing,
+                                                isFollower,
+                                            }}
+                                        />
                                     </div>
                                     <PostsList posts={posts} />
                                 </>
