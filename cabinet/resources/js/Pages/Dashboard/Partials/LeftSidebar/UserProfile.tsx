@@ -55,7 +55,7 @@ export default function UserProfile({
                 </div>
                 <div className="border-block-end"></div>
                 <div>
-                    <a href="">View Profile</a>
+                    <a href={route("user-home")}>View Profile</a>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 
 /**
  *  Хук для управління скороченням тексту
@@ -11,7 +11,9 @@ export function useExpandableContent(
     const [isExpanded, setIsExpanded] = useState(false);
     const [content] = useState(initialContent);
 
-    const toggleExpanded = () => {
+    const toggleExpanded = (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
         setIsExpanded(!isExpanded);
     };
 
