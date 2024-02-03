@@ -1,8 +1,8 @@
 import { ProfileData } from "@/types";
 import Videos from "./Videos";
-import Music from "./Music";
-import Fotos from "./Fotos";
+import Music from "./Music"; 
 import Posts from "./Posts";
+import Images from "./Images";
 
 export default function FriendFile({
     profileData,
@@ -14,8 +14,8 @@ export default function FriendFile({
     
     return (
         <>
-            <Fotos
-                handleShowFotos={() => onToggleFiles(true, "foto")}
+            <Images
+                handleShowImages={() => onToggleFiles(true, "image")}
             />
             <Music
                 handleShowMusics={() => onToggleFiles(true, "music")}

@@ -4,13 +4,13 @@ namespace App\Services;
 use App\Contracts\FileServiceInterface;
 use Illuminate\Support\Facades\Storage;
 
-class FileFotoService implements FileServiceInterface
+class FileImageService implements FileServiceInterface
 {
     protected $disk;
 
     public function __construct()
     {
-        $this->disk = Storage::disk('foto'); // 'foto' - це ваш диск, визначений у config/filesystems.php
+        $this->disk = Storage::disk('image'); // 'image' - це ваш диск, визначений у config/filesystems.php
     }
 
     public function saveFile($path, $content)

@@ -6,7 +6,7 @@ const Music = ({
     handleShowMusics: () => void;
 }) => {
     return (
-        <div className="flex space-between align-items-center fotos">
+        <div className="flex space-between align-items-center images">
             <h2>Music</h2>
             <div className="section">
                 <button className="link-button" onClick={onAddMusics}>

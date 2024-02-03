@@ -10,9 +10,9 @@ import { useForm } from "@inertiajs/react";
 import axios from "axios";
 import Videos from "./Videos";
 import TextInput from "@/Components/TextInput";
-import Music from "./Music";
-import Fotos from "./Fotos";
-import Posts from "./Posts";
+import Music from "./Music"; 
+import Posts from "./Posts"; 
+import Images from "./Images";
 
 export default function ParentModalFile({
     profileData,
@@ -82,9 +82,9 @@ export default function ParentModalFile({
 
     return (
         <>
-            <Fotos
-                onAddFotos={() => handleOpenModal("foto")}
-                handleShowFotos={() => onToggleFiles(true, "foto")}
+            <Images
+                onAddImages={() => handleOpenModal("image")}
+                handleShowImages={() => onToggleFiles(true, "image")}
             />
             <Music
                 onAddMusics={() => handleOpenModal("music")}

@@ -1,18 +1,18 @@
 <?php
 namespace App\Http\Controllers\System;
 use App\Http\Controllers\Controller;
-use App\Services\FileFotoService;
+use App\Services\FileImageService; 
 
-class FileFotoController extends Controller
+class FileImagesController extends Controller
 {
     protected $fileService;
 
-    public function __construct(FileFotoService $fileService)
+    public function __construct(FileImageService $fileService)
     {
         $this->fileService = $fileService;
     }
 
-    public function show($filename, FileFotoService $fileService)
+    public function show($filename, FileImageService $fileService)
     {
         return $fileService->showFile($filename);
     }

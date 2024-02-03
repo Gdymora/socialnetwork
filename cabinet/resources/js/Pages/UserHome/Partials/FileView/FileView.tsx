@@ -1,14 +1,16 @@
 import { CSSProperties, useState } from "react";
 
-import { PostType, UserFile } from "@/types";
+import { UserFile } from "@/types";
 import FileViewHeader from "./FileViewHeader";
 import FileViewContent from "./FileViewContent";
 import FileViewFooter from "./FileViewFooter";
 interface UserFileProps {
     file: UserFile;
+    onFileClick?: () => void | null;
 }
 
-export default function FileView({ file }: UserFileProps) {
+export default function FileView({ file, 
+    onFileClick }: UserFileProps) {
     const [showComments, setShowComments] = useState(false);
 
     const toggleComments = () => {
@@ -24,7 +26,8 @@ export default function FileView({ file }: UserFileProps) {
     };
 
     return (
-        <div style={postFile}>
+        <div style={postFile} 
+        onClick={onFileClick}>
             <FileViewHeader
                 title={file.title}
                 createdAt={file.created_at}

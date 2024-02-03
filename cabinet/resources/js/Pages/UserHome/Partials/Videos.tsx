@@ -6,7 +6,7 @@ const Videos = ({
     handleShowVideos: () => void;
 }) => {
     return (
-        <div className="flex space-between align-items-center fotos">
+        <div className="flex space-between align-items-center images">
             <h2>Videos</h2>         
             <div className="section">
                 <button className="link-button" onClick={onAddVideos}>
