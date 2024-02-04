@@ -4,6 +4,7 @@ import { CSSProperties, useState } from "react";
 import Modal from "@/Components/Modal";
 
 import stylesModal from "./Modal.module.css";
+import FileViewContentModal from "./FileViewContentModal";
 interface FileViewProps {
     files: UserFileFilteredByVisibility;
 }
@@ -62,7 +63,12 @@ export default function FileViewList({ files }: FileViewProps) {
             </div>
 
             {isModalOpen && (
-                <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <Modal
+                    show={isModalOpen}
+                    overlayColor="black"
+                    maxWidth = "7xl"
+                    onClose={() => setIsModalOpen(false)}
+                >
                     <div className="relative bg-white rounded-lg shadow-xl">
                         <div className={stylesModal.modalHeader}>
                             <span>Modal Header</span>
@@ -76,10 +82,17 @@ export default function FileViewList({ files }: FileViewProps) {
                                 </svg>
                             </div>
                         </div>
-                        <div className="overflow-y-auto max-h-[80vh]">
+                        <div className="overflow-y-auto max-h-[90vh]">
                             <div className={stylesModal.modalContent}>
                                 {modalContent && (
-                                    <FileView key={modalContent.id} file={modalContent} />  
+                                    <div className="flex">
+                                        <div style={{width:"500px"}}>hhhh</div>
+                                        <FileView 
+                                            key={modalContent.id}
+                                            file={modalContent}
+                                            contentModal={isModalOpen}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </div>

@@ -1,15 +1,17 @@
-import { Fragment, PropsWithChildren } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, PropsWithChildren } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 
 export default function Modal({
     children,
     show = false,
-    maxWidth = '2xl',
+    maxWidth = "2xl",
+    overlayColor = "gray",
     closeable = true,
     onClose = () => {},
 }: PropsWithChildren<{
     show: boolean;
-    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl"| "3xl"| "7xl";
+    overlayColor?: "gray" | "black";
     closeable?: boolean;
     onClose: CallableFunction;
 }>) {
@@ -19,12 +21,19 @@ export default function Modal({
         }
     };
 
+    const overlayColorClass = { 
+        gray: "bg-gray-500/75", 
+        black: "bg-black" 
+    }[overlayColor];
+
     const maxWidthClass = {
-        sm: 'sm:max-w-sm',
-        md: 'sm:max-w-md',
-        lg: 'sm:max-w-lg',
-        xl: 'sm:max-w-xl',
-        '2xl': 'sm:max-w-2xl',
+        sm: "sm:max-w-sm",
+        md: "sm:max-w-md",
+        lg: "sm:max-w-lg",
+        xl: "sm:max-w-xl",
+        "2xl": "sm:max-w-2xl",
+        "3xl": "sm:max-w-3xl", 
+        "7xl": "sm:max-w-7xl"
     }[maxWidth];
 
     return (
@@ -44,7 +53,9 @@ export default function Modal({
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="absolute inset-0 bg-gray-500/75 dark:bg-gray-900/75" />
+                    <div
+                        className={`absolute inset-0 ${overlayColorClass} dark:bg-gray-900/75`}
+                    />
                 </Transition.Child>
 
                 <Transition.Child
@@ -58,7 +69,7 @@ export default function Modal({
                 >
                     <Dialog.Panel
                         className={`mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
-                    >                        
+                    >
                         {children}
                     </Dialog.Panel>
                 </Transition.Child>

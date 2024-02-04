@@ -4,13 +4,18 @@ import { UserFile } from "@/types";
 import FileViewHeader from "./FileViewHeader";
 import FileViewContent from "./FileViewContent";
 import FileViewFooter from "./FileViewFooter";
+import FileViewContentModal from "./FileViewContentModal";
 interface UserFileProps {
     file: UserFile;
+    contentModal?: boolean;
     onFileClick?: () => void | null;
 }
 
-export default function FileView({ file, 
-    onFileClick }: UserFileProps) {
+export default function FileView({
+    file,
+    onFileClick,
+    contentModal,
+}: UserFileProps) {
     const [showComments, setShowComments] = useState(false);
 
     const toggleComments = () => {
@@ -26,16 +31,21 @@ export default function FileView({ file,
     };
 
     return (
-        <div style={postFile} 
-        onClick={onFileClick}>
+        <div style={postFile} onClick={onFileClick}>
             <FileViewHeader
                 title={file.title}
                 createdAt={file.created_at}
                 visibility={file.visible}
                 type={file.type}
                 url={file.url}
-            />
-            <FileViewContent media={file} />
+            />{" "}
+
+            {contentModal ? (
+                <FileViewContentModal media={file} />
+            ) : (
+                <FileViewContent media={file} />
+            )}{" "}
+            
             <FileViewFooter
                 onToggleComments={toggleComments}
                 description={file.description}
