@@ -1,14 +1,11 @@
 import { UserFile, UserFileFilteredByVisibility } from "@/types";
 import FileView from "./FileView";
-import { CSSProperties, useState } from "react";
-import Modal from "@/Components/Modal";
-
-import stylesModal from "./Modal.module.css";
-import FileViewContentModal from "./FileViewContentModal";
+import { CSSProperties, useEffect, useState } from "react";
+import SelectButton from "@/Components/SelectButton";
+import FileModal from "../ModalAddFile/FileModal";
 interface FileViewProps {
     files: UserFileFilteredByVisibility;
 }
-
 export default function FileViewList({ files }: FileViewProps) {
     const contentGrid: CSSProperties = {
         display: "grid",
@@ -16,93 +13,182 @@ export default function FileViewList({ files }: FileViewProps) {
         margin: "10px",
         justifyItems: "center",
     };
+    const [allFiles, setAllFiles] = useState<UserFile[]>([]);
+    const [currentFileIndex, setCurrentFileIndex] = useState<number>(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState<null | UserFile>(null);
+    const [typeFileClick, setTypeFileClick] = useState<
+        null | string | undefined
+    >("");
+    useEffect(() => {
+        // Об'єднаємо всі файли з різних розділів в один масив
+        const mergedFiles: UserFile[] = [
+            ...files.public,
+            ...files.private,
+            ...files.friends,
+        ];
+        setAllFiles(mergedFiles);
+    }, [files]);
+
+    const nextFile = () => {
+        if (currentFileIndex < filteredFiles.length - 1) {
+            setCurrentFileIndex(currentFileIndex + 1);
+        } else {
+            setCurrentFileIndex(0);
+        }
+    };
+
+    const prevFile = () => {
+        if (currentFileIndex > 0) {
+            setCurrentFileIndex(currentFileIndex - 1);
+        }
+    };
+
+    const filteredFiles = allFiles.filter(
+        (file) => file.type === typeFileClick
+    );
+
     const handleOpenModal = (content: null | UserFile) => {
+        console.log(content?.type);
+        setTypeFileClick(content?.type);
         setModalContent(content);
         setIsModalOpen(true);
     };
+    const handleCloseModal = () => {
+        setModalContent(null);
+        setIsModalOpen(false);
+    };
 
+    const [selectedOption, setSelectedOption] = useState<string | number>(
+        "all"
+    );
+
+    const handleSelectChange = (value: string | number) => {
+        setSelectedOption(value);
+    };
+    const toggleLargeImage = () => {
+        setShowLargeImage(!showLargeImage);
+    };
+
+    const [showLargeImage, setShowLargeImage] = useState(false);
     return (
         <>
             <div className="post">
+                <div className="post-header">
+                    <div className="text">
+                        <p className="bold">File</p>
+                        {/*  <p className="text-light">my</p> */}
+                    </div>
+                    <div className="flex justify-content-right">
+                        <SelectButton
+                            size="small"
+                            style={{
+                                backgroundColor: "lightblue",
+                            }}
+                            options={[
+                                { label: "All", value: "all" },
+                                { label: "Image", value: "image" },
+                                { label: "Video", value: "video" },
+                                { label: "Music", value: "music" },
+                            ]}
+                            onChange={handleSelectChange}
+                        />
+                    </div>
+                </div>
+            </div>
+            {isModalOpen && (
+                <FileModal
+                    isModalOpen={isModalOpen}
+                    modalContent={filteredFiles[currentFileIndex]}
+                    onClose={handleCloseModal}
+                    onNextClick={() => nextFile()}
+                    onPrevClick={() => prevFile()}
+                    onToggleLargeImage={() => toggleLargeImage()}
+                />
+            )}
+            {/* Велике зображення */}
+            {showLargeImage && (
+                <div className="large-image" onClick={toggleLargeImage}>
+                    <img
+                        src={`/user-file/${filteredFiles[currentFileIndex].url}`}
+                        alt="Large Media"
+                    />
+                    <div
+                        className="arrow-switcher"
+                        onClick={prevFile}
+                        style={{ left: "30%" }}
+                    >
+                        &lt;
+                    </div>
+                    <div
+                        className="arrow-switcher"
+                        onClick={nextFile}
+                        style={{ right: "20px" }}
+                    >
+                        &gt;
+                    </div>
+                </div>
+            )}
+            <div className="post">
                 <h3>Private</h3>
                 <div style={contentGrid}>
-                    {files.private.map((file) => (
-                        <FileView
-                            key={file.id}
-                            file={file}
-                            onFileClick={() => handleOpenModal(file)}
-                        />
-                    ))}
+                    {files.private
+                        .filter((file) => {
+                            if (selectedOption === "all") {
+                                return true; // Повертаємо всі файли, якщо обрано 'All'
+                            } else {
+                                return file.type === selectedOption; // Фільтруємо за обраним значенням
+                            }
+                        })
+                        .map((file) => (
+                            <FileView
+                                key={file.id}
+                                file={file}
+                                onFileClick={() => handleOpenModal(file)}
+                            />
+                        ))}
                 </div>
             </div>
             <div className="post">
                 <h3>Friends</h3>
                 <div style={contentGrid}>
-                    {files.friends.map((file) => (
-                        <FileView
-                            key={file.id}
-                            file={file}
-                            onFileClick={() => handleOpenModal(file)}
-                        />
-                    ))}
+                    {files.friends
+                        .filter((file) => {
+                            if (selectedOption === "all") {
+                                return true; // Повертаємо всі файли, якщо обрано 'All'
+                            } else {
+                                return file.type === selectedOption; // Фільтруємо за обраним значенням
+                            }
+                        })
+                        .map((file) => (
+                            <FileView
+                                key={file.id}
+                                file={file}
+                                onFileClick={() => handleOpenModal(file)}
+                            />
+                        ))}
                 </div>{" "}
             </div>
             <div className="post">
                 <h3>Public</h3>
                 <div style={contentGrid}>
-                    {files.public.map((file) => (
-                        <FileView
-                            key={file.id}
-                            file={file}
-                            onFileClick={() => handleOpenModal(file)}
-                        />
-                    ))}
+                    {files.public
+                        .filter((file) => {
+                            if (selectedOption === "all") {
+                                return true; // Повертаємо всі файли, якщо обрано 'All'
+                            } else {
+                                return file.type === selectedOption; // Фільтруємо за обраним значенням
+                            }
+                        })
+                        .map((file) => (
+                            <FileView
+                                key={file.id}
+                                file={file}
+                                onFileClick={() => handleOpenModal(file)}
+                            />
+                        ))}
                 </div>{" "}
             </div>
-
-            {isModalOpen && (
-                <Modal
-                    show={isModalOpen}
-                    overlayColor="black"
-                    maxWidth = "7xl"
-                    onClose={() => setIsModalOpen(false)}
-                >
-                    <div className="relative bg-white rounded-lg shadow-xl">
-                        <div className={stylesModal.modalHeader}>
-                            <span>Modal Header</span>
-                            <div
-                                className={stylesModal.modalCloseButton}
-                                onClick={() => setIsModalOpen(false)}
-                            >
-                                <svg viewBox="0 0 24 24" width="24" height="24">
-                                    <path d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-                                </svg>
-                            </div>
-                        </div>
-                        <div className="overflow-y-auto max-h-[90vh]">
-                            <div className={stylesModal.modalContent}>
-                                {modalContent && (
-                                    <div className="flex">
-                                        <div style={{width:"500px"}}>hhhh</div>
-                                        <FileView 
-                                            key={modalContent.id}
-                                            file={modalContent}
-                                            contentModal={isModalOpen}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <div className={stylesModal.modalFooter}>
-                            <div className="flex align-items-center post_message"></div>
-                        </div>
-                        <div className={stylesModal.modalFooter}></div>
-                    </div>
-                </Modal>
-            )}
         </>
     );
 }

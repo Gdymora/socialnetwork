@@ -59,9 +59,10 @@ export default function FileViewHeader({
                 </p>
             </span>
             <div className="flex justify-content-right">
-                <Dropdown>
+                <Dropdown >
                     <Dropdown.Trigger>
                         <button
+                           
                             className="nav-link dropdown-toggle button-icon"
                             id="navbarDropdown"
                             role="button"
@@ -73,7 +74,7 @@ export default function FileViewHeader({
                         </button>
                     </Dropdown.Trigger>
 
-                    <Dropdown.Content>
+                    <Dropdown.Content align={"right"}>
                         <Dropdown.Link href={route("profile.edit")}>
                             Profile
                         </Dropdown.Link>{" "}

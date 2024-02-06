@@ -10,7 +10,7 @@ export default function Modal({
     onClose = () => {},
 }: PropsWithChildren<{
     show: boolean;
-    maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl"| "3xl"| "7xl";
+    maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl"| "3xl"| "4xl";
     overlayColor?: "gray" | "black";
     closeable?: boolean;
     onClose: CallableFunction;
@@ -33,7 +33,7 @@ export default function Modal({
         xl: "sm:max-w-xl",
         "2xl": "sm:max-w-2xl",
         "3xl": "sm:max-w-3xl", 
-        "7xl": "sm:max-w-7xl"
+        "4xl": "sm:max-w-4xl"
     }[maxWidth];
 
     return (

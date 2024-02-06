@@ -9,12 +9,18 @@ interface UserFileProps {
     file: UserFile;
     contentModal?: boolean;
     onFileClick?: () => void | null;
+    onNextClick?: (() => void | null) | undefined;
+    onPrevClick?: (() => void | null) | undefined;
+    onToggleLargeImage?: (() => void | null) | undefined;
 }
 
 export default function FileView({
     file,
     onFileClick,
     contentModal,
+    onNextClick,
+    onPrevClick,
+    onToggleLargeImage,
 }: UserFileProps) {
     const [showComments, setShowComments] = useState(false);
 
@@ -39,13 +45,18 @@ export default function FileView({
                 type={file.type}
                 url={file.url}
             />{" "}
-
             {contentModal ? (
-                <FileViewContentModal media={file} />
+                <FileViewContentModal
+                    media={file}
+                    nextFile={onNextClick && (() => onNextClick())}
+                    prevFile={onPrevClick && (() => onPrevClick())}
+                    toggleLargeImage={
+                        onToggleLargeImage && (() => onToggleLargeImage())
+                    }
+                />
             ) : (
                 <FileViewContent media={file} />
             )}{" "}
-            
             <FileViewFooter
                 onToggleComments={toggleComments}
                 description={file.description}
