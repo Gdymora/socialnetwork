@@ -1,0 +1,988 @@
+
+<html>
+<head>
+    <title>Win Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';">
+  <style>
+
+.win {
+  /* window style */
+  font-family: Arial, Helvetica, sans-serif;
+  /*font-weight: 300;*/
+  font-size: 0.9em;
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  padding: 0px;
+  border: 0px none;
+  background: transparent none repeat scroll 0% 0%;
+  overflow: hidden;
+  position: fixed;
+  right: 10px;
+  bottom: 0px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  display: block;
+  width: 350px;
+  height: 450px;
+  min-width: 300px;
+  min-height: 300px;
+  max-width: 1024px;
+  max-height: 768px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 2px;
+  background-color: #FFF;
+  transition: 0.05s;
+}
+
+.win.rolledup {
+  min-height: 30px !important;
+  height: 30px !important;
+}
+
+.win.minimized {
+  min-height: 30px !important;
+  height: 30px !important;
+  width: 300px !important;
+  left: auto !important;
+  top: auto !important;
+  bottom: 0px !important;
+}
+
+.win.hidden {
+  display: none;
+}
+
+.win .wintitle {
+  /* window title style */
+  width: 100%;
+  height: 2em;
+  display: block;
+  background-color:rgb(250, 160, 0);
+  cursor: move;
+}
+
+.win .wintitle .icon {
+  /* window title icon style */
+  float: left;
+  margin: 2px;
+  margin-left: 8px;
+  text-align: left;
+  cursor: default;
+  background-repeat: no-repeat;
+  background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDYwIDYwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA2MCA2MDsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiPgo8Zz4KCTxwYXRoIGQ9Ik0xMCwyNS40NjVoMTNjMC41NTMsMCwxLTAuNDQ4LDEtMXMtMC40NDctMS0xLTFIMTBjLTAuNTUzLDAtMSwwLjQ0OC0xLDFTOS40NDcsMjUuNDY1LDEwLDI1LjQ2NXoiIGZpbGw9IiNGRkZGRkYiLz4KCTxwYXRoIGQ9Ik0zNiwyOS40NjVIMTBjLTAuNTUzLDAtMSwwLjQ0OC0xLDFzMC40NDcsMSwxLDFoMjZjMC41NTMsMCwxLTAuNDQ4LDEtMVMzNi41NTMsMjkuNDY1LDM2LDI5LjQ2NXoiIGZpbGw9IiNGRkZGRkYiLz4KCTxwYXRoIGQ9Ik0zNiwzNS40NjVIMTBjLTAuNTUzLDAtMSwwLjQ0OC0xLDFzMC40NDcsMSwxLDFoMjZjMC41NTMsMCwxLTAuNDQ4LDEtMVMzNi41NTMsMzUuNDY1LDM2LDM1LjQ2NXoiIGZpbGw9IiNGRkZGRkYiLz4KCTxwYXRoIGQ9Ik01NC4wNzIsMi41MzVMMTkuOTMsMi40NjVjLTMuMjcsMC01LjkzLDIuNjYtNS45Myw1LjkzdjUuMTI0bC04LjA3LDAuMDE3Yy0zLjI3LDAtNS45MywyLjY2LTUuOTMsNS45M3YyMS4xNDEgICBjMCwzLjI3LDIuNjYsNS45MjksNS45Myw1LjkyOUgxMnYxMGMwLDAuNDEzLDAuMjU0LDAuNzg0LDAuNjQsMC45MzNjMC4xMTcsMC4wNDUsMC4yMzksMC4wNjcsMC4zNiwwLjA2NyAgIGMwLjI3NiwwLDAuNTQ3LTAuMTE1LDAuNzQtMC4zMjdsOS43MDQtMTAuNjc1bDE2LjYyNi0wLjA2OGMzLjI3LDAsNS45My0yLjY2LDUuOTMtNS45Mjl2LTAuMTEzbDUuMjYsNS43ODYgICBjMC4xOTMsMC4yMTIsMC40NjQsMC4zMjcsMC43NCwwLjMyN2MwLjEyMSwwLDAuMjQzLTAuMDIyLDAuMzYtMC4wNjdjMC4zODYtMC4xNDksMC42NC0wLjUyLDAuNjQtMC45MzN2LTEwaDEuMDcgICBjMy4yNywwLDUuOTMtMi42Niw1LjkzLTUuOTI5VjguNDY1QzYwLDUuMTk2LDU3LjM0MSwyLjUzNiw1NC4wNzIsMi41MzV6IE00NCw0MC41MzZjMCwyLjE2Ny0xLjc2MywzLjkyOS0zLjkzNCwzLjkyOWwtMTcuMDcsMC4wNyAgIGMtMC4yOCwwLjAwMS0wLjU0OCwwLjEyLTAuNzM2LDAuMzI3TDE0LDUzLjk0OXYtOC40MTRjMC0wLjU1Mi0wLjQ0Ny0xLTEtMUg1LjkzYy0yLjE2NywwLTMuOTMtMS43NjMtMy45My0zLjkyOVYxOS40NjUgICBjMC0yLjE2NywxLjc2My0zLjkzLDMuOTMyLTMuOTNsOS4wNjgtMC4wMTljMCwwLDAsMCwwLDBjMC4wMDEsMCwwLjAwMSwwLDAuMDAyLDBsMjUuMDY4LTAuMDUyYzIuMTY3LDAsMy45MywxLjc2MywzLjkzLDMuOTMgICB2MTguNDQxVjQwLjUzNnogTTU4LDI5LjYwNmMwLDIuMTY3LTEuNzYzLDMuOTI5LTMuOTMsMy45MjlINTJjLTAuNTUzLDAtMSwwLjQ0OC0xLDF2OC40MTRsLTUtNS41VjE5LjM5NSAgIGMwLTMuMjctMi42Ni01LjkzLTUuOTMyLTUuOTNMMTYsMTMuNTE0di01LjEyYzAtMi4xNjcsMS43NjMtMy45MywzLjkyOC0zLjkzbDM0LjE0MSwwLjA3YzAuMDAxLDAsMC4wMDEsMCwwLjAwMiwwICAgYzIuMTY3LDAsMy45MywxLjc2MywzLjkzLDMuOTNWMjkuNjA2eiIgZmlsbD0iI0ZGRkZGRiIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=);
+  width: 24px;
+  height: 24px;
+}
+
+.win .wintitle .title {
+  /* window title text style */
+  float: left;
+  padding: 0.3em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: absolute;
+  left: 2.5em;
+  right: 5em;
+  color: #FFF;
+}
+
+.win.minimized .wintitle {
+  cursor: default;
+}
+
+.win.nomove .wintitle {
+  cursor: default;
+}
+
+.win .btn {
+  /* common title button style */
+  float: right;
+  padding: 4px;
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-position-x: 0.3em;
+  background-position-y: 0.3em;
+  cursor: pointer;
+}
+
+.win .imgClose {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMi4wMyAxMi4wMyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48ZyBmaWxsPSIjZmZmIj48cGF0aCBkPSJNMTEuMjc4IDBILjc1MkEuNzUyLjc1MiAwIDAgMCAwIC43NTJ2MTAuNTI2YzAgLjQxNi4zMzYuNzUyLjc1Mi43NTJoMTAuNTI2YS43NTIuNzUyIDAgMCAwIC43NTItLjc1MlYuNzUyQS43NTIuNzUyIDAgMCAwIDExLjI3OCAwem0wIDExLjI3OEguNzUyVi43NTJoMTAuNTI2eiIvPjxwYXRoIGQ9Ik0zLjQ4NSA4LjUzN2EuMzgzLjM4MyAwIDAgMCAuNTM4IDBsMi4wMDEtMS45ODUgMS45ODQgMS45ODNhLjM4LjM4IDAgMCAwIC41MzcgMCAuMzgyLjM4MiAwIDAgMCAwLS41MzhMNi41NjMgNi4wMTZsMS45Ny0xLjk1M2EuMzc0LjM3NCAwIDAgMCAwLS41MzIuMzgyLjM4MiAwIDAgMC0uNTM4IDBMNi4wMyA1LjQ4MSA0LjAzNCAzLjQ4NmEuMzguMzggMCAwIDAtLjUzNyAwIC4zODIuMzgyIDAgMCAwIDAgLjUzOUw1LjQ5IDYuMDE3IDMuNDg2IDguMDA1YS4zNzQuMzc0IDAgMCAwIDAgLjUzMnoiLz48L2c+PC9zdmc+);
+}
+.win.minimized .imgClose {
+  display: none;
+}
+
+.win .imgMin {
+  background-image:  url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMi4wMyAxMi4wMyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48ZyBmaWxsPSIjZmZmIiBzdHJva2U9IiNmZmYiPjxwYXRoIGQ9Ik0xMS4yOTQtLjAxNkguNzY4YS43NTIuNzUyIDAgMCAwLS43NTIuNzUydjEwLjUyN2MwIC40MTUuMzM2Ljc1Mi43NTIuNzUyaDEwLjUyNmEuNzUyLjc1MiAwIDAgMCAuNzUyLS43NTJWLjczNmEuNzUyLjc1MiAwIDAgMC0uNzUyLS43NTJ6bTAgMTEuMjc5SC43NjhWLjczNmgxMC41MjZ6IiBzdHJva2Utd2lkdGg9Ii4wMzEyNSIvPjwvZz48cGF0aCBkPSJNLjc1IDUuNTQzaDUuNjEyTTYuMzYyIDUuNTQzdjUuODYyTTEwLjIzOCAxLjc3OEw2LjMxNCA1LjcwM002LjM2MiA1LjU0M0g5LjFNNi4zOSAyLjk2NnYyLjczNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9Ii43NTIiLz48L3N2Zz4=);
+}
+.win.minimized .imgMin {
+   background-image:  url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMi4wMyAxMi4wMyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBzaGFwZS1yZW5kZXJpbmc9ImNyaXNwRWRnZXMiPjxnIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmZiI+PHBhdGggZD0iTTExLjI5NC0uMDE2SC43NjhhLjc1Mi43NTIgMCAwIDAtLjc1Mi43NTJ2MTAuNTI3YzAgLjQxNS4zMzYuNzUyLjc1Mi43NTJoMTAuNTI2YS43NTIuNzUyIDAgMCAwIC43NTItLjc1MlYuNzM2YS43NTIuNzUyIDAgMCAwLS43NTItLjc1MnptMCAxMS4yNzlILjc2OFYuNzM2aDEwLjUyNnoiIHN0cm9rZS13aWR0aD0iLjAzMTI1Ii8+PC9nPjxwYXRoIGQ9Ik0xMC4yNiAxLjM2N3Y0LjEwNk0xMC41OTQgMS43Mkg2LjQ4OCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9Ii43NTIiLz48cGF0aCBkPSJNLjc1IDUuNTQzaDUuNjEyTTYuMzYyIDUuNTQzdjUuODYyTTEwLjIzOCAxLjc3OEw2LjMxNCA1LjcwMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9Ii43NTIiLz48L3N2Zz4=);
+}
+
+.win .imgRollup {
+  background-image:  url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMi4wMyAxMi4wMyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBzaGFwZS1yZW5kZXJpbmc9ImNyaXNwRWRnZXMiPjxnIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmZiI+PHBhdGggZD0iTTExLjI3OCAwSC43NTJBLjc1Mi43NTIgMCAwIDAgMCAuNzUydjEwLjUyNmMwIC40MTYuMzM2Ljc1Mi43NTIuNzUyaDEwLjUyNmEuNzUyLjc1MiAwIDAgMCAuNzUyLS43NTJWLjc1MkEuNzUyLjc1MiAwIDAgMCAxMS4yNzggMHptMCAxMS4yNzhILjc1MlYuNzUyaDEwLjUyNnoiIHN0cm9rZS13aWR0aD0iLjAzMTI1Ii8+PC9nPjxwYXRoIGQ9Ik0yLjU1NiAzLjk0NWg3LjMwNyIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9Ii43NTIiLz48L3N2Zz4=);
+}
+.win.rolledup .imgRollup {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMi4wMyAxMi4wMyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48ZyBmaWxsPSIjZmZmIiBzdHJva2U9IiNmZmYiPjxwYXRoIGQ9Ik0xMS4yNzggMEguNzUyQS43NTIuNzUyIDAgMCAwIDAgLjc1MnYxMC41MjZjMCAuNDE2LjMzNi43NTIuNzUyLjc1MmgxMC41MjZhLjc1Mi43NTIgMCAwIDAgLjc1Mi0uNzUyVi43NTJBLjc1Mi43NTIgMCAwIDAgMTEuMjc4IDB6bTAgMTEuMjc4SC43NTJWLjc1MmgxMC41MjZ6IiBzdHJva2Utd2lkdGg9Ii4wMzEyNSIvPjwvZz48cGF0aCBkPSJNMS43NjggMTAuMjIzbDguNTY2LTguNTY2TTEwLjI0NSAxLjM4MnY0LjEwNk0xMC41NzggMS43MzZINi40NzJNMS43OCAxMC41OTVWNi40ODlNMS40NDUgMTAuMjQxaDQuMTA2IiBmaWxsPSIjZmZmIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iLjc1MiIvPjwvc3ZnPg==);
+}
+.win.minimized .imgRollup {
+  display: none;
+}
+
+.win .content {
+  /* window content style */
+  padding: 4px;
+  overflow-y: auto;
+  position: absolute;
+  top: 2em;
+  bottom: 2em;
+  left: 4px;
+  right: 1px;
+}
+
+.win .statusline {
+  /* window statusline style */
+  position: absolute;
+  bottom: 0;
+  width:100%;
+  z-index: -1;
+  background-color: rgb(240, 240, 240);
+  padding-top: 0.3em;
+}
+
+.win .statusline .text {
+  /* window statusline text style */
+  float: left;
+  padding-left: 1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: absolute;
+  left: 0em;
+  right: 2em;
+}
+
+.win .statusline .winresize {
+  /* window resize img style */
+  float: right;
+  cursor: nwse-resize;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position-x: 0.3em;
+  background-position-y: 0.3em;
+  background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDE4Mi45MzEgMTgyLjkzMSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTgyLjkzMSAxODIuOTMxOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCI+CjxwYXRoIGQ9Ik0xNzMuOTMsOTIuNzk4Yy00Ljk3MSwwLTksNC4wMjktOSw5djUwLjQwNEwzMC43MjgsMThoNTAuNDA0YzQuOTcxLDAsOS00LjAyOSw5LTlzLTQuMDI5LTktOS05SDlDNC4wMywwLDAsNC4wMjksMCw5ICB2NzIuMTMyYzAsNC45NzEsNC4wMjksOSw5LDlzOS00LjAyOSw5LTlWMzAuNzI5bDEzNC4yMDIsMTM0LjIwMmgtNTAuNDA0Yy00Ljk3MSwwLTksNC4wMjktOSw5czQuMDI5LDksOSw5aDcyLjEzMiAgYzQuOTcxLDAsOS00LjAyOSw5LTl2LTcyLjEzMkMxODIuOTMsOTYuODI4LDE3OC45MDEsOTIuNzk4LDE3My45Myw5Mi43OTh6IiBmaWxsPSIjRkZGRkZGIi8+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=);
+  width: 24px;
+  height: 24px;
+}
+
+/* win modal */
+.win-overlay {
+  background-color: rgba(0,0,0,0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+
+  text-align: center;
+  white-space: nowrap;
+}
+
+.win-overlay::after {
+  display: inline-block;
+  vertical-align: middle;
+  width: 0;
+  height: 100%;
+  content: '';
+}
+
+.win-overlay.hidden {
+  display: none;
+}
+
+.win-overlay .middle {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.win-overlay .middle .modal {
+  min-width: 200px;
+  text-align: left;
+  white-space: normal;
+}
+
+.win-overlay .middle .modal .win {
+  position: relative;
+  top: 0px !important;
+  left: 0px !important;
+}
+
+.win-overlay .middle .modal .win .wintitle {
+  cursor: default;
+}
+
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div>
+  <h1>WinManager</h1>
+  <div>
+    <div>
+      <button onclick="WinManager.openWinID('WinThree'); WinManager.restoreWinID('WinThree');  WinManager.expandWinID('WinThree'); WinManager.upWinID('WinThree');">Show Window #3</button>
+      <button onclick="WinManager.moveWinID('WinThree', 1, 0); WinManager.upWinID('WinThree');">Move Window #3</button>
+      <button onclick="WinManager.openWinID('modalWin1')">Show Modal Window #1</button>
+      <button onclick="WinManager.openWinID('modalWin2')">Show Modal Window #2</button>
+      <button onclick="WinManager.resizeWinID('modalWin2', 800, 400); WinManager.openWinID('modalWin2')">Resize to  800x400 & Show Modal Window #2</button>
+    </div>
+
+    <div>
+      <button onclick="WinManager.minimizeAllWin()">Minimize all windows</button>
+      <button onclick="WinManager.restoreAllWin()">Restore all windows</button>
+      <button onclick="WinManager.rollupAllWin()">Rollup all windows</button>
+      <button onclick="WinManager.expandAllWin()">Expand all windows</button>    
+    </div>
+
+    <div>
+      <button onclick="WinManager.saveLocation()">Save winows location into localStorage</button>
+      <button onclick="WinManager.loadLocation()">Restore winows location from localStorage</button>
+    </div>
+
+    <div>
+      <button onclick="MyFuncCreateNewWindow()">Create New Window</button>
+    </div>    
+
+  </div>
+
+  <div>
+    <h2>CSS Classes</h2>
+    <pre>
+      .win
+      .win.rolledup
+      .win.minimized
+      .win.hidden
+      .win .wintitle
+      .win .wintitle .icon
+      .win .wintitle .title
+      .win.minimized .wintitle
+      .win.nomove .wintitle
+      .win .btn
+      .win .imgClose
+      .win.minimized .imgClose
+      .win .imgMin
+      .win.minimized .imgMin
+      
+      .win .imgRollup
+      .win.rolledup .imgRollup 
+      .win.minimized .imgRollup
+      
+      .win .content
+      .win .statusline
+      .win .statusline .text
+      .win .statusline .winresize
+      
+      .win-overlay
+      .win-overlay::after
+      .win-overlay.hidden
+      .win-overlay .middle
+      .win-overlay .middle .modal
+      .win-overlay .middle .modal .win
+      .win-overlay .middle .modal .win .wintitle
+    </pre>
+  </div>
+
+  <h2>JavaScript</h2>
+  <pre>
+      collocateAllWin
+      minimizeAllWin
+      restoreAllWin
+      rollupAllWin
+      expandAllWin
+      minimizeWinID
+      restoreWinID
+      rollupWinID
+      expandWinID
+      closeWinID
+      openWinID
+      moveWinID
+      resizeWinID
+      upWinID
+      downWinID
+      getWinIDElementText
+      setWinIDElementText
+      saveLocation
+      loadLocation
+  </pre>
+</div>
+
+
+
+<div class="win" id="WinOne" style="z-index: 10; right: 10px;">
+  <div class="wintitle">
+    <div class="icon"></div>
+    <div class="title">
+        Window one. Here is a title.
+    </div>
+    <div class="btn btnClose imgClose"></div>
+    <div class="btn btnMin imgMin"></div>
+    <div class="btn btnRollup imgRollup"></div>
+  </div>
+  <div class="content">
+    <!-- Content Begin -->
+    <h1>Resizable window</h1>
+    <p>You can drag, resize, roll-up/roll-down, minimize/restore and close this window.
+      <img src="img/img1.png" width="128" class="center">
+    </p>
+    <!-- Content END -->
+  </div>
+  <div class="statusline">
+    <div class="text">
+        Status line
+    </div>
+    <div class="winresize"></div>
+  </div>
+</div>
+
+
+
+<div class="win minimized" id="WinTwo" style="z-index: 11; right: 420px;">
+  <div class="wintitle">
+    <div class="icon"></div>
+    <div class="title">
+        Window two
+    </div>
+    <div class="btn btnMin imgMin"></div>
+    <div class="btn btnRollup imgRollup"></div>
+  </div>
+  <div class="content">
+    <!-- Content Begin -->
+    <h1>Window without status line</h1>
+    <p>You can't close this window because "Close" button is hidden.<img src="img/img2.png" width="128" class="center"></p>
+    <p>And can't resize because status line is absent.<img src="img/img3.png" width="128" class="center"></p>
+    <p>But You still can to manipulate window via JavaScript.</p>
+    <button onclick="WinManager.moveWinID('WinTwo', 100, 100)">Move</button>
+    <button onclick="WinManager.resizeWinID('WinTwo', 500, 600)">Resize</button>
+    <button onclick="WinManager.closeWinID('WinTwo')">Close</button>
+    <p><img src="img/img4.png" width="128" class="center"></p>
+    <!-- Content END -->
+  </div>
+</div>
+
+
+<div class="win nomove hidden" id="WinThree">
+    <div class="wintitle">
+      <div class="icon"></div>
+      <div class="title">
+          Immovable Window 
+      </div>
+      <div class="btn btnMin imgMin"></div>
+    </div>
+    <!-- Content Begin -->
+    <div class="content">
+      <h1>This Window Immovable</h1>
+      <p><img src="img/img5.png" width="128" class="center"></p>
+      <p>But You still can to move window via JavaScript.</p>
+      <button onclick="WinManager.moveWinID('WinThree', 300, 300)">Move</button>
+    </div>
+    <!-- Content END -->
+</div>
+
+
+<!--Modal Container with modal windows-->
+<div class="win-overlay" id="modal-overlay">
+    <div class="middle">
+        <div class="modal" id="modal-container">
+
+
+            <!--modal Win1-->
+            <div class="win hidden" id="modalWin1">
+                <div class="wintitle">
+                  <div class="icon"></div>
+                  <div class="title">
+                      Modal Window
+                  </div>
+                  <div class="btn btnClose imgClose"></div>
+                </div>              
+                <!-- Content Begin -->
+                <div class="content">
+                  <h1>Modal window</h1>
+                  <p>You can close this window by button in the title or by button below.</p>
+                  <p><img src="img/img6.png" width="128"></p>
+                  <button class="btnClose"> Close</button>
+                </div>
+                <!-- Content END -->
+            </div>
+
+            <!--modal Win2-->
+            <div class="win hidden" id="modalWin2">
+                <div class="wintitle">
+                  <div class="icon"></div>
+                  <div class="title">
+                      Modal Window
+                  </div>
+                </div>              
+                <!-- Content Begin -->
+                <div class="content">
+                  <h1>Modal window</h1>
+                  <p>You can close this window by button below only.</p>
+                  <p><img src="img/img7.png" width="128"></p>
+                  <button onclick="WinManager.resizeWinID('modalWin2', 400, 400)">Resize to 400x400</button>
+                  <button class="btnClose"> Close</button>
+                </div>
+                <!-- Content END -->
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+'use strict';
+
+var WinManager = new function() {
+  var dragObject = {salt : "РХФЙОИХКМП"}
+
+  // remove element from array
+  function removeA(arr) {
+    var what, a = arguments, L = a.length, ax;
+    while (L > 1 && arr.length) {
+      what = a[--L]
+      while ((ax= arr.indexOf(what)) !== -1) {
+        arr.splice(ax, 1)
+      }
+    }
+    return arr;
+  }
+
+  // return the window object. parameter - any inner object (title, buttons etc)
+  function getParrentWin(obj) {
+    while ( (typeof obj !== 'undefined') && (obj != null) && ((obj.className != 'win' && obj.className.includes('win ') == false)) ) {
+      obj = obj.parentElement
+    }
+    return obj
+  }
+
+  // return the window title object. parameter - any inner object (title, buttons etc)
+  function getParrentWinTitle(obj) {
+    while ( (typeof obj !== 'undefined') && (obj != null) && ((obj.className != 'wintitle' && obj.className.includes('wintitle ') == false)) ) {
+      obj = obj.parentElement
+    }
+    return obj
+  }
+
+  // remove class from element.className
+  function resetClass(element, classname) {
+    var objClasses = element.className.split(' ')
+    if (objClasses.indexOf(classname) !== -1) {
+      removeA(objClasses, classname)
+      element.className = objClasses.join(' ')
+    }
+  }
+
+  // add class to element.className
+  function setClass(element, classname) {
+    var objClasses = element.className.split(' ')
+    if (objClasses.indexOf(classname) == -1) {
+      objClasses.push(classname)
+      element.className = objClasses.join(' ')
+    }
+  }
+
+  // remove class from className
+  function resetWinClass(element, classname) {
+    resetClass(getParrentWin(element), classname)
+  }
+
+  // add class to className
+  function setWinClass(element, classname) {
+    setClass(getParrentWin(element), classname)
+  }
+
+  // remove/add class from/to className
+  function toggleWinClass(element, classname) {
+    var win = getParrentWin(element)
+    var objClasses = win.className.split(' ')
+    if (objClasses.indexOf(classname) == -1) objClasses.push(classname)
+    else removeA(objClasses, classname)
+    win.className = objClasses.join(' ')
+  }
+
+  // remove class from className  (by ID)
+  function resetWinClassByID(ID, classname) {
+    var win = getParrentWin(document.getElementById(ID))
+    if (win == null) return
+    resetWinClass(win, classname)
+  }
+
+  // add class to className (by ID)
+  function setWinClassByID(ID, classname) {
+    var win = getParrentWin(document.getElementById(ID))
+    if (win == null) return
+    setWinClass(win, classname)
+  }
+
+  // return a maximum z-index
+  function getMaxZIndex() {
+    var wins = document.getElementsByClassName("win")
+    var zindex = -1
+    for (let i=0; i<wins.length; i++) {
+      if (wins[i].style.zIndex > zindex)
+        zindex = wins[i].style.zIndex
+    }
+    return parseInt(zindex)
+  }
+
+
+  // return a minimal z-index
+  function getMinZIndex() {
+    var wins = document.getElementsByClassName("win")
+    var zindex = 1000000000
+    for (let i=0; i<wins.length; i++) {
+      if (wins[i].style.zIndex < zindex)
+        zindex = wins[i].style.zIndex
+    }
+    return parseInt(zindex)
+  }  
+
+  // move window to top view
+  function setWinTop(win) {
+    var maxzindex = getMaxZIndex()
+    if (win.style.zIndex != maxzindex)
+      win.style.zIndex = maxzindex +1
+  }
+
+  // move window to back
+  function setWinBack(win) {
+    var minzindex = getMinZIndex()
+    if (win.style.zIndex != minzindex)
+      win.style.zIndex = minzindex -1
+  }
+
+  function getWinObject(ID, objWay) {
+    var obj = getParrentWin(document.getElementById(ID))
+    if (obj == null) return null
+    for (var i=0; i<objWay.length; i++) {
+      var obj = obj.getElementsByClassName(objWay[i])[0]
+      if (obj == null) return null
+    }
+    return obj
+  }
+
+  function onMouseDown(e) {
+    var pageX = 0
+    var pageY = 0
+
+    if (e.type == 'mousedown') {
+        pageX = e.pageX
+        pageY = e.pageY
+    }
+    else {
+      if (e.type == 'touchstart') {
+        pageX = e.touches[0].pageX
+        pageY = e.touches[0].pageY
+      }
+    }
+
+    var win = getParrentWin(e.target)
+    if (win == null) return
+    if (win.className.includes('win')) {
+      setWinTop(win)
+    }
+    
+    if (getParrentWinTitle(e.target) != null) {
+      if (!win.className.includes('minimized') && !win.className.includes('nomove')) {
+        dragObject.elem = win  
+      }
+      else {
+        resetWinClass(win, 'minimized')
+      }
+    }
+
+    if (e.target.className.includes('winresize')) {
+      dragObject.resize = win
+      var box = dragObject.resize.getBoundingClientRect()
+      dragObject.width = box.width
+      dragObject.height = box.height
+    }
+
+    dragObject.downX = pageX
+    dragObject.downY = pageY
+ 
+    return false;
+  }
+
+  function onMouseMove(e) {
+    var pageX = 0
+    var pageY = 0
+
+    if (e.type == 'mousemove') {
+        pageX = e.pageX
+        pageY = e.pageY
+    }
+    else {
+      if (e.type == 'touchmove') {
+        pageX = e.touches[0].pageX
+        pageY = e.touches[0].pageY
+      }
+    }
+
+    if (dragObject.elem) {
+      // if dragging not started yet
+      if (!dragObject.avatar) {
+        var moveX = pageX - dragObject.downX
+        var moveY = pageY - dragObject.downY
+        // if mouse dragged window a little way
+        if (Math.abs(moveX) < 3 && Math.abs(moveY) < 3) {
+          return
+        }
+        // start to drag
+        dragObject.avatar = dragObject.elem;
+
+        // remember shiftX/shiftY
+        var box = dragObject.avatar.getBoundingClientRect()
+        dragObject.shiftX = dragObject.downX - box.left
+        dragObject.shiftY = dragObject.downY - box.top
+	dragObject.width = box.width
+	dragObject.height= box.height
+
+        startDrag(e);
+      }
+
+      // change window position
+      dragObject.avatar.style.left = pageX - dragObject.shiftX + 'px'
+      dragObject.avatar.style.top = pageY - dragObject.shiftY + 'px'
+
+      if (pageX - dragObject.shiftX < 0) dragObject.avatar.style.left = '0px'
+      if (pageY - dragObject.shiftY < 0) dragObject.avatar.style.top = '0px'
+      if ((window.innerWidth - (pageX - dragObject.shiftX) - dragObject.width) < 0) dragObject.avatar.style.left = (window.innerWidth - dragObject.width) + 'px'
+      if ((window.innerHeight - (pageY - dragObject.shiftY) - dragObject.height) < 0) dragObject.avatar.style.top = (window.innerHeight - dragObject.height) + 'px'
+    }
+    if (dragObject.resize)  {
+        dragObject.resize.style.width = dragObject.width - dragObject.downX + pageX + 'px'
+        dragObject.resize.style.height = dragObject.height - dragObject.downY + pageY + 'px'
+    }
+    return false;
+  }
+
+  function onMouseUp(e) {
+    // if dragging
+    if (dragObject.avatar) {
+      finishDrag(e)
+    }
+    dragObject = {}
+  }
+
+  function startDrag(e) {
+    var avatar = dragObject.avatar
+  }
+
+  function finishDrag(e) {
+  }
+
+  // store locations of windows to localstorage
+  function saveLocation() {
+    var locationSet = {}
+    var wins = document.getElementsByClassName("win")
+    for (let i=0; i<wins.length; i++) {
+      if (wins[i].id != null && wins[i].id != '') {
+        locationSet[wins[i].id] = { left:wins[i].style.left, top:wins[i].style.top, width:wins[i].style.width, height:wins[i].style.height, zIndex:wins[i].style.zIndex, className: wins[i].className }
+      }
+    }
+    localStorage.setItem('WinManager', JSON.stringify(locationSet))
+  }
+
+  // load locations of windows from localstorage
+  function loadLocation() {
+    var locationSet = JSON.parse(localStorage.getItem('WinManager'));
+    var wins = document.getElementsByClassName("win")
+    for (let i=0; i<wins.length; i++) {
+      if (wins[i].id != null && wins[i].id != '') {
+        if (typeof locationSet[wins[i].id] != 'undefined') {
+          wins[i].style.left = locationSet[wins[i].id].left
+          wins[i].style.top = locationSet[wins[i].id].top
+          wins[i].style.width = locationSet[wins[i].id].width
+          wins[i].style.height = locationSet[wins[i].id].height
+          wins[i].style.zIndex = locationSet[wins[i].id].zIndex
+          wins[i].className = locationSet[wins[i].id].className
+        }
+      }
+    }
+  }
+
+  function applyButtonEvents (elem) {
+    // apply button events
+    Array.from(elem.getElementsByClassName("btnMin")).forEach(function(item) {
+      item.onclick = (event) => {
+        toggleWinClass(event.target, 'minimized')
+      }
+    });
+
+    Array.from(elem.getElementsByClassName("btnRollup")).forEach(function(item) {
+      item.onclick = (event) => {
+        toggleWinClass(event.target, 'rolledup')
+      }
+    });
+
+    Array.from(elem.getElementsByClassName("btnClose")).forEach(function(item) {
+      item.onclick = (event) => {
+        setWinClass(event.target, 'hidden')
+      }
+    });
+  }
+
+  function modalContainerChanged() {
+    var ele = document.getElementById("modal-container")
+    if (ele != null) {
+      var result = 0
+      for(var i=0; i<ele.childNodes.length; i++ ) {
+        if (ele.childNodes[i].tagName == 'DIV') {
+          if ( (ele.childNodes[i].className.indexOf('win') != -1) & (ele.childNodes[i].className.indexOf('hidden') == -1) ) {
+            result = 1
+            break
+          }
+        }
+      }
+
+      var obj = document.getElementById("modal-overlay")
+      if (result != 0) {
+        resetClass(obj, 'hidden')
+      }
+      else {
+        setClass(obj, 'hidden')
+      }
+    }
+  }
+
+  // apply mouse & touch events
+  document.onmousedown = onMouseDown
+  document.ontouchstart = onMouseDown
+
+  document.onmousemove = onMouseMove
+  document.ontouchmove = onMouseMove
+
+  document.onmouseup = onMouseUp
+  document.ontouchend = onMouseUp
+
+  // modal-container monitoring
+  var myElement = document.getElementById('modal-overlay');
+  var observer = new MutationObserver(modalContainerChanged)
+  var config = { attributes: true, childList: true, characterData: true, subtree: true}
+  observer.observe(myElement, config);  
+  
+  modalContainerChanged()
+
+  /*
+  if(window.addEventListener) { // Normal browsers
+    myElement.addEventListener('DOMSubtreeModified', modalContainerChanged, false);
+  } else
+    if(window.attachEvent) { // IE
+      myElement.attachEvent('DOMSubtreeModified', modalContainerChanged);
+  }
+  */
+  applyButtonEvents(document)
+
+  // Public functions :)
+  // apply Events to new Window (use when create new Window)
+  this.applyButtonEvents = function(win) {
+    applyButtonEvents(win)
+  }
+
+  // minimize all windows
+  this.minimizeAllWin = function() {
+    Array.from(document.getElementsByClassName("win")).forEach(function(item) {
+      setWinClass(item, 'minimized')
+    });
+  }
+
+  // restore all windows
+  this.restoreAllWin = function() {
+    Array.from(document.getElementsByClassName("win")).forEach(function(item) {
+      resetWinClass(item, 'minimized')
+    });
+  }
+
+  // rollup all windows
+  this.rollupAllWin = function() {
+    Array.from(document.getElementsByClassName("win")).forEach(function(item) {
+      setWinClass(item, 'rolledup')
+    });
+  }
+
+  // expand all windows
+  this.expandAllWin = function() {
+    Array.from(document.getElementsByClassName("win")).forEach(function(item) {
+      resetWinClass(item, 'rolledup')
+    });
+  }
+
+  // arrange positions of minimized windows
+  // You can set position manually. Just use style like this: style="right: 420px;"
+  this.collocateAllWin = function(step) {
+    var itemcount = 0
+    Array.from(document.getElementsByClassName("win")).forEach(function(item) {
+      item.style.right = 10 + step * itemcount
+      itemcount += 1
+    });
+  }
+
+  // minimize by window ID
+  this.minimizeWinID = function(ID) {
+    setWinClassByID(ID, 'minimized')
+  }
+
+  // restore by window ID
+  this.restoreWinID = function(ID) {
+    resetWinClassByID(ID, 'minimized')
+  }
+
+  // rollup by window ID
+  this.rollupWinID = function(ID) {
+    setWinClassByID(ID, 'rolledup')
+  }
+
+  // expand by window ID
+  this.expandWinID = function(ID) {
+    resetWinClassByID(ID, 'rolledup')
+  }
+
+  // hide by window ID
+  this.closeWinID = function(ID) {
+    setWinClassByID(ID, 'hidden')
+  }
+
+  // show by window ID
+  this.openWinID = function(ID) {
+    resetWinClassByID(ID, 'hidden')
+  }
+
+  // change position by window ID
+  this.moveWinID = function(ID, x, y) {
+    var win = getParrentWin(document.getElementById(ID))
+    if (win == null) return
+    win.style.left = x + 'px'
+    win.style.top = y + 'px'
+  }
+  
+  // change position by window ID
+  this.resizeWinID = function(ID, width, height) {
+    var win = getParrentWin(document.getElementById(ID))
+    if (win == null) return
+    win.style.width = width + 'px'
+    win.style.height = height + 'px'
+  }
+
+  // move to Top by window ID
+  this.upWinID = function(ID) {
+    setWinTop(getParrentWin(document.getElementById(ID)))
+  }
+
+  // move to Back by window ID
+  this.downWinID = function(ID) {
+    setWinBack(getParrentWin(document.getElementById(ID)))
+  }
+  
+
+  var objWay={'body': ['content'], 'title':['wintitle', 'title'], 'status':['statusline', 'text']}
+
+  // get text of window title/body/status
+  // WinManager.getWinIDElementText('myWinID', 'status')
+  // WinManager.getWinIDElementText('myWinID', 'title')
+  // WinManager.getWinIDElementText('myWinID', 'body')
+  this.getWinIDElementText = function(ID, type) {
+    if (typeof objWay[type] == 'undefined') return null
+
+    var obj = getWinObject(ID, objWay[type])
+    if (obj !== null)
+      return obj.innerHTML
+  }
+
+  // set text of window title/body/status
+  // WinManager.setWinIDElementText('myWinID', 'status', 'New Status text')
+  // WinManager.setWinIDElementText('myWinID', 'title', 'New title')
+  // WinManager.setWinIDElementText('myWinID', 'body', '<h1>Window body</h1>')
+  this.setWinIDElementText = function(ID, type, text) {
+    if (typeof objWay[type] == 'undefined') return null
+
+    var obj = getWinObject(ID, objWay[type])
+    if (obj !== null)
+      obj.innerHTML = text
+  }
+
+  // store locations of windows to localstorage (for windows with ID only)
+  this.saveLocation = function() {
+    saveLocation()
+  }
+
+  // load locations of windows from localstorage (for windows with ID only)
+  this.loadLocation = function() {
+    loadLocation()
+  }
+
+};
+
+console.log(WinManager.getWinIDElementText('WinOne', 'status'))
+
+//WinManager.setWinIDElementText('twoWin', 'status', 'New Status')
+//WinManager.setWinIDElementText('twoWin', 'title', 'New title')
+//WinManager.setWinIDElementText('twoWin', 'body', '<h1>New body text!</h1>')
+
+</script>
+
+
+<script>
+  //WinManager.minimizeAllWin()
+  //WinManager.maximizeAllWin()
+  WinManager.collocateAllWin(360)
+  //WinManager.minimizeWinID('testWin')
+  //WinManager.closeWinID('testWin')
+  //WinManager.minimizeAllWin()
+  
+  var MyWinID = 1
+
+  function MyFuncCreateNewWindow() {
+    let elem = document.createElement('div');
+    elem.innerHTML = '<div class="win" id="MyWinID'+ MyWinID +'" style="z-index: '+ (100 + MyWinID) +'; right: '+ (MyWinID * 10) +'x;">\
+          <div class="wintitle">\
+            <div class="icon"></div>\
+            <div class="title">\
+                My Window #'+ MyWinID +' \
+            </div>\
+            <div class="btn btnClose imgClose"></div>\
+            <div class="btn btnMin imgMin"></div>\
+            <div class="btn btnRollup imgRollup"></div>\
+          </div>\
+          <div class="content">\
+            <h1>This Window #'+ MyWinID +' created by JS</h1>\
+            <p><img src="img/img8.png" width="128" class="center"></p>\
+          </div>\
+      </div>'
+    document.body.appendChild(elem);
+    WinManager.applyButtonEvents(elem);
+    MyWinID += 1
+  }
+
+</script>
+
+
+</body>
+</html>

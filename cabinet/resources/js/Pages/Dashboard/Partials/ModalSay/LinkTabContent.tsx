@@ -1,13 +1,14 @@
 import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 import axios from "axios";
 import LinkPreviewModal from "./LinkPreviewModal";
+import { LinkData } from "@/types";
 
 const LinkTabContent = ({
     onChange,
     className,
 }: {
     className: string;
-    onChange: (value: string) => void;
+    onChange: (value: LinkData) => void;
 }) => {
     const [link, setLink] = useState<string>("");
     const [linkData, setLinkData] = useState(null);

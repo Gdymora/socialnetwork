@@ -14,6 +14,8 @@
     --success: #7ad69c;
     --danger: #d55845;
     --primary: #69a2f3;
+    --primary-send: #cf7e479c;
+    --primary-send-hover: #d95a4087;
     --border-color-section: #ddd;
     --bs-body-color: #ddd;
     --bs-border-radius: 5px;
@@ -174,7 +176,7 @@ h6 {
     border-bottom: 1px solid #ccc;
     width: 100%;
 }
-
+/* 
 .btn {
     border-radius: 0;
 }
@@ -193,6 +195,11 @@ h6 {
     background-color: var(--primary);
     border-color: var(--primary);
 }
+
+.btn-primary-send {
+    background-color: var(--primary-send);
+    border-color: var(--primary-send);
+} */
 .icon-30 {
     font-size: var(--font-size-30);
 }
@@ -724,7 +731,30 @@ input {
     background-color: var(--primary-bg-color-light);
     border: solid var(--primary-bg-color-light);
 }
-
+input:where(:not([type])):focus,
+[type="email"]:focus,
+[type="url"]:focus,
+[type="password"]:focus,
+[type="number"]:focus,
+[type="date"]:focus,
+[type="datetime-local"]:focus,
+[type="month"]:focus,
+[type="search"]:focus,
+[type="tel"]:focus,
+[type="time"]:focus,
+[type="week"]:focus,
+[multiple]:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    --tw-ring-inset: var(--tw-empty, /*!*/ /*!*/);
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: var(--section-bg-col);
+    --tw-ring-color: #fff;
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    border-color: var(--section-bg-col); 
+}
 /* ------ */
 
 .fixed-top-right {
@@ -924,6 +954,23 @@ input:not([type="file" i], [type="image" i], [type="checkbox" i], [type="radio" 
     --bs-btn-disabled-border-color: #6c757d;
 }
 
+.btn-primary-send {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--primary-send);
+    --bs-btn-border-color: var(--primary-send);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--primary-send-hover);
+    --bs-btn-hover-border-color: var(--primary-send);
+    --bs-btn-focus-shadow-rgb: 130, 138, 145;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #565e64;
+    --bs-btn-active-border-color: #51585e;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #6c757d;
+    --bs-btn-disabled-border-color: #6c757d;
+}
+
 .btn-danger {
     --bs-btn-color: #fff;
     --bs-btn-bg: #dc3545;
@@ -1032,9 +1079,9 @@ select {
 .custom-audio-player-button {
     display: flex;
     flex-direction: row;
- /*    flex-wrap: wrap; */
+    /*    flex-wrap: wrap; */
     align-items: center;
-    justify-content: normal
+    justify-content: normal;
 }
 .custom-audio-player button {
     /* Стилі для кнопок керування */
@@ -1080,6 +1127,12 @@ select {
     left: 50%;
     transform: translate(-50%, -50%);
     cursor: pointer;
+}
+
+.custom-uploader-class {
+    background-color: #f1f1f1;
+    border: 3px solid #ddd;
+    border-style: dashed;
 }
 
 /*  */

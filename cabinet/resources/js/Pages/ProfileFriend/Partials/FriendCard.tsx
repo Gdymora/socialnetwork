@@ -12,7 +12,7 @@ export default function FriendCard({
     const { id, name, last_name, profile_image_url } = profileData;
     const { isFriend } = isFriendAndFollow;
     const [isFriendStatus, setIsFriendStatus] = useState(isFriend);
-    const { sendRequest } = useAxios(''); // Використовуйте хук тут
+    const { sendRequest, data, loading, error } = useAxios(''); // Використовуйте хук тут
 
     const handleAddFriend = () => {
         sendRequest('patch', {}, { url: `/friends/${id}/follow` });

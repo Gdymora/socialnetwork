@@ -1,6 +1,8 @@
 # user
+test@example.com
+secret
 -
-dovie.toy@example.com
+acollier@example.com
 password
 
 sudo service mysql stop

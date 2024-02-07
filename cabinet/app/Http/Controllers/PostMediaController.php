@@ -32,7 +32,7 @@ class PostMediaController extends Controller
             $validatedData = $request->validate([
                 'textData' => 'required|string',
                 'selectedOption' => 'required|string',
-                'fileData' => 'nullable|file|mimetypes:video/mp4,image/jpeg,image/png'
+                'fileData' => 'nullable|file|mimetypes:video/mp4,image/jpeg,image/png,image/webp'
             ]);
 
             // Створення нового посту
@@ -48,7 +48,7 @@ class PostMediaController extends Controller
                 $link->title = $linkData['title'];
                 $link->description = $linkData['description'];
                 $link->image = $linkData['image'];
-                $link->site_name = $linkData['site_name'];
+                $link->site_name = $linkData['site_name'] ? $linkData['site_name'] : $linkData['title'];
                 $link->url = $linkData['url'];
                 $link->linkable_id = $post->id;
                 $link->linkable_type = Post::class;

@@ -1,16 +1,18 @@
 import Uploader from "@/Components/Uploader";
 import { OnChangeFunction } from "@/types";
 
-const FileTabContent = ({ className, onChange }: { className: string,  onChange: OnChangeFunction }) => {
-    
+const FileTabContent = ({
+    className,
+    onChange,
+}: {
+    className: string;
+    onChange: OnChangeFunction;
+}) => {
     return (
         <div className={className}>
             <Uploader
-            onChange={onChange}
-                style={{
-                    backgroundColor: "lightblue",
-                    border: "3px solid blue",
-                }}
+                onChange={onChange}
+                style={{}}
                 className="custom-uploader-class"
             />
         </div>

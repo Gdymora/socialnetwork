@@ -1,5 +1,7 @@
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Header() {
     return (
@@ -95,6 +97,8 @@ export default function Header() {
                 </nav>
             </div>
             <button id="mobile-menu-button">Меню</button>
+
+            <ToastContainer /> {/* Контейнер для сповіщень */}
         </header>
     );
 }

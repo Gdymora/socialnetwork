@@ -16,7 +16,7 @@ export default function SayPost({
     onLinkClick,
     onJobClick,
 }: SayPostProps) {
-    console.log(profileData);
+  //  console.log(profileData);
     return (
         <>
             <div className="section_say">

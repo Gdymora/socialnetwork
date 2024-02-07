@@ -10,8 +10,8 @@ import { useForm } from "@inertiajs/react";
 import axios from "axios";
 import Videos from "./Videos";
 import TextInput from "@/Components/TextInput";
-import Music from "./Music"; 
-import Posts from "./Posts"; 
+import Music from "./Music";
+import Posts from "./Posts";
 import Images from "./Images";
 
 export default function ParentModalFile({
@@ -199,7 +199,7 @@ export default function ParentModalFile({
                                 className="btn btn-primary"
                                 onClick={handleSubmit}
                             >
-                                Відправити
+                                Send
                             </Button>{" "}
                         </div>
                     </div>

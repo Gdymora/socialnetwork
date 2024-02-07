@@ -61,20 +61,23 @@ class User extends Authenticatable
     public function following()
     {
         return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id');
-    } 
+    }
 
     public function follow($friendId)
     {
-       // $this->followers()->attach($friendId);
-       Friend::addFriend($this->id, $friendId);
+        // $this->followers()->attach($friendId);
+        Friend::addFriend($this->id, $friendId);
     }
-
+    public function followAttach($friendId)
+    {
+        $this->followers()->attach($friendId);
+    }
     public function unfollow($friendId)
     {
-       // $this->followers()->detach($friendId);
-       Friend::removeFriend($this->id, $friendId);
+        // $this->followers()->detach($friendId);
+        Friend::removeFriend($this->id, $friendId);
     }
-    
+
     public function isFriend($userId)
     {
         //перевірити чи є друзями
@@ -145,25 +148,25 @@ class User extends Authenticatable
         $activeUserId = $activeUserId ?? $this->id;
         $followingUsersIds = $this->following()->pluck('users.id')->toArray();
         $followersUsersIds = $this->followers()->pluck('users.id')->toArray();
-    
+
         // Знаходимо спільних користувачів у обох масивах
         $friendsIds = array_intersect($followingUsersIds, $followersUsersIds);
-    
+
         // Визначаємо, чи є активний користувач другом, підписаним чи підписником
         $isFriend = in_array($activeUserId, $friendsIds);
         $isFollowing = in_array($activeUserId, $followingUsersIds);
         $isFollower = in_array($activeUserId, $followersUsersIds);
-    
+
         $friendsCount = count($friendsIds);
         $filteredFollowingUsersIds = array_diff($followingUsersIds, [$activeUserId]);
         $filteredFollowersUsersIds = array_diff($followersUsersIds, [$activeUserId]);
         // Видаляємо активного користувача зі списків, якщо потрібно
         $filteredFriendsIds = array_diff($friendsIds, [$activeUserId]);
-    
+
         $friends = User::whereIn('id', $filteredFriendsIds)->get();
         $following = User::whereIn('id', $filteredFollowingUsersIds)->get();
         $followers = User::whereIn('id', $filteredFollowersUsersIds)->get();
-    
+
         return [
             'isFriend' => $isFriend,
             'isFollowing' => $isFollowing,
@@ -176,7 +179,7 @@ class User extends Authenticatable
             'followersCount' => count($followers)
         ];
     }
-    
+
 
     public static function getRandomUsersForFriendship($count = 10)
     {

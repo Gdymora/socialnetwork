@@ -10,7 +10,7 @@ export default function UserGaleryCard({
 }) {
     const { id, name, last_name, profile_image_url } = profileData;
     const [isFriendStatus, setIsFriendStatus] = useState(false);
-    const { sendRequest } = useAxios(""); // Використовуйте хук тут
+    const { sendRequest, data, loading, error } = useAxios(""); // Використовуйте хук тут
 
     const handleAddFriend = () => {
         sendRequest("patch", {}, { url: `/friends/${id}/follow` });

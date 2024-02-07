@@ -5,7 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Comment;
-
+// php artisan db:seed --class=CommentSeeder
 class CommentSeeder extends Seeder
 {
     public function run()

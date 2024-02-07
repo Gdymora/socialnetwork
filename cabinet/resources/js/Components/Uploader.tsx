@@ -4,9 +4,10 @@ interface UploaderProps {
     onChange: OnChangeFunction;
     style?: React.CSSProperties;
     className?: string;
+    page?: string;
 }
 
-const Uploader = ({ onChange, style, className }: UploaderProps) => {
+const Uploader = ({ onChange, style, className, page }: UploaderProps) => {
     const [file, setFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string>("");
 
@@ -63,7 +64,6 @@ const Uploader = ({ onChange, style, className }: UploaderProps) => {
         objectFit: "contain",
     };
     const audioStyle: React.CSSProperties = {
-        height: "100%",
         objectFit: "contain",
     };
     return (
@@ -80,7 +80,7 @@ const Uploader = ({ onChange, style, className }: UploaderProps) => {
                 style={{ display: "none" }}
                 onChange={handleFileChange}
             />
-            Клікніть або перетягніть файл сюди
+            Click or drag the file here
             {file && (
                 <div style={uploaderWindowStyle}>
                     {file.type.startsWith("image/") && (
@@ -98,7 +98,7 @@ const Uploader = ({ onChange, style, className }: UploaderProps) => {
                         />
                     )}
 
-                    {file.type.startsWith("audio/") && (
+                    {page !== "dashboard" && file.type.startsWith("audio/") && (
                         <audio src={previewUrl} controls style={audioStyle} />
                     )}
                 </div>

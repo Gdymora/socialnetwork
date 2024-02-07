@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import SayPost from "./SayPost";
 import Modal from "@/Components/Modal";
-import { ProfileData } from "@/types";
+import { LinkData, ProfileData } from "@/types";
 import JobTabContent from "./JobTabContent";
 import styles from "./TabContent.module.css";
 import Button from "@/Components/Button";
-import stylesModal from "./Modal.module.css"; // Імпортуйте ваш CSS модуль
-import EditableText from "./EditableText";
+import stylesModal from "./Modal.module.css";
 import SelectButton from "@/Components/SelectButton";
 import FileTabContent from "./FileTabContent";
 import { useForm } from "@inertiajs/react";
 import axios from "axios";
 import LinkTabContent from "./LinkTabContent";
+import { ToastContainer, toast } from "react-toastify"; 
+import EditableText from "@/Components/EditableText";
 
 export default function ParentSayPost({
     profileData,
@@ -29,10 +30,8 @@ export default function ParentSayPost({
     const [selectedOption, setSelectedOption] = useState<string | number>("");
     const [fileData, setFileData] = useState<File | null>(null);
     const [textData, setTextData] = useState("");
-    const [linkData, setLinkData] = useState("");
-
-    useEffect(() => { 
-    });
+    const [linkData, setLinkData] = useState<LinkData | string>("");
+    const [disabled, setDisabled] = useState(true);
 
     const fileClick = () => handleOpenModal("file");
     const jobClick = () => handleOpenModal("job");
@@ -49,12 +48,21 @@ export default function ParentSayPost({
     };
 
     const handleFileChange = (data: File | null) => {
-        setFileData(data);
+        if (data && !data.type.startsWith("audio/")) {
+            setDisabled(false);
+            setFileData(data);
+            setTextData(data.name);
+        } else {
+            setTextData("");
+        }
     };
-    const handleLinkChange = (data: string) => {
+    const handleLinkChange = (data: LinkData) => {
+        setDisabled(false);
         setLinkData(data);
+        setTextData(data.title);
     };
     const handleTextChange = (data: string) => {
+        setDisabled(false);
         setTextData(data);
     };
 
@@ -64,14 +72,10 @@ export default function ParentSayPost({
     formData.append("selectedOption", selectedOption as string);
 
     if (fileData) {
-        formData.append("fileData", fileData); 
+        formData.append("fileData", fileData);
     }
 
     const handleSubmit = () => {
-        // Обробка даних форми/*  
-       /*  for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-        } */
         axios
             .post(route("posts"), formData, {
                 headers: {
@@ -80,15 +84,13 @@ export default function ParentSayPost({
             })
             .then((res) => {
                 console.log(res);
+                toast.success(res.data.message);
+                setDisabled(true);
             })
             .catch((error) => {
+                toast.error("Error submitting post data", error);
                 console.error("Error submitting post data", error);
             });
-        /*  post(route('posts', {
-           // preserveScroll: true,
-            onSuccess: (responce) => console.log(responce),
-          })); */
-        // Відправка даних на сервер та інші дії
     };
     return (
         <>
@@ -151,7 +153,13 @@ export default function ParentSayPost({
                                         />
                                     </div>
                                 </div>
-                                {<EditableText onChange={handleTextChange} />}
+
+                                {
+                                    <EditableText
+                                        onChange={handleTextChange}
+                                        textFromUploader={textData}
+                                    />
+                                }
 
                                 {modalContent === "file" && (
                                     <FileTabContent
@@ -161,6 +169,7 @@ export default function ParentSayPost({
                                                 : styles.imageTabContent
                                         }
                                         onChange={handleFileChange}
+                                        page={"dashboard"}
                                     />
                                 )}
                                 {modalContent === "link" && (
@@ -185,18 +194,18 @@ export default function ParentSayPost({
                             </div>
                         </div>
                         <div className={stylesModal.modalFooter}>
-                            <div className="flex align-items-center post_message">
-                                <Button
-                                    className="but btn btn-danger"
-                                    onClick={fileClick}
-                                >
-                                    Image/Video
-                                </Button>
+                            <div className="flex align-items-center post_message space-between">
                                 <Button
                                     className="btn btn-secondary"
                                     onClick={linkClick}
                                 >
                                     Link
+                                </Button>
+                                <Button
+                                    className="but btn btn-secondary"
+                                    onClick={fileClick}
+                                >
+                                    Image/Video
                                 </Button>
                                 <Button
                                     className="btn btn-secondary"
@@ -208,11 +217,12 @@ export default function ParentSayPost({
                         </div>
                         <div className={stylesModal.modalFooter}>
                             <Button
-                                className="btn btn-primary"
+                                className="btn btn-primary-send"
                                 onClick={handleSubmit}
+                                disabled={disabled}
                             >
-                                Відправити
-                            </Button>{" "}
+                                Send
+                            </Button>{" "} 
                         </div>
                     </div>
                 </Modal>

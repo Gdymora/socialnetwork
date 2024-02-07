@@ -10,7 +10,7 @@ export default function Modal({
     onClose = () => {},
 }: PropsWithChildren<{
     show: boolean;
-    maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl"| "3xl"| "4xl";
+    maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
     overlayColor?: "gray" | "black";
     closeable?: boolean;
     onClose: CallableFunction;
@@ -20,10 +20,10 @@ export default function Modal({
             onClose();
         }
     };
-
-    const overlayColorClass = { 
-        gray: "bg-gray-500/75", 
-        black: "bg-black" 
+    
+    const overlayColorClass = {
+        gray: "bg-gray-500/75",
+        black: "bg-black",
     }[overlayColor];
 
     const maxWidthClass = {
@@ -32,8 +32,8 @@ export default function Modal({
         lg: "sm:max-w-lg",
         xl: "sm:max-w-xl",
         "2xl": "sm:max-w-2xl",
-        "3xl": "sm:max-w-3xl", 
-        "4xl": "sm:max-w-4xl"
+        "3xl": "sm:max-w-3xl",
+        "4xl": "sm:max-w-4xl",
     }[maxWidth];
 
     return (
