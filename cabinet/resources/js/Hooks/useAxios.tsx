@@ -18,7 +18,6 @@ const useAxios = (url) => {
                 data: requestData,
                 ...config
             });
-            console.log(response)
             setData(response.data);
         } catch (error) {
             setError(error);

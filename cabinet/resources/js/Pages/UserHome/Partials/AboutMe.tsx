@@ -1,126 +1,135 @@
 import EditableText from "@/Components/EditableText";
 import useAxios from "@/Hooks/useAxios";
-import { ProfileData } from "@/types";
+import { AboutMe, ProfileData } from "@/types";
 import { useEffect, useState } from "react";
-
 import { toast } from "react-toastify";
 
 export default function ({ profileData }: { profileData: ProfileData }) {
-    const [aboutMe, setAboutMe] = useState(profileData);
-    const [textData, setTextData] = useState("");
-    const { sendRequest, data, loading, error } = useAxios(""); // Використовуйте хук тут
+    const [textData, setTextData] = useState<AboutMe>(profileData.about_me); // Зберігати textData для кожного ключа
+    const { sendRequest, data, loading, error } = useAxios("");
+    const [editableText, setEditableText] = useState<{
+        [key: string]: boolean;
+    }>({
+        hobbies: false,
+        occupations: false,
+        education: false,
+        birthplace: false,
+    });
 
     const label = {
-        hobbies: "hobby",
-        occupations: "occupations",
-        education: "education",
+        hobbies: "Hobby",
+        occupations: "Occupations",
+        education: "Education",
         birthplace: "Birthplace",
     };
-    // Функція для отримання ключа за значенням
+
     const getKeyByValue = (
         object: Record<string, string>,
         value: string
     ): string | undefined => {
-        return Object.keys(object).find((key) => object[key] === value);
+        return Object.keys(object).find((obj) => obj === value);
     };
-    if (!profileData || !profileData.about_me) {
-        // Відображення заглушки
-        //TODO add sceleton
-        //return <div>Loading...</div>;
-    }
 
-    const handleTextChange = (data: string) => {
-        setTextData(data);
+    const handleTextChange = (data: string, key: string) => {
+        // Приймає ключ, до якого змінюється значення
+        setTextData((prevTextData) => ({
+            ...prevTextData,
+            [key]: data, // Зберігає textData для цього ключа
+        }));
     };
-    const [editableText, setEditableText] = useState(true);
 
-    const handleEditableText = () => {
-        setEditableText(false);
+    const handleEditableText = (key: string, isText: boolean) => {
+        setEditableText((prevState) => ({
+            ...prevState,
+            [key]: isText,
+        }));
     };
 
     const editableStyle = {
         margin: "-8px",
     };
+
     const handleInputBlur = (valueToFind: string) => {
         const keyValue = getKeyByValue(label, valueToFind);
-        if (keyValue && textData) {
-            sendRequest(
-                "patch",
-                { [keyValue]: textData },
-                { url: `/user-about-me` }
-            ); 
+        if (keyValue) {
+            if (profileData.about_me[keyValue] !== textData[keyValue]) {
+                sendRequest(
+                    "patch",
+                    { [keyValue]: textData[keyValue] },
+                    { url: `/user-about-me` }
+                );
+            }
+            handleEditableText(valueToFind, false);
         }
-        // логіка після успішного запиту
     };
+
     useEffect(() => {
         if (!loading && !error && data) {
-            // Логіка після успішного запиту             
-            toast.success(data.message);
+            if (data.message) {
+                toast.success(data.message);
+            } else {
+                toast.success("Successful!");
+            }
         } else if (!loading && error) {
-            // Логіка у випадку помилки
-            console.error("Сталася помилка при оновленні даних:", error);
             toast.error("Сталася помилка при оновленні даних");
         }
     }, [data, loading, error]);
+
     return (
         <div className="about">
-            <h2>About me</h2>
-            <label htmlFor="section"> {label.occupations}: </label>
-            <div
-                onClick={handleEditableText}
-                className="section"
-                onBlur={() => handleInputBlur(label.occupations)}
-            >
-                {editableText ? (
-                    <>
-                        {profileData.about_me?.occupations ? (
-                            <p className="text-light">
-                                {profileData.about_me.occupations}
-                            </p>
+            <div className="flex justify-content-center">
+                <div
+                    className="circle"
+                    style={{ width: "200px", height: "200px" }}
+                >
+                    <img
+                        src={
+                            profileData.profile_image_url
+                                ? `/user-file/${profileData.profile_image_url}`
+                                : "/assets/images/noimg.png"
+                        } 
+                        loading="lazy"
+                        alt={`${profileData?.name} ${profileData?.last_name}`}
+                    />
+                </div>
+            </div>
+            <div className="flex justify-content-center">
+                <h2>About me</h2>
+            </div>
+            {Object.entries(label).map(([key, value]) => (
+                <div key={key}>
+                    <label htmlFor="section">{value}: </label>
+                    <div
+                        key={key}
+                        onClick={() => handleEditableText(key, true)}
+                        className="section"
+                        onBlur={() => handleInputBlur(key)}
+                    >
+                        {editableText[key] ? (
+                            <div style={editableStyle}>
+                                <EditableText
+                                    onChange={(data) =>
+                                        handleTextChange(data, key)
+                                    }
+                                    textFromUploader={textData[key]}
+                                    isEdit={editableText[key]}
+                                    isTypeInput={false}
+                                />
+                            </div>
                         ) : (
-                            <p>Add a {label.occupations}</p>
+                            <>
+                                {textData[key] ? (
+                                    <p className="text-light">
+                                        {textData[key]}
+                                    </p>
+                                ) : (
+                                    <p>Add a {value}</p>
+                                )}
+                            </>
                         )}
-                    </>
-                ) : (
-                    <div style={editableStyle}>
-                        <EditableText
-                            onChange={handleTextChange}
-                            textFromUploader={textData}
-                            isEdit={true}
-                            isTypeInput={true}
-                        />
                     </div>
-                )}
-            </div>
-
-            <label htmlFor="section"> {label.hobbies}: </label>
-            <div className="section">
-                {profileData.about_me?.hobbies ? (
-                    <p className="text-light">{profileData.about_me.hobbies}</p>
-                ) : (
-                    <p>Add a {label.hobbies}</p>
-                )}
-            </div>
-            <label htmlFor="section"> {label.education}: </label>
-            <div className="section">
-                {profileData.about_me?.education ? (
-                    <p className="text-light">
-                        {profileData.about_me.education}
-                    </p>
-                ) : (
-                    <p>Edit your {label.education}</p>
-                )}
-            </div>
-            <label htmlFor="section"> {label.birthplace}: </label>
-            <div className="section">
-                {profileData.about_me?.birthplace ? (
-                    <p className="text-light">
-                        {profileData.about_me.birthplace}
-                    </p>
-                ) : (
-                    <p>Add to {label.birthplace}</p>
-                )}
-            </div>
+                </div>
+            ))}
         </div>
     );
 }

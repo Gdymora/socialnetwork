@@ -13,6 +13,7 @@ import TextInput from "@/Components/TextInput";
 import Music from "./Music";
 import Posts from "./Posts";
 import Images from "./Images";
+import { toast } from "react-toastify";
 
 export default function ParentModalFile({
     profileData,
@@ -31,8 +32,7 @@ export default function ParentModalFile({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string | number>("");
     const [fileData, setFileData] = useState<File | null>(null);
-
-    useEffect(() => {});
+    const [disabled, setDisabled] = useState(true);
 
     const handleOpenModal = (content: string) => {
         setIsModalOpen(true);
@@ -45,6 +45,7 @@ export default function ParentModalFile({
 
     const handleFileChange = (data: File | null) => {
         setFileData(data);
+        setDisabled(false);
     };
 
     const formData = new FormData();
@@ -56,16 +57,6 @@ export default function ParentModalFile({
     }
 
     const handleSubmit = () => {
-        // Обробка даних форми
-        console.log("Відправлення форми з даними:", {
-            data,
-            selectedOption,
-            fileData,
-            formData,
-        });
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-        }
         axios
             .post(route("user-file"), formData, {
                 headers: {
@@ -74,9 +65,12 @@ export default function ParentModalFile({
             })
             .then((res) => {
                 console.log(res);
+                toast.success(res.data.message);
+                setDisabled(true);
             })
             .catch((error) => {
                 console.error("Error submitting post data", error);
+                toast.error("Error submitting post data", error);
             });
     };
 
@@ -196,8 +190,9 @@ export default function ParentModalFile({
                         </div>
                         <div className={stylesModal.modalFooter}>
                             <Button
-                                className="btn btn-primary"
+                                className="btn btn-primary-send"
                                 onClick={handleSubmit}
+                                disabled={disabled}
                             >
                                 Send
                             </Button>{" "}

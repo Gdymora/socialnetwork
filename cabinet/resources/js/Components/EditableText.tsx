@@ -25,12 +25,12 @@ const textArea = {
     whiteSpace: "pre-wrap" as const, // Зберігає пробіли і переноси
     overflowWrap: "break-word" as const, // Перенос слів, щоб уникнути виходу за межі
 };
-const stylesInput = { 
+const stylesInput = {
     cursor: "text",
     borderRadius: "5px",
     backgroundColor: "#e4e6eb",
     borderColor: "#e4e6eb",
-    padding: "10px", 
+    padding: "10px",
     width: "100%",
     height: "40px",
     margin: "-8px",
@@ -60,18 +60,11 @@ const EditableText = ({
     isEdit?: boolean;
 }) => {
     const [isEditing, setIsEditing] = useState(isEdit);
-    const [text, setText] = useState("");
     const [isTextEntered, setIsTextEntered] = useState(false);
-    useEffect(() => { 
-        setText(textFromUploader);
-        //   setIsTextEntered(true);
-    }, [textFromUploader]);
+    const [text, setText] = useState(textFromUploader || "");
 
     const handleTextClick = (event: MouseEvent<HTMLDivElement>) => {
         setIsEditing(true);
-        if (!isTextEntered) {
-            setText("");
-        }
     };
 
     const handleInputChange = (
@@ -107,7 +100,6 @@ const EditableText = ({
                             value={text}
                             onChange={handleInputChange}
                             onBlur={handleInputBlur}
-                            autoFocus
                         ></input>
                     ) : (
                         <textarea
@@ -117,8 +109,7 @@ const EditableText = ({
                             style={combinedStyles}
                             value={text}
                             onChange={handleInputChange}
-                            onBlur={()=>handleInputBlur}
-                            autoFocus
+                            onBlur={() => handleInputBlur}
                         ></textarea>
                     )}
                 </>

@@ -16,7 +16,7 @@ import ParentSayPost from "../Dashboard/Partials/ModalSay/ParentSayPost";
 import PostsList from "../Dashboard/Partials/Post/PostList";
 import ParentModalFile from "./Partials/ParentModalFile";
 import FileViewList from "./Partials/FileView/FileViewList";
-import { CSSProperties, useState } from "react";
+import { useState } from "react";
 import MenegmentPost from "./Partials/MenegmentPost";
 interface UserPageProps {
     auth: Auth;

@@ -27,9 +27,6 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-// Враховуючи, що {url} - це параметр, який може містити слеші
-Route::get('/link-preview/{url}', [LinkPreviewController::class, 'show'])
-    ->where('url', '.*'); // Дозволяє URL містити будь-які символи, включно із слешами
 
 Route::get('/', function () {
     if (!Auth::check()) {
@@ -39,19 +36,11 @@ Route::get('/', function () {
     }
 });
 
-/* Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Враховуючи, що {url} - це параметр, який може містити слеші
+Route::get('/link-preview/{url}', [LinkPreviewController::class, 'show'])
+    ->where('url', '.*'); // Дозволяє URL містити будь-які символи, включно із слешами
+Route::get('/redirect', 'RedirectController@redirectToExternalSite')->name('external.redirect');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
- */
 Route::get('/media/{type}/{filename}', function ($type, $filename) {
     if (!in_array($type, ['images', 'videos'])) {
         abort(404);

@@ -11,7 +11,7 @@ import FileTabContent from "./FileTabContent";
 import { useForm } from "@inertiajs/react";
 import axios from "axios";
 import LinkTabContent from "./LinkTabContent";
-import { ToastContainer, toast } from "react-toastify"; 
+import { toast } from "react-toastify"; 
 import EditableText from "@/Components/EditableText";
 
 export default function ParentSayPost({

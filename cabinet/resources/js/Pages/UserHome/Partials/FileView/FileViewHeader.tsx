@@ -78,7 +78,7 @@ export default function FileViewHeader({
                         <Dropdown.Link href={route("profile.edit")}>
                             Profile
                         </Dropdown.Link>{" "}
-                        {visibility === "private" && type === "image" && (
+                        {type === "image" && (
                             <Dropdown.Link
                                 onClick={handleSetAsProfilePicture}
                                 method="post"
