@@ -499,7 +499,7 @@ button.button-icon {
 
 .content .posts .post img {
     width: 100%;
-    aspect-ratio: 4/3;
+    /* aspect-ratio: 4/3; */
     object-fit: cover;
     object-position: 50% 50%;
     border-radius: 10px;
@@ -1120,13 +1120,7 @@ select {
 }
 
 .large-image img {
-    max-width: 90%;
-    max-height: 90%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
+    width: 100%;
 }
 
 .custom-uploader-class {

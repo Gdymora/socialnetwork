@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class RedirectController extends Controller
 {
     public function redirectToExternalSite(Request $request)
-    {       
+    {
         if ($request->has('url')) {
             $url = $request->input('url');
             return redirect()->away($url);

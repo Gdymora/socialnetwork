@@ -37,7 +37,7 @@ export default function FileView({
     };
 
     return (
-        <div style={postFile}>
+        <div style={postFile} onClick={onFileClick}>
             <FileViewHeader
                 title={file.title}
                 createdAt={file.created_at}
@@ -55,9 +55,7 @@ export default function FileView({
                     }
                 />
             ) : (
-                <div onClick={onFileClick}>
-                    <FileViewContent media={file} />
-                </div>
+                <FileViewContent media={file} />
             )}{" "}
             <FileViewFooter
                 onToggleComments={toggleComments}

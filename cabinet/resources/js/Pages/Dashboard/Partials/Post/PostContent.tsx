@@ -16,6 +16,11 @@ export default function PostContent({
     maxLength: number;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [imageDimensions, setImageDimensions] = useState<{
+        width: number;
+        height: number;
+    } | null>(null);
 
     const toggleExpanded = () => {
         setIsExpanded(!isExpanded);
@@ -28,17 +33,37 @@ export default function PostContent({
         return content.substring(0, maxLength) + "...";
     };
 
+    const openLargeImage = (imageUrl: string) => {
+        setSelectedImage(imageUrl);
+    };
+
+    const closeLargeImage = () => {
+        setSelectedImage(null);
+    };
+
+    const handleImageLoad = (
+        event: React.SyntheticEvent<HTMLImageElement, Event>
+    ) => {
+        const img = event.target as HTMLImageElement;
+        setImageDimensions({ width: img.width, height: img.height });
+    };
+
     return (
         <div className="post-content">
             {media.map((mediaItem) => (
-                <div key={mediaItem.id}>
+                <div
+                    key={mediaItem.id}
+                    onClick={() => openLargeImage(`/media/${mediaItem.url}`)}
+                >
                     {mediaItem.type === "image" && (
                         <img
                             src={`/media/${mediaItem.url}`}
                             alt="Media"
                             loading="lazy"
+                            onLoad={handleImageLoad}
                         />
                     )}
+
                     {mediaItem.type === "video" && (
                         <video src={`/media/${mediaItem.url}`} controls />
                     )}
@@ -60,6 +85,19 @@ export default function PostContent({
                     >
                         {isExpanded ? "View less" : "View more"}
                     </span>
+                </div>
+            )}
+
+            {selectedImage && imageDimensions && (
+                <div className="large-image flex justify-content-center align-items-center" onClick={closeLargeImage}>
+                    <div>
+                        <img
+                            src={selectedImage}
+                            alt="Large Media"
+                            width={imageDimensions.width}
+                            height={imageDimensions.height}
+                        />
+                    </div>
                 </div>
             )}
         </div>

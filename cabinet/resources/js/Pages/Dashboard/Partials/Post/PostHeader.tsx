@@ -21,9 +21,11 @@ export default function PostHeader({
                         ? `/user-file/${author.profile_image_url}`
                         : "/assets/images/noimg.png"
                     }
+                    
                     alt={`image ${author.name}`}
                     loading="lazy"
                 />
+
             </div>
             <div className="text">
                 <p className="bold">

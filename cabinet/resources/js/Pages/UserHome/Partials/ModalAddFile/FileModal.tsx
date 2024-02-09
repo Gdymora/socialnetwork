@@ -7,16 +7,14 @@ interface FileModalProps {
     modalContent: null | UserFile;
     onClose: (arg: boolean) => void;
     onNextClick: () => void;
-    onPrevClick: () => void;
-    onToggleLargeImage: () => void;
+    onPrevClick: () => void; 
 }
 export default function FileModal({
     isModalOpen,
     modalContent,
     onClose,
     onNextClick,
-    onPrevClick,
-    onToggleLargeImage
+    onPrevClick, 
 }: FileModalProps) {
     return (
         <Modal
@@ -49,7 +47,6 @@ export default function FileModal({
                                     contentModal={isModalOpen}
                                     onNextClick={() => onNextClick()}
                                     onPrevClick={() => onPrevClick()}
-                                    onToggleLargeImage={() => onToggleLargeImage()}
                                 />
                             </div>
                         )}

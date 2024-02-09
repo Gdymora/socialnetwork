@@ -13,6 +13,7 @@ export default function ProfileUserCard({ user }: { user: Friend }) {
                         ? `/user-file/${profile_image_url}`
                         : "/assets/images/noimg.png"
                 }
+                loading="lazy"
                 alt={`Аватар ${name}`}
             />
             <a href={route("profile-friend", { id: id })}>

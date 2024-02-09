@@ -11,6 +11,7 @@ use App\Http\Controllers\Pages\UserHome\UserHomeController;
 use App\Http\Controllers\Pages\WorkShop\WorkShopController;
 use App\Http\Controllers\PostMediaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\UserAboutMeController;
 use App\Http\Controllers\UserFileController;
 use Illuminate\Foundation\Application;
@@ -39,7 +40,7 @@ Route::get('/', function () {
 // Враховуючи, що {url} - це параметр, який може містити слеші
 Route::get('/link-preview/{url}', [LinkPreviewController::class, 'show'])
     ->where('url', '.*'); // Дозволяє URL містити будь-які символи, включно із слешами
-Route::get('/redirect', 'RedirectController@redirectToExternalSite')->name('external.redirect');
+Route::get('/redirect', [RedirectController::class, 'redirectToExternalSite'])->name('external.redirect');
 
 Route::get('/media/{type}/{filename}', function ($type, $filename) {
     if (!in_array($type, ['images', 'videos'])) {

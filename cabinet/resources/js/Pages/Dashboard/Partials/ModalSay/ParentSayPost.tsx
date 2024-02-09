@@ -11,7 +11,7 @@ import FileTabContent from "./FileTabContent";
 import { useForm } from "@inertiajs/react";
 import axios from "axios";
 import LinkTabContent from "./LinkTabContent";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
 import EditableText from "@/Components/EditableText";
 
 export default function ParentSayPost({
@@ -124,10 +124,12 @@ export default function ParentSayPost({
                                     >
                                         <img
                                             src={
-                                                profileData.profile_image_url ||
-                                                "/assets/images/noimg.png"
+                                                profileData.profile_image_url
+                                                    ? `/user-file/${profileData.profile_image_url}`
+                                                    : "/assets/images/noimg.png"
                                             }
-                                            alt={profileData.name || "noimage"}
+                                            alt={`image ${profileData.name}`}
+                                            loading="lazy"
                                         />
                                     </div>
                                     <div className={stylesModal.textFlexCenter}>
@@ -222,7 +224,7 @@ export default function ParentSayPost({
                                 disabled={disabled}
                             >
                                 Send
-                            </Button>{" "} 
+                            </Button>{" "}
                         </div>
                     </div>
                 </Modal>

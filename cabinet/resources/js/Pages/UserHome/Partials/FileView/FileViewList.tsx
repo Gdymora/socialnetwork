@@ -19,7 +19,7 @@ export default function FileViewList({ files }: FileViewProps) {
     const [modalContent, setModalContent] = useState<null | UserFile>(null);
     const [typeFileClick, setTypeFileClick] = useState<
         null | string | undefined
-    >("");
+    >(""); 
     useEffect(() => {
         // Об'єднаємо всі файли з різних розділів в один масив
         const mergedFiles: UserFile[] = [
@@ -65,12 +65,9 @@ export default function FileViewList({ files }: FileViewProps) {
 
     const handleSelectChange = (value: string | number) => {
         setSelectedOption(value);
-    };
-    const toggleLargeImage = () => {
-        setShowLargeImage(!showLargeImage);
-    };
+    }; 
 
-    const [showLargeImage, setShowLargeImage] = useState(false);
+   
     return (
         <>
             <div className="post">
@@ -102,33 +99,10 @@ export default function FileViewList({ files }: FileViewProps) {
                     modalContent={filteredFiles[currentFileIndex]}
                     onClose={handleCloseModal}
                     onNextClick={() => nextFile()}
-                    onPrevClick={() => prevFile()}
-                    onToggleLargeImage={() => toggleLargeImage()}
+                    onPrevClick={() => prevFile()} 
                 />
             )}
-            {/* Велике зображення */}
-            {showLargeImage && (
-                <div className="large-image" onClick={toggleLargeImage}>
-                    <img
-                        src={`/user-file/${filteredFiles[currentFileIndex].url}`}
-                        alt="Large Media"
-                    />
-                    <div
-                        className="arrow-switcher"
-                        onClick={prevFile}
-                        style={{ left: "30%" }}
-                    >
-                        &lt;
-                    </div>
-                    <div
-                        className="arrow-switcher"
-                        onClick={nextFile}
-                        style={{ right: "20px" }}
-                    >
-                        &gt;
-                    </div>
-                </div>
-            )}
+            
             <div className="post">
                 <h3>Private</h3>
                 <div style={contentGrid}>
