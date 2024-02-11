@@ -4,24 +4,13 @@ import { UserFile } from "@/types";
 import FileViewHeader from "./FileViewHeader";
 import FileViewContent from "./FileViewContent";
 import FileViewFooter from "./FileViewFooter";
-import FileViewContentModal from "./FileViewContentModal";
 interface UserFileProps {
     file: UserFile;
     contentModal?: boolean;
     onFileClick?: () => void | null;
-    onNextClick?: (() => void | null) | undefined;
-    onPrevClick?: (() => void | null) | undefined;
-    onToggleLargeImage?: (() => void | null) | undefined;
 }
 
-export default function FileView({
-    file,
-    onFileClick,
-    contentModal,
-    onNextClick,
-    onPrevClick,
-    onToggleLargeImage,
-}: UserFileProps) {
+export default function FileView({ file, onFileClick }: UserFileProps) {
     const [showComments, setShowComments] = useState(false);
 
     const toggleComments = () => {
@@ -45,18 +34,7 @@ export default function FileView({
                 type={file.type}
                 url={file.url}
             />{" "}
-            {contentModal ? (
-                <FileViewContentModal
-                    media={file}
-                    nextFile={onNextClick && (() => onNextClick())}
-                    prevFile={onPrevClick && (() => onPrevClick())}
-                    toggleLargeImage={
-                        onToggleLargeImage && (() => onToggleLargeImage())
-                    }
-                />
-            ) : (
-                <FileViewContent media={file} />
-            )}{" "}
+            {<FileViewContent media={file} />}{" "}
             <FileViewFooter
                 onToggleComments={toggleComments}
                 description={file.description}

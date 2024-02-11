@@ -53,9 +53,11 @@ export interface Media {
     id: number;
     mediable_id: number;
     mediable_type: string;
-    type: "image" | "video";
+    type: "image" | "video" | "music";
     updated_at: string;
     url: string;
+    title?: string;
+    description?: string;
 }
 
 export interface LinkData {
@@ -66,10 +68,9 @@ export interface LinkData {
     url: string;
 }
 
-export interface UserFile {
+export interface UserFile extends UserFileFilteredByVisibility{
     created_at: string;
-    description: string;
-    friends: string;
+    description: string; 
     id: number;
     title: string;
     type: string;
@@ -81,9 +82,9 @@ export interface UserFile {
 }
 
 export interface UserFileFilteredByVisibility {
-    public: UserFile[];
-    private: UserFile[];
-    friends: UserFile[];
+    public: UserFile[] | [];
+    private: UserFile[] | [];
+    friends: UserFile[] | [];
 }
 export interface PostType {
     id: number;
