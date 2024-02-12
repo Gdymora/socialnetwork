@@ -1,5 +1,6 @@
-import { Media, UserFile } from "@/types";
+import { UserFile } from "@/types";
 import { useState, useEffect, useRef } from "react";
+import AudioPlayer from "./audioPlayer/AudioPlayerHowler";
 
 const MediaCarousel = ({
     media,
@@ -75,16 +76,58 @@ const MediaCarousel = ({
                 );
         }
     };
+    const renderMediaAudio = (media) => {
+        const [containerSize, setContainerSize] = useState({
+            width: 0,
+            height: 0,
+        });
+        const containerRef = useRef(null);
 
+        useEffect(() => {
+            const updateSize = () => {
+                if (containerRef.current) {
+                    setContainerSize({
+                        width: containerRef.current.offsetWidth,
+                        height: containerRef.current.offsetHeight,
+                    });
+                }
+            };
+
+            // Викликати одразу для ініціалізації розміру
+            updateSize();
+            // Слідкувати за змінами розміру в'юпорту
+            window.addEventListener("resize", updateSize);
+
+            return () => window.removeEventListener("resize", updateSize);
+        }, []);
+
+        // Переконайтеся, що media містить елементи і що кожен елемент має url
+        const playlist = media.map((item) => ({
+            src: `/user-file/${item.url}`,
+        }));
+
+        return (
+            <div
+                ref={containerRef}
+                className={`absolute audioPlayerCanvas !transform-none transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none`}
+            >
+                <AudioPlayer
+                    playlist={playlist}
+                    widthCanvas={containerSize.width}
+                    heightCanvas={containerSize.height}
+                />
+            </div>
+        );
+    };
     return (
-        <div className="flex transition-opacity duration-500">
+        <div className="">
             <button
                 onClick={onClose}
-                className="absolute top-24 right-12 rounded-full w-12 h-12 flex items-center justify-center md:absolute md: z-50 p-2 m-2 text-white bg-red-600 bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center"
+                className="fixed top-24 right-12 z-50 p-2 m-2 text-white bg-red-600 bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center"
             >
                 X
             </button>
-            {media[currentIndex].type === "image" ? (
+            {media[currentIndex]?.type === "image" ? (
                 <>
                     <div className="large-image flex justify-content-center align-items-center">
                         {media.map((item, index) => (
@@ -129,21 +172,9 @@ const MediaCarousel = ({
                 </>
             ) : (
                 <>
-                    {/* <div className="flex transition-opacity duration-500">
-                            {media.map((item, index) => (
-                                <div
-                                    key={item.id}
-                                    className={`absolute inset-0 w-full h-full flex !transform-none opacity-0 transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none ${
-                                        index === currentIndex
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                    }`}
-                                    style={{ width: "100%", height: "100%" }}
-                                >
-                                    {renderMediaItem(item)}
-                                </div>
-                            ))}
-                        </div> */}
+                    <div className="large-image flex justify-content-center align-items-center">
+                        {renderMediaAudio(media)}
+                    </div>
                 </>
             )}
         </div>

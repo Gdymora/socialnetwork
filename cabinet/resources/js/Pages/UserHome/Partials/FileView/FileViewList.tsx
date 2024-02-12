@@ -80,7 +80,6 @@ export default function FileViewList({ files }: FileViewProps) {
             setIsModalOpen(true);    
             // Фільтрація всіх файлів за обраним типом
             const globalIndex = allFiles.findIndex(file => file.id === selectedFile.id);
-            console.log(globalIndex);
             setCurrentFileIndex(globalIndex);
         }
     };

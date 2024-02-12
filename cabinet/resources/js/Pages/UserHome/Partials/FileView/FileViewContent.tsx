@@ -1,5 +1,6 @@
+import AudioPlayer from "@/Components/AudioPlayerHowler";
 import CustomAudioPlayer from "@/Components/CustomAudioPlayer";
-import { LinkData, Media, UserFile } from "@/types";
+import { UserFile } from "@/types";
 import { CSSProperties, useState } from "react";
 
 export default function FileViewContent({ media }: { media: UserFile }) {
@@ -28,7 +29,7 @@ export default function FileViewContent({ media }: { media: UserFile }) {
                 )}
                 {media.type === "video" && (
                     <div style={fileCard}>
-                        <video src={`/user-file/${media.url}`}/>
+                        <video src={`/user-file/${media.url}`} />
                     </div>
                 )}
                 {media.type === "music" && (
