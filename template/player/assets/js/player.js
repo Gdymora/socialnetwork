@@ -407,6 +407,7 @@ prevBtn.addEventListener('click', function() {
 nextBtn.addEventListener('click', function() {
   player.skip('next');
 });
+
 waveform.addEventListener('click', function(event) {
   player.seek(event.clientX / window.innerWidth);
 });

@@ -23,7 +23,7 @@ export default function ParentModalFile({
     onToggleFiles: (shouldShowFiles: boolean, typeFiles: string) => void;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        titleData: "",
+        title: "",
         descriptionData: "",
         selectedOption: "",
         fileData: null,
@@ -33,7 +33,6 @@ export default function ParentModalFile({
     const [selectedOption, setSelectedOption] = useState<string | number>("");
     const [fileData, setFileData] = useState<File | null>(null);
     const [disabled, setDisabled] = useState(true);
-
     const handleOpenModal = (content: string) => {
         setIsModalOpen(true);
     };
@@ -45,12 +44,15 @@ export default function ParentModalFile({
 
     const handleFileChange = (data: File | null) => {
         setFileData(data);
+        if (data?.name) {
+            setData("title", data.name);
+        }
         setDisabled(false);
     };
 
     const formData = new FormData();
     formData.append("selectedOption", selectedOption as string);
-    formData.append("titleData", data.titleData);
+    formData.append("titleData", data.title);
     formData.append("descriptionData", data.descriptionData);
     if (fileData) {
         formData.append("fileData", fileData);
@@ -150,11 +152,11 @@ export default function ParentModalFile({
                                         id="title"
                                         type="text"
                                         name="title"
-                                        value={data.titleData}
+                                        value={data.title}
                                         className="mt-1 block w-full"
                                         isFocused={true}
                                         onChange={(e) =>
-                                            setData("titleData", e.target.value)
+                                            setData("title", e.target.value)
                                         }
                                     />
                                 </div>

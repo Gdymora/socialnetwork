@@ -40,7 +40,6 @@ export default function FileModal({
                     <div className={stylesModal.modalContent}>
                         {modalContent && (
                             <div className="flex">
-                                <div style={{ width: "500px" }}>hhhh</div>
                                 <FileView
                                     key={modalContent.id}
                                     file={modalContent}

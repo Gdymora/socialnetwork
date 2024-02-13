@@ -8,9 +8,9 @@ const SiriWaveComponent = (props) => {
         const siriWave = new SiriWave({
             ...props,
             container: waveRef.current,
-            cover: true,
+            cover: true,/* 
             speed: 0.03,
-            amplitude: 0.7,
+            amplitude: 0.7, */
             frequency: 2,
         });
         siriWave.start();
@@ -22,7 +22,7 @@ const SiriWaveComponent = (props) => {
         };
     }, []);
 
-    return <div ref={waveRef} />;
+    return <div ref={waveRef}/>;
 };
 
 export default SiriWaveComponent;
