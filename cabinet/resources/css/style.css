@@ -1120,7 +1120,7 @@ select {
 .large-image img {
     width: 100%;
 }
-.audioPlayerCanvas {
+.audio_player_canvas {
     width: 70vw;
     height: 80vh;
 }

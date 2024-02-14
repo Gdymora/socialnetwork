@@ -8,6 +8,8 @@ interface UserFileProps {
     file: UserFile;
     contentModal?: boolean;
     onFileClick?: () => void | null;
+    onNextClick?: () => void | null;
+    onPrevClick?: () => void | null;
 }
 
 export default function FileView({ file, onFileClick }: UserFileProps) {

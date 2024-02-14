@@ -1,18 +1,17 @@
 import { useState, useEffect, useRef } from "react";
-import { Howl, Howler } from "howler";
+import { Howl } from "howler";
 import styles from "./AudioPlayer.module.css";
 import SiriWaveComponent from "./SiriWaveComponent";
 
-const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
+const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
     const [playing, setPlaying] = useState(false);
-    const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+    const [currentTrackIndex, setCurrentTrackIndex] = useState(currentIndex);
     const [sound, setSound] = useState(null);
     const [duration, setDuration] = useState(0);
     const [seek, setSeek] = useState(0);
     const [volume, setVolume] = useState(0.3); // Default volume at 100%
     const [volumeVisible, setVolumeVisible] = useState(false);
     const [sliderDown, setSliderDown] = useState(false);
-    const [sliderPosition, setSliderPosition] = useState(0);
     const [containerSize, setContainerSize] = useState({
         width: widthCanvas,
         height: heightCanvas,
@@ -20,7 +19,7 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
     const [isBar, setIsBar] = useState(false);
     const [isWave, setIsWave] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const seekRef = useRef();
+    const [isPlaylist, setIsPlaylist] = useState(false);
     const updateProgress = useRef();
     const playerContainerRef = useRef(null);
     const barFullRef = useRef(null); // Реф для елемента, що показує заповнення гучності
@@ -51,23 +50,16 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
             resizeObserver.observe(playerContainerRef.current);
         }
 
-        if (sound?.state() === "loaded") {
-            setPlaying(true);
-        } else {
-            console.log("sound");
-            setIsLoading(true);
-            setPlaying(false);
-        }
         if (sound && sliderBtnRef.current) {
             const barWidth = volume * 0.9;
             sliderBtnRef.current.style.left =
                 window.innerWidth * barWidth + window.innerWidth * 0.05 - 25;
         }
+
         return () => {
             if (playerContainerRef.current) {
                 resizeObserver.unobserve(playerContainerRef.current);
             }
-            console.log("Плеєр зупинено", playing, sound);
             sound?.stop();
         };
     }, [sound]);
@@ -75,6 +67,12 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
     useEffect(() => {
         if (playlist && playlist.length > 0 && !sound) {
             const track = playlist[currentTrackIndex];
+            if (!track) {
+                setIsLoading(true);
+                return;
+            } else {
+                setIsLoading(false);
+            }
             const newSound = new Howl({
                 src: [track.src],
                 html5: true,
@@ -108,8 +106,7 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
                 },
             });
             setSound(newSound);
-            //setVolume(sound?.volume());
-            // sound?.volume(volume);
+            newSound.play();
         }
     }, [playlist, currentTrackIndex, volume]);
 
@@ -121,27 +118,33 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
             sliderBtnRef.current.style.left = `${
                 containerSize.width * barWidth + containerSize.width * 0.05 - 25
             }px`;
-            console.log(
-                sliderBtnRef.current.style.left,
-                containerSize,
-                window.innerWidth
-            );
         }
-    }, [volume, sound, containerSize]);
+    }, [volume, containerSize]);
 
-    const play = () => sound?.play();
+    const play = () => {
+        if (sound && sound.state() === "loaded") {
+            sound.play();
+        } else {
+            setIsLoading(true);
+        }
+    };
     const pause = () => sound?.pause();
+    const stop = () => sound?.stop();
+
     const nextTrack = () =>
-        changeTrack((currentTrackIndex + 1) % playlist.length);
+        changeTrack(
+            currentTrackIndex > 0 ? currentTrackIndex - 1 : playlist.length - 1
+        );
     const prevTrack = () =>
         changeTrack(
-            (currentTrackIndex - 1 + playlist.length) % playlist.length
+            currentTrackIndex < playlist.length - 1 ? currentTrackIndex + 1 : 0
         );
     const changeTrack = (index) => {
-        sound?.stop();
+        stop();
         setSound(null);
         setCurrentTrackIndex(index);
     };
+
     const updatePosition = () => {
         const sound = playlist[currentTrackIndex]?.howl;
         if (sound?.playing()) {
@@ -150,23 +153,12 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
         }
     };
 
-    const onSeek = (e) => {
-        const { clientX } = e.nativeEvent;
-        const { left, width } = seekRef.current.getBoundingClientRect();
-        const clickPosition = (clientX - left) / width;
-        const seekTo = clickPosition * duration;
-        sound.seek(seekTo);
-        setSeek(seekTo);
-    };
     const waveform = (e) => {
         sound.seek.seek(e.clientX / window.innerWidth);
     };
 
     const playlistBtn = () => {
-        //  sound.togglePlaylist();
-    };
-    const handlePlaylist = () => {
-        //  sound.togglePlaylist();
+        setIsPlaylist((prevIsPlaylist) => !prevIsPlaylist);
     };
 
     const toggleVolume = () => {
@@ -176,7 +168,6 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
     const barEmpty = (event) => {
         const per = event.layerX / parseFloat(barEmptyRef.scrollWidth);
         setVolume(per);
-        // sound.volume(per);
     };
 
     const handleMove = (event) => {
@@ -237,18 +228,18 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
                         className={styles.loading}
                         style={{ display: isLoading ? "block" : "none" }}
                     ></div>
-
-                    {playing ? (
-                        <div
-                            className={`${styles.btn} ${styles.pauseBtn}`}
-                            onClick={pause}
-                        ></div>
-                    ) : (
-                        <div
-                            className={`${styles.btn} ${styles.playBtn}`}
-                            onClick={play}
-                        ></div>
-                    )}
+                    {!isLoading &&
+                        (playing ? (
+                            <div
+                                className={`${styles.btn} ${styles.pauseBtn}`}
+                                onClick={pause}
+                            ></div>
+                        ) : (
+                            <div
+                                className={`${styles.btn} ${styles.playBtn}`}
+                                onClick={play}
+                            ></div>
+                        ))}
 
                     <div
                         className={`${styles.btn} ${styles.nextBtn}`}
@@ -285,8 +276,24 @@ const AudioPlayer = ({ playlist, widthCanvas, heightCanvas }) => {
             <div className={styles.progress}></div>
 
             {/* <!-- Playlist --> */}
-            <div className={styles.playlist} onClick={handlePlaylist}>
-                <div className={styles.list}></div>
+            <div
+                className={styles.playlist}
+                onClick={playlistBtn}
+                style={{ display: isPlaylist ? "block" : "none" }}
+            >
+                <div className={styles.list}>
+                    <div className={styles.list}>
+                        {playlist.map((song, index) => (
+                            <div
+                                key={index}
+                                className="list-song"
+                                onClick={() => changeTrack(index)}
+                            >
+                                {song.title}
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
 
             {/* <!-- Volume --> */}

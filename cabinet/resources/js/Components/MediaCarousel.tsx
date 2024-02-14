@@ -76,7 +76,7 @@ const MediaCarousel = ({
                 );
         }
     };
-    const renderMediaAudio = (media) => {
+    const renderMediaAudio = (media, currentId) => {
         const [containerSize, setContainerSize] = useState({
             width: 0,
             height: 0,
@@ -92,27 +92,26 @@ const MediaCarousel = ({
                     });
                 }
             };
-
             // Викликати одразу для ініціалізації розміру
             updateSize();
             // Слідкувати за змінами розміру в'юпорту
             window.addEventListener("resize", updateSize);
-
             return () => window.removeEventListener("resize", updateSize);
         }, []);
 
-        // Переконайтеся, що media містить елементи і що кожен елемент має url
         const playlist = media.map((item) => ({
             src: `/user-file/${item.url}`,
+            title: item.title
         }));
 
         return (
             <div
                 ref={containerRef}
-                className={`absolute audioPlayerCanvas !transform-none transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none`}
+                className={`absolute audio_player_canvas !transform-none transition-opacity duration-[600ms] ease-in-out motion-reduce:transition-none`}
             >
                 <AudioPlayer
                     playlist={playlist}
+                    currentIndex={startIndex}
                     widthCanvas={containerSize.width}
                     heightCanvas={containerSize.height}
                 />

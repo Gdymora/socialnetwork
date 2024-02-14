@@ -23,10 +23,6 @@ function FileCategoryView({
         justifyItems: "center",
     };
 
-    /* if (files.length === 0) {
-        return <div>No files in .</div>;
-    } */
-
     return (
         <div className="post">
             {title && <h3>{title}</h3>}
@@ -45,11 +41,9 @@ function FileCategoryView({
 
 export default function FileViewList({ files }: FileViewProps) {
     const [allFiles, setAllFiles] = useState<UserFile[]>([]);
+    const [filteredFiles, setАilteredFiles] = useState<UserFile[]>([]);
     const [currentFileIndex, setCurrentFileIndex] = useState<number>();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [typeFileClick, setTypeFileClick] = useState<
-        null | string | undefined
-    >("");
 
     useEffect(() => {
         // Об'єднаємо всі файли з різних розділів в один масив
@@ -61,30 +55,22 @@ export default function FileViewList({ files }: FileViewProps) {
         setAllFiles(mergedFiles);
     }, [files]);
 
-    const filteredFiles = allFiles.filter(
-        (file) => file.type === typeFileClick
-    );
+    const handleOpenModal = (selectedFile: UserFile, index: number) => {
+        if (selectedFile) {
+            const filteredFiles = allFiles.filter(
+                (file) => file.type === selectedFile.type
+            );
 
-  /*   const handleOpenModal = (content: null | UserFile, index: number) => {
-        console.log(content?.type);
-        if (content) {
-            setCurrentFileIndex(index);
-            setTypeFileClick(content?.type);
+            const globalIndex = filteredFiles.findIndex(
+                (file) => file.id === selectedFile.id
+            );
+            setCurrentFileIndex(globalIndex);
+            setАilteredFiles(filteredFiles);
             setIsModalOpen(true);
         }
-    }; */
-    const handleOpenModal = (selectedFile: UserFile, index: number) => {
-        console.log(selectedFile?.type);
-        if (selectedFile) {
-            setTypeFileClick(selectedFile.type);
-            setIsModalOpen(true);    
-            // Фільтрація всіх файлів за обраним типом
-            const globalIndex = allFiles.findIndex(file => file.id === selectedFile.id);
-            setCurrentFileIndex(globalIndex);
-        }
     };
-    const handleCloseModal = () => {
 
+    const handleCloseModal = () => {
         setIsModalOpen(false);
     };
 
