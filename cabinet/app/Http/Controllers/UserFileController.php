@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Models\UserFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserFileController extends Controller
 {
@@ -17,9 +19,9 @@ class UserFileController extends Controller
                 'descriptionData' => 'nullable|string',
                 'selectedOption' => 'required|string',
                 'fileData' => 'nullable|file'  // |mimetypes:video/mp4,image/jpeg,image/png,audio/mpeg,audio/mp3'              
-            ]); 
+            ]);
             $userfile = new UserFile();
-           
+
             $userfile->description = $validatedData['descriptionData'];
             // Створення нового посту
             switch ($validatedData['selectedOption']) {
@@ -79,5 +81,23 @@ class UserFileController extends Controller
             \DB::rollBack(); // Відкат транзакції у разі помилки
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    private function saveAlbumArt($path, $fileInfo)
+    {
+        if (isset($fileInfo['id3v2']['APIC'][0]['data'])) {
+            $data = $fileInfo['id3v2']['APIC'][0]['data'];
+            $mimeType = $fileInfo['id3v2']['APIC'][0]['mime'];
+            $extension = explode('/', $mimeType)[1]; // Визначення розширення файлу з MIME типу
+            // Створення імені файлу для зображення
+            $filename = uniqid('album_art_', true) . '.' . $extension;
+            $savePath = 'public/album_arts/' . $filename; // Вказівка шляху зберігання
+            // Зберігання файлу
+            Storage::disk('local')->put($savePath, $data);
+            // Повернення URL до зображення
+            return Storage::url($savePath);
+        }
+
+        return null;
     }
 }

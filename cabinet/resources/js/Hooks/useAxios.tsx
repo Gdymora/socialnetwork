@@ -1,32 +1,37 @@
-import axios from 'axios';
-import { useState } from 'react';
+import axios from "axios";
+import { useState } from "react";
 
-const useAxios = (url) => {
+const useAxios = (url: string) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
-    const sendRequest = async (method = 'get', requestData = {}, config = {}) => {
+    const [header, setHeader] = useState({});
+    const sendRequest = async (
+        method = "get",
+        requestData = {},
+        config = {}
+    ) => {
         setLoading(true);
         setData(null);
         setError(null);
-
         try {
             const response = await axios({
                 url,
                 method,
                 data: requestData,
-                ...config
+                ...config,
             });
             setData(response.data);
-        } catch (error) {
+
+            setHeader(response.headers);
+        } catch (error: any) {
             setError(error);
         } finally {
             setLoading(false);
         }
     };
 
-    return { sendRequest, data, loading, error };
+    return { sendRequest, data, loading, header, error };
 };
 
 export default useAxios;

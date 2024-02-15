@@ -7,6 +7,7 @@ use App\Http\Controllers\Pages\Friends\UnFollowController;
 use App\Http\Controllers\Pages\Message\MessageController;
 use App\Http\Controllers\Pages\Dashboard\DashboardController;
 use App\Http\Controllers\Pages\Galery\GaleryController;
+use App\Http\Controllers\Pages\UserHome\FileController;
 use App\Http\Controllers\Pages\UserHome\UserHomeController;
 use App\Http\Controllers\Pages\WorkShop\WorkShopController;
 use App\Http\Controllers\PostMediaController;
@@ -59,7 +60,7 @@ Route::get('/media/{type}/{filename}', function ($type, $filename) {
     return response($file, 200)->header("Content-Type", $fileType);
 })->where('filename', '.*');
 
-Route::get('/user-file/{type}/{filename}', function ($type, $filename) {
+/* Route::get('/user-file/{type}/{filename}', function ($type, $filename) {
     if (!in_array($type, ['images', 'videos', 'music'])) {
         abort(404);
     }
@@ -73,8 +74,8 @@ Route::get('/user-file/{type}/{filename}', function ($type, $filename) {
     $fileType = Storage::disk('local')->mimeType($filePath);
 
     return response($file, 200)->header("Content-Type", $fileType);
-})->where('filename', '.*');
-
+})->where('filename', '.*'); */
+Route::get('/user-file/{type}/{filename}', [FileController::class, 'sendFile'])->where('filename', '.*');
 Route::middleware('auth')->group(function () {
     //friend
     Route::get('/profile-friend/{id}', [ProfileFriendController::class, 'index'])->middleware(['auth', 'verified'])->name('profile-friend');

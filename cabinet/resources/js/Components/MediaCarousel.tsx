@@ -17,6 +17,7 @@ const MediaCarousel = ({
 }) => {
     const [currentIndex, setCurrentIndex] = useState(startIndex);
     const timeoutRef = useRef<NodeJS.Timeout | null | number>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const goToPrevious = () => {
         setCurrentIndex((prevIndex) =>
@@ -76,12 +77,11 @@ const MediaCarousel = ({
                 );
         }
     };
-    const renderMediaAudio = (media, currentId) => {
+    const renderMediaAudio = (media: UserFile[]) => {
         const [containerSize, setContainerSize] = useState({
             width: 0,
             height: 0,
         });
-        const containerRef = useRef(null);
 
         useEffect(() => {
             const updateSize = () => {
@@ -91,17 +91,15 @@ const MediaCarousel = ({
                         height: containerRef.current.offsetHeight,
                     });
                 }
-            };
-            // Викликати одразу для ініціалізації розміру
-            updateSize();
-            // Слідкувати за змінами розміру в'юпорту
+            }; 
+            updateSize(); 
             window.addEventListener("resize", updateSize);
             return () => window.removeEventListener("resize", updateSize);
         }, []);
 
         const playlist = media.map((item) => ({
             src: `/user-file/${item.url}`,
-            title: item.title
+            title: item.title,
         }));
 
         return (

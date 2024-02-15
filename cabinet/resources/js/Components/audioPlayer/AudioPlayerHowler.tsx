@@ -1,18 +1,45 @@
-import { useState, useEffect, useRef } from "react";
+/* 
+//https://github.com/goldfire/howler.js#documentation
+ */
+import { useState, useEffect, useRef, MouseEvent, TouchEvent } from "react";
 import { Howl } from "howler";
 import styles from "./AudioPlayer.module.css";
 import SiriWaveComponent from "./SiriWaveComponent";
+interface PlaylistItem {
+    src: string;
+    title: string;
+    artist?: string;
+    album?: string;
+    albumArt?: string;
+    duration?: number;
+    howl?: Howl;
+}
 
-const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
-    const [playing, setPlaying] = useState(false);
-    const [currentTrackIndex, setCurrentTrackIndex] = useState(currentIndex);
-    const [sound, setSound] = useState(null);
-    const [duration, setDuration] = useState(0);
-    const [seek, setSeek] = useState(0);
-    const [volume, setVolume] = useState(0.3); // Default volume at 100%
-    const [volumeVisible, setVolumeVisible] = useState(false);
-    const [sliderDown, setSliderDown] = useState(false);
-    const [containerSize, setContainerSize] = useState({
+interface Props {
+    playlist: PlaylistItem[];
+    currentIndex: number;
+    widthCanvas: number;
+    heightCanvas: number;
+}
+
+const AudioPlayer = ({
+    playlist,
+    currentIndex,
+    widthCanvas,
+    heightCanvas,
+}: Props) => {
+    const [playing, setPlaying] = useState<boolean>(false);
+    const [currentTrackIndex, setCurrentTrackIndex] =
+        useState<number>(currentIndex);
+    const [sound, setSound] = useState<Howl | null>(null);
+    const [duration, setDuration] = useState<number>(0);
+    const [volume, setVolume] = useState<number>(0.3);
+    const [sliderDown, setSliderDown] = useState<boolean>(false);
+    const [volumeVisible, setVolumeVisible] = useState<boolean>(false);
+    const [containerSize, setContainerSize] = useState<{
+        width: number;
+        height: number;
+    }>({
         width: widthCanvas,
         height: heightCanvas,
     });
@@ -20,14 +47,42 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
     const [isWave, setIsWave] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isPlaylist, setIsPlaylist] = useState(false);
-    const updateProgress = useRef();
-    const playerContainerRef = useRef(null);
-    const barFullRef = useRef(null); // Реф для елемента, що показує заповнення гучності
-    const sliderBtnRef = useRef(null); // Реф для кнопки слайдера гучності
-    const barEmptyRef = useRef(null);
-    const volumeRef = useRef(null); // Реф для контейнера гучності
-
+    const playerContainerRef = useRef<HTMLDivElement>(null);
+    const barFullRef = useRef<HTMLDivElement>(null);
+    const sliderBtnRef = useRef<HTMLDivElement>(null);
+    const barEmptyRef = useRef<HTMLDivElement>(null);
+    const volumeRef = useRef<HTMLDivElement>(null);
+    const durationRef = useRef<HTMLDivElement>(null);
+    const timerRef = useRef<HTMLDivElement>(null);
+    const progressRef = useRef<HTMLDivElement>(null);
+    const animationFrameId = useRef<number | null>(null);
     // Оновлення розмірів контейнера при зміні пропсів
+    const [currentTime, setCurrentTime] = useState(0);
+
+    useEffect(() => {
+        if (sound) {
+            const durationInSeconds = Math.round(sound.duration());
+            setDuration(durationInSeconds);
+            if (durationRef.current) {
+                durationRef.current.innerHTML = formatTime(durationInSeconds);
+            }
+            sound?.once("load", function () {
+                const duration = sound?.duration(); // Отримання тривалості треку
+                console.log("Тривалість треку:", duration, "секунд");
+            });
+            getHTMLMediaElement();
+        }
+    }, [sound]);
+
+    /*
+     *отримати доступ до
+     * <audio preload="auto" src="/user-file/music/.mp3"></audio>
+     */
+    const getHTMLMediaElement = () => {
+        const node = (sound as any)?._sounds[0]._node as HTMLAudioElement;
+        console.log(node);
+    };
+
     useEffect(() => {
         setContainerSize({
             width: widthCanvas,
@@ -52,15 +107,19 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
 
         if (sound && sliderBtnRef.current) {
             const barWidth = volume * 0.9;
-            sliderBtnRef.current.style.left =
-                window.innerWidth * barWidth + window.innerWidth * 0.05 - 25;
+            sliderBtnRef.current.style.left = (
+                window.innerWidth * barWidth +
+                window.innerWidth * 0.05 -
+                25
+            ).toString();
         }
-
+        console.log("effectSound", sound);
+        step();
         return () => {
             if (playerContainerRef.current) {
                 resizeObserver.unobserve(playerContainerRef.current);
             }
-            sound?.stop();
+            stop();
         };
     }, [sound]);
 
@@ -70,20 +129,19 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
             if (!track) {
                 setIsLoading(true);
                 return;
-            } else {
-                setIsLoading(false);
             }
             const newSound = new Howl({
                 src: [track.src],
-                html5: true,
+                html5: false,
+                // html5: true, почне відтворюватися, щойно стане можливо, за замовченням завантажує весь файл
                 volume,
                 onplay: () => {
                     setPlaying(true);
-                    setDuration(newSound.duration());
-                    requestAnimationFrame(updatePosition);
                     setIsWave(true);
                     setIsBar(false);
                     setIsLoading(false);
+                    step();
+                    console.log("one play");
                 },
                 onend: () => {
                     setIsWave(false);
@@ -95,6 +153,7 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
                     setPlaying(false);
                     setIsWave(false);
                     setIsBar(true);
+                    cancelAnimationFrame(animationFrameId.current as number);
                 },
                 onstop: () => {
                     setPlaying(false);
@@ -102,13 +161,15 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
                     setIsBar(true);
                 },
                 onseek: () => {
-                    setSeek(sound.seek());
+                    step();
                 },
             });
             setSound(newSound);
             newSound.play();
+
+            console.log(newSound);
         }
-    }, [playlist, currentTrackIndex, volume]);
+    }, [playlist, currentTrackIndex, sound, volume, sound?.duration()]);
 
     // Ефект, що оновлює стилі слайдера, коли змінюється гучність
     useEffect(() => {
@@ -121,15 +182,41 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
         }
     }, [volume, containerSize]);
 
+    const updateCurrentTime = () => {
+        if (sound && sound.playing()) {
+            const time = sound.seek();
+            setCurrentTime(time);
+        }
+    };
+
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout;
+        if (playing) {
+            intervalId = setInterval(() => {
+                updateCurrentTime();
+            }, 1000);
+        }
+        return () => {
+            clearInterval(intervalId);
+        };
+
+        console.log(sound?.duration());
+    }, [playing]);
+
     const play = () => {
         if (sound && sound.state() === "loaded") {
             sound.play();
+            step();
         } else {
             setIsLoading(true);
         }
     };
     const pause = () => sound?.pause();
-    const stop = () => sound?.stop();
+
+    const stop = () => {
+        sound?.stop();
+        cancelAnimationFrame(animationFrameId.current as number);
+    };
 
     const nextTrack = () =>
         changeTrack(
@@ -139,24 +226,52 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
         changeTrack(
             currentTrackIndex < playlist.length - 1 ? currentTrackIndex + 1 : 0
         );
-    const changeTrack = (index) => {
+    const changeTrack = (index: number) => {
         stop();
         setSound(null);
         setCurrentTrackIndex(index);
     };
 
-    const updatePosition = () => {
-        const sound = playlist[currentTrackIndex]?.howl;
+    const seek = (per: number) => {
         if (sound?.playing()) {
-            setSeek(sound.seek());
-            updateProgress.current = requestAnimationFrame(updatePosition);
+            seek(sound?.duration() * per);
         }
     };
 
-    const waveform = (e) => {
-        sound.seek.seek(e.clientX / window.innerWidth);
+    const step = () => {
+        if (sound) {
+            // Отримання поточної позиції відтворення
+            const seek = sound?.seek() || 0; 
+            setCurrentTime(seek); // Оновлення поточного часу відтворення
+            if (timerRef.current) {
+                timerRef.current.innerHTML = formatTime(Math.round(seek));
+            }
+            if (progressRef.current) {
+                progressRef.current.style.width = `${
+                    (seek / sound?.duration()) * 100 || 0
+                }%`; // Оновлення прогрес-бару
+            }
+            animationFrameId.current = requestAnimationFrame(step);
+         //   console.log("frame");
+        }
     };
 
+    const waveformClick = (event: MouseEvent) => {
+        if (sound && progressRef.current) {
+           // Визначення відсотка кліку відносно ширини прогрес-бару
+            const clickX =
+                event.clientX /* -
+                progressRef.current.getBoundingClientRect().left */;
+            const percentage = clickX / progressRef.current.offsetWidth;
+            const seconds = percentage;
+            console.log(clickX, sound.duration());
+            // Перемотування треку до нової позиції
+            sound.seek(seconds);
+            console.log(event.clientX, window.innerWidth, containerSize.width)
+            // sound?.seek(event.clientX / containerSize.width);
+        } 
+       
+    };
     const playlistBtn = () => {
         setIsPlaylist((prevIsPlaylist) => !prevIsPlaylist);
     };
@@ -165,32 +280,39 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
         setVolumeVisible((prevVisible) => !prevVisible);
     };
 
-    const barEmpty = (event) => {
-        const per = event.layerX / parseFloat(barEmptyRef.scrollWidth);
-        setVolume(per);
+    const barEmpty = (event: MouseEvent | any) => {
+        if (barEmptyRef.current) {
+            const per =
+                (event.layerX as any) /
+                parseFloat(barEmptyRef.current.scrollWidth.toString());
+            setVolume(per);
+        }
     };
 
-    const handleMove = (event) => {
+    const handleMove = (event: MouseEvent | TouchEvent<HTMLDivElement>) => {
         if (!sliderDown) return;
-        const clientX = event.type.includes("mouse")
-            ? event.clientX
-            : event.touches[0].clientX;
-        const startX = volumeRef.current.getBoundingClientRect().left;
-        const layerX = clientX - startX;
-        const per = Math.min(
-            1,
-            Math.max(0, layerX / volumeRef.current.offsetWidth)
-        );
-        // Встановлення гучності
-        setVolume(per);
-        sound.volume(volume);
+        const clientX =
+            "touches" in event
+                ? event.touches[0].clientX
+                : (event as MouseEvent).clientX;
+
+        if (volumeRef.current) {
+            const startX = volumeRef.current.getBoundingClientRect().left;
+            const layerX = clientX - startX;
+            const per = Math.min(
+                1,
+                Math.max(0, layerX / volumeRef.current.offsetWidth)
+            );
+            setVolume(per);
+            sound?.volume(volume);
+        }
     };
 
     const sliderBtn = () => {
         setSliderDown(true);
     };
 
-    const formatTime = (secs) => {
+    const formatTime = (secs: number) => {
         const minutes = Math.floor(secs / 60) || 0;
         const seconds = Math.floor(secs - minutes * 60) || 0;
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -211,8 +333,10 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
                 <span className={styles.track}>
                     {playlist[currentTrackIndex]?.title || ""}
                 </span>
-                <div className={styles.timer}>{formatTime(seek)}</div>
-                <div className={styles.duration}>{formatTime(duration)}</div>
+                <div /* ref={timerRef} */ className={styles.timer}>
+                    {formatTime(currentTime)}
+                </div>
+                <div ref={durationRef} className={styles.duration}></div>
             </div>
             <div className={styles.controlsOuter}>
                 <div
@@ -263,8 +387,17 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
                     />
                 )}
             </div>
+
             {/* <!-- Progress --> */}
-            <div className={styles.waveform} onClick={waveform}></div>
+
+            <div
+                style={{
+                    display: isPlaylist || volumeVisible ? "none" : "block",
+                }}
+                className={styles.waveform}
+                onClick={waveformClick}
+            ></div>
+
             <div
                 className={styles.barProgres}
                 style={{
@@ -272,8 +405,7 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
                     width: `${containerSize.width}px`,
                 }}
             ></div>
-
-            <div className={styles.progress}></div>
+            <div ref={progressRef} className={styles.progress}></div>
 
             {/* <!-- Playlist --> */}
             <div
@@ -282,17 +414,15 @@ const AudioPlayer = ({ playlist, currentIndex, widthCanvas, heightCanvas }) => {
                 style={{ display: isPlaylist ? "block" : "none" }}
             >
                 <div className={styles.list}>
-                    <div className={styles.list}>
-                        {playlist.map((song, index) => (
-                            <div
-                                key={index}
-                                className="list-song"
-                                onClick={() => changeTrack(index)}
-                            >
-                                {song.title}
-                            </div>
-                        ))}
-                    </div>
+                    {playlist.map((song, index) => (
+                        <div
+                            key={index}
+                            className={styles.list_song}
+                            onClick={() => changeTrack(index)}
+                        >
+                            {index + 1}. {song.title}
+                        </div>
+                    ))}
                 </div>
             </div>
 
