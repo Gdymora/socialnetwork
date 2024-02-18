@@ -15,4 +15,12 @@ class UserFile extends Model
     {
         return $this->morphTo();
     }
+
+    /**
+     * Отримати метадані для медіа.
+     */
+    public function meta()
+    {
+        return $this->hasMany(UserFileMeta::class);
+    }
 }

@@ -27,11 +27,16 @@ export default function Header() {
                             <a href={route("dashboard")}>
                                 <i className="bi bi-house-door-fill"></i>Home
                             </a>
-                        </li><li>
-                        <NavLink href={route('dashboard')} active={route().current('dashboard.index')}>
-                        <i className="bi bi-house-door-fill"></i>Home
-</NavLink>
-</li>          <li>
+                        </li>
+                        <li>
+                            <NavLink
+                                href={route("dashboard")}
+                                active={route().current("dashboard.index")}
+                            >
+                                <i className="bi bi-house-door-fill"></i>Home
+                            </NavLink>
+                        </li>{" "}
+                        <li>
                             <a href={route("user-home")}>
                                 <i className="bi bi-person-fill"></i>Profile
                             </a>
@@ -97,7 +102,6 @@ export default function Header() {
                 </nav>
             </div>
             <button id="mobile-menu-button">Меню</button>
-
             <ToastContainer /> {/* Контейнер для сповіщень */}
         </header>
     );

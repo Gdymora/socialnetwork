@@ -1,11 +1,12 @@
 import "./bootstrap";
 import "../css/app.css";
-import "../css/style.css";
 import "../css/galery.css";
 import "../css/profile.css";
 import "../css/users.css";
 import "../css/workshop.css";
 import "../css/audioAndVideo.css";
+import "../css/scrollbar.css";
+import "../css/style.css";
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";

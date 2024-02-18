@@ -56,22 +56,23 @@ const AudioPlayer = ({
     const timerRef = useRef<HTMLDivElement>(null);
     const progressRef = useRef<HTMLDivElement>(null);
     const animationFrameId = useRef<number | null>(null);
-    // Оновлення розмірів контейнера при зміні пропсів
-    const [currentTime, setCurrentTime] = useState(0);
 
     useEffect(() => {
-        if (sound) {
-            const durationInSeconds = Math.round(sound.duration());
-            setDuration(durationInSeconds);
-            if (durationRef.current) {
-                durationRef.current.innerHTML = formatTime(durationInSeconds);
-            }
-            sound?.once("load", function () {
+        sound?.once("load", function () {
+            if (sound) {
+                const durationInSeconds = Math.round(sound.duration());
+                setDuration(durationInSeconds);
+                if (durationRef.current) {
+                    durationRef.current.innerHTML =
+                        formatTime(durationInSeconds);
+                }
+
                 const duration = sound?.duration(); // Отримання тривалості треку
                 console.log("Тривалість треку:", duration, "секунд");
-            });
-            getHTMLMediaElement();
-        }
+
+                getHTMLMediaElement();
+            }
+        });
     }, [sound]);
 
     /*
@@ -169,7 +170,7 @@ const AudioPlayer = ({
 
             console.log(newSound);
         }
-    }, [playlist, currentTrackIndex, sound, volume, sound?.duration()]);
+    }, [playlist, currentTrackIndex, sound, volume]);
 
     // Ефект, що оновлює стилі слайдера, коли змінюється гучність
     useEffect(() => {
@@ -181,27 +182,6 @@ const AudioPlayer = ({
             }px`;
         }
     }, [volume, containerSize]);
-
-    const updateCurrentTime = () => {
-        if (sound && sound.playing()) {
-            const time = sound.seek();
-            setCurrentTime(time);
-        }
-    };
-
-    useEffect(() => {
-        let intervalId: NodeJS.Timeout;
-        if (playing) {
-            intervalId = setInterval(() => {
-                updateCurrentTime();
-            }, 1000);
-        }
-        return () => {
-            clearInterval(intervalId);
-        };
-
-        console.log(sound?.duration());
-    }, [playing]);
 
     const play = () => {
         if (sound && sound.state() === "loaded") {
@@ -234,44 +214,37 @@ const AudioPlayer = ({
 
     const seek = (per: number) => {
         if (sound?.playing()) {
-            seek(sound?.duration() * per);
+            sound?.seek(sound?.duration() * per);
         }
     };
 
+    /*
+     * Оновлення поточного часу відтворення
+     */
     const step = () => {
         if (sound) {
-            // Отримання поточної позиції відтворення
-            const seek = sound?.seek() || 0; 
-            setCurrentTime(seek); // Оновлення поточного часу відтворення
+            const seek = sound?.seek() || 0;
             if (timerRef.current) {
                 timerRef.current.innerHTML = formatTime(Math.round(seek));
             }
             if (progressRef.current) {
                 progressRef.current.style.width = `${
                     (seek / sound?.duration()) * 100 || 0
-                }%`; // Оновлення прогрес-бару
+                }%`;
             }
             animationFrameId.current = requestAnimationFrame(step);
-         //   console.log("frame");
         }
     };
 
     const waveformClick = (event: MouseEvent) => {
         if (sound && progressRef.current) {
-           // Визначення відсотка кліку відносно ширини прогрес-бару
-            const clickX =
-                event.clientX /* -
-                progressRef.current.getBoundingClientRect().left */;
-            const percentage = clickX / progressRef.current.offsetWidth;
-            const seconds = percentage;
-            console.log(clickX, sound.duration());
-            // Перемотування треку до нової позиції
-            sound.seek(seconds);
-            console.log(event.clientX, window.innerWidth, containerSize.width)
-            // sound?.seek(event.clientX / containerSize.width);
-        } 
-       
+            const progressBarStart =
+                progressRef.current.getBoundingClientRect().left;
+            const clickX = event.clientX - progressBarStart;
+            seek(clickX / containerSize.width);
+        }
     };
+
     const playlistBtn = () => {
         setIsPlaylist((prevIsPlaylist) => !prevIsPlaylist);
     };
@@ -333,8 +306,8 @@ const AudioPlayer = ({
                 <span className={styles.track}>
                     {playlist[currentTrackIndex]?.title || ""}
                 </span>
-                <div /* ref={timerRef} */ className={styles.timer}>
-                    {formatTime(currentTime)}
+                <div ref={timerRef} className={styles.timer}>
+                    {/*   {formatTime(currentTime)} */}
                 </div>
                 <div ref={durationRef} className={styles.duration}></div>
             </div>
@@ -417,7 +390,11 @@ const AudioPlayer = ({
                     {playlist.map((song, index) => (
                         <div
                             key={index}
-                            className={styles.list_song}
+                            className={`${styles.list_song} ${
+                                currentTrackIndex === index
+                                    ? styles.list_song_playing
+                                    : ""
+                            }`}
                             onClick={() => changeTrack(index)}
                         >
                             {index + 1}. {song.title}

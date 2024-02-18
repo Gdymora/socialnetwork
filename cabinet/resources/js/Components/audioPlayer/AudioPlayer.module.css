@@ -20,10 +20,10 @@
     position: absolute;
     width: 100%;
     top: 3%;
-    line-height: 34px;
-    height: 34px;
+    line-height: 1em;
+    height: 1em;
     text-align: center;
-    font-size: 34px;
+    font-size: 1em;
     opacity: 0.9;
     font-weight: 300;
     color: #fff;
@@ -34,7 +34,7 @@
     top: 0;
     left: 3%;
     text-align: left;
-    font-size: 26px;
+    font-size: 1em;
     opacity: 0.9;
     font-weight: 300;
     color: #fff;
@@ -45,7 +45,7 @@
     top: 0;
     right: 3%;
     text-align: right;
-    font-size: 26px;
+    font-size: 1em;
     opacity: 0.5;
     font-weight: 300;
     color: #fff;
@@ -58,18 +58,15 @@
     width: 100%;
     height: 70px;
     bottom: 3%;
-    justify-content: space-between; /* Розподіляє простір між кнопками рівномірно */
-
+    justify-content: space-between;
     display: flex;
     align-items: center;
+    z-index: 1;
 }
 .controlsInner {
-    /* position: absolute; */
     width: 177px;
     height: 70px;
-    /* left: 57%; */
-    /* margin: 0 -170px; */
-    justify-content: space-between; /* Розподіляє простір між кнопками рівномірно */
+    justify-content: space-between;
     display: flex;
     align-items: center;
 }
@@ -139,12 +136,12 @@
     left: 0;
     top: 50%;
     margin: -15% auto;
-    display: none; 
+    display: none;
     cursor: pointer;
     opacity: 0.8;
     -webkit-user-select: none;
     user-select: none;
-    z-index: 2;
+    z-index: 1;
 }
 .waveform:hover {
     opacity: 1;
@@ -167,7 +164,7 @@
     width: 0%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    /* z-index: 1; */
 }
 
 /* Loading */
@@ -238,17 +235,22 @@
 }
 .list_song {
     width: 100%;
-    height: 120px;
-    font-size: 50px;
-    line-height: 120px;
+    height: 2em;
+    font-size: 1em;
+    line-height: 1em;
     text-align: center;
     font-weight: bold;
     color: #fff;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.33);
 }
+
 .list_song:hover {
     background-color: rgba(255, 255, 255, 0.1);
     cursor: pointer;
+}
+
+.list_song_playing {
+    background-color: rgba(100, 100, 255, 0.2); /* Adjust color and opacity as needed */
 }
 
 /* Volume */
