@@ -1,6 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { Auth } from '@/types'; 
+import Messaging from "@/Components/Messaging/Messaging";
 interface UsePageProps {
     auth: Auth; 
 }
@@ -20,6 +21,7 @@ export default function MessagePage({ auth }: UsePageProps) {
             {/* Контент нової сторінки */}
             <main>
                 {/* Використання someData та інших елементів */}
+                <Messaging/> 
             </main>
         </AuthenticatedLayout>
     );
