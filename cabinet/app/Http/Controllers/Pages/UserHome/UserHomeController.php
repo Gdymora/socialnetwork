@@ -36,4 +36,31 @@ class UserHomeController extends Controller
         ]);
     }
 
+    public function indexApi()
+    {
+        // use auth()->user() to get authenticated user data
+        $user = Auth::user();
+        $profileData = $user->getUserProfileData();
+        $friendsAndFollowers = $user->getFriendsAndFollowers();
+        $posts = Post::getPostsUser($user);
+
+        $userFile['private'] = $user->getFilesFilteredByVisibility('private');
+        $userFile['public'] = $user->getFilesFilteredByVisibility('public');
+        $userFile['friends'] = $user->getFilesFilteredByVisibility('friends');
+        
+        return response()->json([
+            'meta' => [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'User fetched successfully!',
+            ],
+            'data' => [
+                'userFile' => $userFile,
+                'posts' => $posts,
+                'friendsAndFollowers' => $friendsAndFollowers,
+                'profileData' => $profileData,
+            ],
+        ]);
+    }
+
 }
