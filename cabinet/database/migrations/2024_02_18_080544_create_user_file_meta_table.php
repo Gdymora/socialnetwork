@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('user_file_meta', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_file_id')->comment('ID медіа з таблиці user_file');
+            $table->unsignedBigInteger('user_files_id')->comment('ID медіа з таблиці user_file');
             $table->string('key')->comment('Назва метатега, наприклад, "alt", "title", "duration" тощо');
             $table->text('value')->comment('Значення метатега');
-            $table->foreign('user_file_id')->references('id')->on('user_file')->onDelete('cascade');
+            $table->foreign('user_files_id')->references('id')->on('user_files')->onDelete('cascade');
             $table->timestamps();
         });
     }
