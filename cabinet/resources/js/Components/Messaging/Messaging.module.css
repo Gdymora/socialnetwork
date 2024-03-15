@@ -448,11 +448,16 @@
 }
 
 .chat_area_footer svg {
-  margin-left: 12px;
+  color: var(--settings-icon-color);
+  width: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
 }
-
-.chat_area_footer:hover {
+.chat_area_footer svg:hover {
   color: var(--settings-icon-hover);
+}
+.chat_area_footer svg + svg {
+  margin-left: 12px;
 }
 
 .chat_area_footer input {
