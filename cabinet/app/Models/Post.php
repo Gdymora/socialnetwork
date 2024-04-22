@@ -59,7 +59,6 @@ class Post extends Model
      * Method to get posts for a specific user based on visibility.
      *
      * @param User $user
-     * @return Collection
      */
     public static function getPostsForUser(User $user)
     {
@@ -91,7 +90,6 @@ class Post extends Model
      * Method to get posts for a specific user based on visibility.
      *
      * @param User $user
-     * @return Collection
      */
     public static function getPostsUser(User $user)
     {

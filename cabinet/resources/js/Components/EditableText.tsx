@@ -63,6 +63,10 @@ const EditableText = ({
     const [isTextEntered, setIsTextEntered] = useState(false);
     const [text, setText] = useState(textFromUploader || "");
 
+    useEffect(() => {
+        setIsEditing(true);
+    }, [textFromUploader]);
+
     const handleTextClick = (event: MouseEvent<HTMLDivElement>) => {
         setIsEditing(true);
     };

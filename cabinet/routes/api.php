@@ -15,6 +15,10 @@ use App\Http\Controllers\PostController;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "api" middleware group. Make something great!
 |
+Маршрути ресурсів API
+При оголошенні маршрутів ресурсів, які використовуватимуться API, зазвичай потрібно виключити маршрути, 
+які представляють шаблони HTML, такі як createі edit. 
+Для зручності ви можете використовувати apiResourceметод автоматичного виключення цих двох маршрутів:
 */
 use App\Http\Controllers\AuthApiController;
 

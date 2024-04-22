@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SayPost from "./SayPost";
 import Modal from "@/Components/Modal";
-import { LinkData, ProfileData } from "@/types";
+import { LinkData, PostType, ProfileData } from "@/types";
 import JobTabContent from "./JobTabContent";
 import styles from "./TabContent.module.css";
 import Button from "@/Components/Button";
@@ -16,8 +16,10 @@ import EditableText from "@/Components/EditableText";
 
 export default function ParentSayPost({
     profileData,
+    postData,
 }: {
-    profileData: ProfileData;
+    profileData?: ProfileData;
+    postData?: PostType;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         textData: "",
@@ -32,6 +34,33 @@ export default function ParentSayPost({
     const [textData, setTextData] = useState("");
     const [linkData, setLinkData] = useState<LinkData | string>("");
     const [disabled, setDisabled] = useState(true);
+    const [filePreview, setFilePreview] = useState<{
+        url: string;
+        type: string;
+    } | null>(null);
+
+    useEffect(() => {
+        if (postData) {
+            setIsModalOpen(true);
+            setSelectedOption(postData.visibility === "public" ? "1" : "2");
+            handleTextChange(postData.content);
+            if (postData.links.length > 0) {
+                handleOpenModal("link");
+                handleLinkChange(postData.links[0]);
+            }
+            if (postData.media.length > 0) {
+                handleOpenModal("file");
+                setFilePreview({
+                    url: postData.media[0].url,
+                    type: postData.media[0].type,
+                });
+            }
+        }
+        return () => {
+            setIsModalOpen(false);
+            setSelectedOption("");
+        };
+    }, [postData]);
 
     const fileClick = () => handleOpenModal("file");
     const jobClick = () => handleOpenModal("job");
@@ -56,11 +85,13 @@ export default function ParentSayPost({
             setTextData("");
         }
     };
+
     const handleLinkChange = (data: LinkData) => {
         setDisabled(false);
         setLinkData(data);
         setTextData(data.title);
     };
+
     const handleTextChange = (data: string) => {
         setDisabled(false);
         setTextData(data);
@@ -92,20 +123,23 @@ export default function ParentSayPost({
                 console.error("Error submitting post data", error);
             });
     };
+
     return (
         <>
-            <SayPost
-                profileData={profileData}
-                onTextClick={() => handleOpenModal("text")}
-                onFileClick={() => handleOpenModal("file")}
-                onLinkClick={() => handleOpenModal("link")}
-                onJobClick={() => handleOpenModal("job")}
-            />
+            {profileData && (
+                <SayPost
+                    profileData={profileData}
+                    onTextClick={() => handleOpenModal("text")}
+                    onFileClick={() => handleOpenModal("file")}
+                    onLinkClick={() => handleOpenModal("link")}
+                    onJobClick={() => handleOpenModal("job")}
+                />
+            )}
             {isModalOpen && (
                 <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
                     <div className="relative bg-white rounded-lg shadow-xl">
                         <div className={stylesModal.modalHeader}>
-                            <span>Modal Header</span>
+                            <span>Create post</span>
                             <div
                                 className={stylesModal.modalCloseButton}
                                 onClick={() => setIsModalOpen(false)}
@@ -119,24 +153,9 @@ export default function ParentSayPost({
                         <div className="overflow-y-auto max-h-[80vh]">
                             <div className={stylesModal.modalContent}>
                                 <div className={stylesModal.gridBlock}>
-                                    <div
-                                        className={`circle ${stylesModal.sizeCircle}`}
-                                    >
-                                        <img
-                                            src={
-                                                profileData.profile_image_url
-                                                    ? `/user-file/${profileData.profile_image_url}`
-                                                    : "/assets/images/noimg.png"
-                                            }
-                                            alt={`image ${profileData.name}`}
-                                            loading="lazy"
-                                        />
-                                    </div>
+                                    <div> </div>
                                     <div className={stylesModal.textFlexCenter}>
-                                        <p className="bold">
-                                            {profileData.name}{" "}
-                                            {profileData.last_name}
-                                        </p>
+                                        <p className="bold"></p>
                                     </div>
                                     <div className={stylesModal.textFlexCenter}>
                                         <SelectButton
@@ -152,6 +171,7 @@ export default function ParentSayPost({
                                                 },
                                             ]}
                                             onChange={handleSelectChange}
+                                            selectedSet={selectedOption}
                                         />
                                     </div>
                                 </div>
@@ -172,6 +192,7 @@ export default function ParentSayPost({
                                         }
                                         onChange={handleFileChange}
                                         page={"dashboard"}
+                                        prewiewForUpdate={filePreview}
                                     />
                                 )}
                                 {modalContent === "link" && (
@@ -182,6 +203,7 @@ export default function ParentSayPost({
                                                 : styles.linkTabContent
                                         }
                                         onChange={handleLinkChange}
+                                        dataLink={postData?.links[0]}
                                     />
                                 )}
                                 {modalContent === "job" && (
@@ -195,28 +217,32 @@ export default function ParentSayPost({
                                 )}
                             </div>
                         </div>
-                        <div className={stylesModal.modalFooter}>
-                            <div className="flex align-items-center post_message space-between">
-                                <Button
-                                    className="btn btn-secondary"
-                                    onClick={linkClick}
-                                >
-                                    Link
-                                </Button>
-                                <Button
-                                    className="but btn btn-secondary"
-                                    onClick={fileClick}
-                                >
-                                    Image/Video
-                                </Button>
-                                <Button
-                                    className="btn btn-secondary"
-                                    onClick={jobClick}
-                                >
-                                    Job
-                                </Button>
+
+                        {profileData && (
+                            <div className={stylesModal.modalFooter}>
+                                <div className="flex align-items-center post_message space-between">
+                                    <Button
+                                        className="btn btn-secondary"
+                                        onClick={linkClick}
+                                    >
+                                        Link
+                                    </Button>
+                                    <Button
+                                        className="but btn btn-secondary"
+                                        onClick={fileClick}
+                                    >
+                                        Image/Video
+                                    </Button>
+                                    <Button
+                                        className="btn btn-secondary"
+                                        onClick={jobClick}
+                                    >
+                                        Job
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
+                        )}
+
                         <div className={stylesModal.modalFooter}>
                             <Button
                                 className="btn btn-primary-send"

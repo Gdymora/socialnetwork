@@ -10,7 +10,7 @@ use App\Http\Controllers\Pages\Galery\GaleryController;
 use App\Http\Controllers\Pages\UserHome\FileController;
 use App\Http\Controllers\Pages\UserHome\UserHomeController;
 use App\Http\Controllers\Pages\WorkShop\WorkShopController;
-use App\Http\Controllers\PostMediaController;
+use App\Http\Controllers\Pages\Post\PostMediaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\UserAboutMeController;
@@ -91,6 +91,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/friends', [FriendsController::class, 'index'])->middleware(['auth', 'verified'])->name('friends');
     Route::patch('/friends/{id}/follow', FollowController::class)->middleware(['auth', 'verified']);
     Route::patch('/friends/{id}/unfollow', UnFollowController::class)->middleware(['auth', 'verified']);
+    Route::resources([
+       /*  'photos' => PhotoController::class, */
+        'post' => PostMediaController::class,
+    ]);
 
     Route::get('/work-shop', [WorkShopController::class, 'index'])->middleware(['auth', 'verified'])->name('work-shop');
     //

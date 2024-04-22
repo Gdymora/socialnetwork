@@ -9,6 +9,7 @@ interface SelectButtonProps {
     style?: React.CSSProperties;
     options: Option[];
     onChange: (value: string | number) => void;
+    selectedSet?: string | number;
 }
 const generateStyle = (size: string) => {
     return {
@@ -28,11 +29,12 @@ const SelectButton = ({
     style,
     options,
     onChange,
+    selectedSet,
 }: SelectButtonProps) => {
     const baseStyle = generateStyle(size);
     const combinedStyle = { ...baseStyle, ...style };
     const [selected, setSelected] = useState<number | string>(
-        options.length > 0 ? options[0].value : ""
+        selectedSet || (options.length > 0 ? options[0].value : "")
     );
 
     useEffect(() => {
@@ -48,7 +50,11 @@ const SelectButton = ({
         onChange(selectedValue); // Використання оновленого значення в колбеку
     };
     return (
-        <select style={combinedStyle} onChange={handleSelectChange}>
+        <select
+            style={combinedStyle}
+            value={selected}
+            onChange={handleSelectChange}
+        >
             {options.map((option: Option) => (
                 <option key={option.value} value={option.value}>
                     {option.label}

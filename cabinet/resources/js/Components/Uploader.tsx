@@ -5,11 +5,19 @@ interface UploaderProps {
     style?: React.CSSProperties;
     className?: string;
     page?: string;
+    prewiewForUpdate?: { url: string; type: string } | null;
 }
 
-const Uploader = ({ onChange, style, className, page }: UploaderProps) => {
+const Uploader = ({
+    onChange,
+    style,
+    className,
+    page,
+    prewiewForUpdate,
+}: UploaderProps) => {
     const [file, setFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string>("");
+    const [isFile, setIsFile] = useState(prewiewForUpdate);
+    const [previewUrl, setPreviewUrl] = useState<string | undefined>("");
 
     const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -39,12 +47,10 @@ const Uploader = ({ onChange, style, className, page }: UploaderProps) => {
     useEffect(() => {
         //URL.revokeObjectURL()
         if (file) {
-            {
-                console.log(file.type);
-            }
+            console.log(file.type);
             onChange(file);
         }
-    }, [file]); // Залежить від зміни file
+    }, [file]); // Залежить від зміни file 
 
     const uploaderStyle: React.CSSProperties = {
         border: "2px dashed #ccc",
@@ -100,6 +106,28 @@ const Uploader = ({ onChange, style, className, page }: UploaderProps) => {
 
                     {page !== "dashboard" && file.type.startsWith("audio/") && (
                         <audio src={previewUrl} controls style={audioStyle} />
+                    )}
+                </div>
+            )}
+            {isFile && (
+                <div style={uploaderWindowStyle}>
+                    {isFile.type === "image" && (
+                        <img
+                            src={`/media/${isFile.url}`}
+                            alt="Preview"
+                            style={imageVideoStyle}
+                        />
+                    )}
+                    {isFile.type === "video" && (
+                        <video
+                            src={`/media/${isFile.url}`}
+                            controls
+                            style={imageVideoStyle}
+                        />
+                    )}
+
+                    {page !== "dashboard" && isFile.type === "audio" && (
+                        <audio src={`/media/${isFile.url}`} controls style={audioStyle} />
                     )}
                 </div>
             )}

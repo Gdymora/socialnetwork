@@ -6,12 +6,14 @@ import { LinkData } from "@/types";
 const LinkTabContent = ({
     onChange,
     className,
+    dataLink,
 }: {
     className: string;
     onChange: (value: LinkData) => void;
+    dataLink?: any;
 }) => {
-    const [link, setLink] = useState<string>("");
-    const [linkData, setLinkData] = useState(null);
+    const [link, setLink] = useState<string>(dataLink?.url || "");
+    const [linkData, setLinkData] = useState(dataLink || null);
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState("");
 

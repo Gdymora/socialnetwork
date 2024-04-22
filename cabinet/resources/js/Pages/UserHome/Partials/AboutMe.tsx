@@ -52,10 +52,13 @@ export default function ({ profileData }: { profileData: ProfileData }) {
     const handleInputBlur = (valueToFind: string) => {
         const keyValue = getKeyByValue(label, valueToFind);
         if (keyValue) {
-            if (profileData.about_me[keyValue] !== textData[keyValue]) {
+            if (
+                profileData.about_me[keyValue as keyof AboutMe] !==
+                textData[keyValue as keyof AboutMe]
+            ) {
                 sendRequest(
                     "patch",
-                    { [keyValue]: textData[keyValue] },
+                    { [keyValue]: textData[keyValue as keyof AboutMe] },
                     { url: `/user-about-me` }
                 );
             }
@@ -65,7 +68,9 @@ export default function ({ profileData }: { profileData: ProfileData }) {
 
     useEffect(() => {
         if (!loading && !error && data) {
+            // @ts-ignore
             if (data.message) {
+                // @ts-ignore
                 toast.success(data.message);
             } else {
                 toast.success("Successful!");
@@ -87,7 +92,7 @@ export default function ({ profileData }: { profileData: ProfileData }) {
                             profileData.profile_image_url
                                 ? `/user-file/${profileData.profile_image_url}`
                                 : "/assets/images/noimg.png"
-                        } 
+                        }
                         loading="lazy"
                         alt={`${profileData?.name} ${profileData?.last_name}`}
                     />
@@ -111,16 +116,18 @@ export default function ({ profileData }: { profileData: ProfileData }) {
                                     onChange={(data) =>
                                         handleTextChange(data, key)
                                     }
-                                    textFromUploader={textData[key]}
+                                    textFromUploader={
+                                        textData[key as keyof AboutMe] as string
+                                    }
                                     isEdit={editableText[key]}
                                     isTypeInput={false}
                                 />
                             </div>
                         ) : (
                             <>
-                                {textData[key] ? (
+                                {textData[key as keyof AboutMe] ? (
                                     <p className="text-light">
-                                        {textData[key]}
+                                        {textData[key as keyof AboutMe]}
                                     </p>
                                 ) : (
                                     <p>Add a {value}</p>

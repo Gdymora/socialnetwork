@@ -31,7 +31,7 @@ export default function RightSidebar({
             </SidebarSection2>
 
             <SidebarSection3 title="Most Viewed This Week">
-                {postMostViewed.map((post) => (
+                {postMostViewed && postMostViewed.map((post) => (
                     <SidebarItem
                         key={post.id}
                         number={post.viewed}

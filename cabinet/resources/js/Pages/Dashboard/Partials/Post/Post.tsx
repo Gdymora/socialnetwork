@@ -1,28 +1,38 @@
 import { useState } from "react";
-
 import PostContent from "./PostContent";
 import PostFooter from "./PostFooter";
 import PostHeader from "./PostHeader";
 import PostActions from "./PostActions";
 import CommentsList from "./CommentsList";
 import { PostType } from "@/types";
-import Carousel from "./Carousel";
+import Carousel from "./Carousel"; 
+
 interface PostProps {
     post: PostType;
+    onChangeUpdatePost?: (id: number) => void;
 }
 
-export default function Post({ post }: PostProps) {
-    const [showComments, setShowComments] = useState(false);
-
+export default function Post({ post, onChangeUpdatePost }: PostProps) {
+    const [showComments, setShowComments] = useState(false); 
     const toggleComments = () => {
         setShowComments(!showComments);
     };
+
+    const onChangeUpdateId = (id: number) => {
+        if (onChangeUpdatePost) {
+            console.log(id)
+            onChangeUpdatePost(id);
+        }
+    }; 
+
     return (
-        <div className="post">
+        <div className="post"> 
             <PostHeader
                 author={post.author}
+                id={post.id}
                 createdAt={post.created_at}
                 visibility={post.visibility}
+                onChangeUpdate={onChangeUpdateId}
             />
             <PostContent
                 title={post.title}
@@ -45,7 +55,7 @@ export default function Post({ post }: PostProps) {
                 comments={post.comments}
                 showComments={showComments}
             />
-            {/* <Carousel users={randomUsersForFriendship}/> */}
+            {/* <Carousel users={randomUsersForFriendship}/> */} 
         </div>
     );
 }

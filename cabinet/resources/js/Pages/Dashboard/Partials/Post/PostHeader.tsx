@@ -1,19 +1,31 @@
 import Dropdown from "@/Components/Dropdown";
 import { Author } from "@/types";
 import moment from "moment";
+import ParentSayPost from "../ModalSay/ParentSayPost";
 
 export default function PostHeader({
+    id,
     author,
     createdAt,
     visibility,
+    onChangeUpdate,
 }: {
+    id: number;
     author: Author;
     createdAt: string;
     visibility: string;
+    onChangeUpdate: (id: number) => void | undefined;
 }) {
     const dateString = createdAt;
     const formattedDate = moment(dateString).format("DD.MM.YYYY HH:mm:ss");
+    const currentPath = window.location.pathname === "/user-home";
 
+    const handleClick = ( 
+        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+        console.log(id)
+        onChangeUpdate(id);
+    };
     return (
         <div className="post-header">
             <div className="circle">
@@ -51,15 +63,31 @@ export default function PostHeader({
                     </Dropdown.Trigger>
 
                     <Dropdown.Content align={"right"}>
-                        <Dropdown.Link href={route("profile.edit")}>
-                            View
-                        </Dropdown.Link>{" "}
-                        <Dropdown.Link href={route("profile.edit")}>
-                            Edit
-                        </Dropdown.Link>{" "}
-                        <Dropdown.Link href={route("profile.edit")}>
-                            Delete
-                        </Dropdown.Link>{" "}
+                        {currentPath && (
+                            <>
+                                {
+                                    <Dropdown.Link
+                                        href={route("post.show", { id: id })}
+                                    >
+                                        View
+                                    </Dropdown.Link>
+                                }
+                                <div
+                                    className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out "
+                                    onClick={handleClick as any}
+                                >
+                                    Edit
+                                </div>{" "}
+                                <Dropdown.Link
+                                    /*   method="delete"
+                                    as="button" */
+                                    /* href={route("posts.destroy", { id: id })} */
+                                    href="#"
+                                >
+                                    Delete
+                                </Dropdown.Link>{" "}
+                            </>
+                        )}
                         {/*  <Dropdown.Link href={route("profile.edit")}>
                             Profile
                         </Dropdown.Link>{" "} */}

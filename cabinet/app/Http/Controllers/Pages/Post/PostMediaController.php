@@ -1,13 +1,34 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pages\Post;
 
+use App\Http\Controllers\Controller;
 use App\Models\Link;
 use App\Models\Media;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class PostMediaController extends Controller
 {
+
+    public function index()
+    {
+        // Отримати всі дані з таблиці
+        $posts = Post::all();
+        return response()->json($posts);
+    }
+    
+    public function show($id)
+    {
+        // Find the user table by id
+        $post = Post::findOrFail($id);
+        //return response()->json($post);
+        return Inertia::render('Post', [
+            'post' => $post
+        ]);
+    }
+
     public function store(Request $request)
     {
         // Отримання даних з запиту
@@ -83,6 +104,40 @@ class PostMediaController extends Controller
         } catch (\Exception $e) {
             \DB::rollBack(); // Відкат транзакції у разі помилки
             return response()->json(['error' => $e->getMessage()], 500);
+        }        
+    }
+
+    public function edit($id)
+    {
+      $post = Post::find($id);
+
+      return view('posts.edit', ['post' => $post]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validate request data
+        $request->validate([
+            'user_tables_id' => 'required',
+            'data' => 'required',
+        ]);
+
+        $Post = Post::findOrFail($id);
+        $user = Auth::user();
+        if ($Post->user_id !== $user->id) {
+            return response()->json(['error' => 'Forbidden'], 403);
         }
+        $PostData = Post::findOrFail($id);
+        $projectData = json_encode($request->input('data'));
+        $PostData->update(['data' => $projectData]);
+        return response()->json($PostData, 200);
+    }
+
+    public function destroy($id)
+    {
+        // Find the user table by id and delete it
+        $Post = Post::findOrFail($id);
+        $Post->delete();
+        return response()->json(null, 204);
     }
 }
