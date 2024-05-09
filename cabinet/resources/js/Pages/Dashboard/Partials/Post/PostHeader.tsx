@@ -1,7 +1,6 @@
 import Dropdown from "@/Components/Dropdown";
 import { Author } from "@/types";
 import moment from "moment";
-import ParentSayPost from "../ModalSay/ParentSayPost";
 
 export default function PostHeader({
     id,

@@ -1,4 +1,5 @@
 import Uploader from "@/Components/Uploader";
+import UploaderLot from "@/Components/UploaderLot";
 import { OnChangeFunction } from "@/types";
 
 const FileTabContent = ({
@@ -8,13 +9,20 @@ const FileTabContent = ({
     prewiewForUpdate,
 }: {
     className: string;
-    onChange: OnChangeFunction;
+    onChange: (files: FileList | null) => void;
     page?: string;
-    prewiewForUpdate?: { url: string; type: string } | null;
+    prewiewForUpdate?: { url: string; type: string }[] | null;
 }) => {
     return (
         <div className={className}>
-            <Uploader
+           {/*  <Uploader
+                onChange={onChange}
+                page={page}
+                prewiewForUpdate={prewiewForUpdate}
+                style={{}}
+                className="custom-uploader-class"
+            /> */}
+             <UploaderLot
                 onChange={onChange}
                 page={page}
                 prewiewForUpdate={prewiewForUpdate}

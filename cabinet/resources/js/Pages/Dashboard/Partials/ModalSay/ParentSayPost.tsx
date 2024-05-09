@@ -77,8 +77,9 @@ export default function ParentSayPost({
     };
 
     const handleFileChange = (data: File | null) => {
-        if (data && !data.type.startsWith("audio/")) {
+        if (data /* && !data.type.startsWith("audio/") */) {
             setDisabled(false);
+            console.log(data);
             setFileData(data);
             setTextData(data.name);
         } else {
@@ -103,7 +104,9 @@ export default function ParentSayPost({
     formData.append("selectedOption", selectedOption as string);
 
     if (fileData) {
-        formData.append("fileData", fileData);
+        Array.from(fileData).forEach((file, index) => {
+            formData.append(`fileData${index}`, file);
+        });
     }
 
     const handleSubmit = () => {
