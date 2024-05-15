@@ -25,7 +25,6 @@ class DashboardController extends Controller
         $posts = Post::getPostsForUser($user);
         $postMostViewed = Post::getMostViewedPosts();
         $randomUsersForFriendship = User::getRandomUsersForFriendship();
-        //dd($posts);
         return Inertia::render('Dashboard', [
             'posts' => $posts,
             'friendsAndFollowers' => $friendsAndFollowers,

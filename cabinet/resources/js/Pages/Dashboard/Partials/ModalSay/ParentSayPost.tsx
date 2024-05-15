@@ -13,31 +13,42 @@ import axios from "axios";
 import LinkTabContent from "./LinkTabContent";
 import { toast } from "react-toastify";
 import EditableText from "@/Components/EditableText";
+import useAxios from "@/Hooks/useAxios";
 
 export default function ParentSayPost({
     profileData,
     postData,
+    onCreatePost,
+    onUpdatePost,
 }: {
     profileData?: ProfileData;
     postData?: PostType;
+    onCreatePost: (postData: PostType) => void;
+    onUpdatePost: (postData: PostType) => void;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         textData: "",
         selectedOption: "",
         fileData: null,
     });
+    const {
+        data: postCreate,
+        error: errorCreate,
+        sendRequest: sendRequestCreate,
+    } = useAxios();
+    const {
+        data: postUpdate,
+        error: errorUpdate,
+        sendRequest: sendRequestUpdate,
+    } = useAxios();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState("text");
     const [selectedOption, setSelectedOption] = useState<string | number>("");
-    const [fileData, setFileData] = useState<File | null>(null);
+    const [fileData, setFileData] = useState<FileList | null>(null);
     const [textData, setTextData] = useState("");
     const [linkData, setLinkData] = useState<LinkData | string>("");
     const [disabled, setDisabled] = useState(true);
-    const [filePreview, setFilePreview] = useState<{
-        url: string;
-        type: string;
-    } | null>(null);
 
     useEffect(() => {
         if (postData) {
@@ -50,10 +61,6 @@ export default function ParentSayPost({
             }
             if (postData.media.length > 0) {
                 handleOpenModal("file");
-                setFilePreview({
-                    url: postData.media[0].url,
-                    type: postData.media[0].type,
-                });
             }
         }
         return () => {
@@ -76,12 +83,11 @@ export default function ParentSayPost({
         setSelectedOption(value);
     };
 
-    const handleFileChange = (data: File | null) => {
+    const handleFileChange = (data: FileList | null) => {
         if (data /* && !data.type.startsWith("audio/") */) {
             setDisabled(false);
             console.log(data);
             setFileData(data);
-            setTextData(data.name);
         } else {
             setTextData("");
         }
@@ -102,29 +108,49 @@ export default function ParentSayPost({
     formData.append("textData", textData);
     formData.append("linkData", JSON.stringify(linkData));
     formData.append("selectedOption", selectedOption as string);
-
+    formData.append("_method", "put");
     if (fileData) {
         Array.from(fileData).forEach((file, index) => {
             formData.append(`fileData${index}`, file);
         });
     }
 
-    const handleSubmit = () => {
-        axios
-            .post(route("posts"), formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
-            .then((res) => {
-                console.log(res);
-                toast.success(res.data.message);
-                setDisabled(true);
-            })
-            .catch((error) => {
-                toast.error("Error submitting post data", error);
-                console.error("Error submitting post data", error);
-            });
+    useEffect(() => {
+        if (postUpdate) {
+            const postObj: PostType = postUpdate["post"];
+            onUpdatePost(postObj);
+            toast.success(`Success update Post`);
+        }
+        if (postCreate) {
+            const postObj: PostType = postCreate["post"];
+            onCreatePost(postObj);
+            toast.success(`Success create Post`);
+        }
+        setIsModalOpen(false);
+    }, [postUpdate, postCreate]);
+
+    useEffect(() => {
+        const errorNow: any = errorCreate || errorUpdate;
+        if (errorNow) {
+            toast.error("Error:", errorNow.message);
+        }
+    }, [errorCreate, errorUpdate]);
+
+    const handleSubmitUpdate = () => {
+        sendRequestUpdate("post", formData, {
+            url: `/posts/${postData?.id}`,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+    };
+    const handleSubmitCreate = () => {
+        sendRequestCreate("post", formData, {
+            url: `/posts`,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
     };
 
     return (
@@ -195,7 +221,6 @@ export default function ParentSayPost({
                                         }
                                         onChange={handleFileChange}
                                         page={"dashboard"}
-                                        prewiewForUpdate={filePreview}
                                     />
                                 )}
                                 {modalContent === "link" && (
@@ -247,13 +272,24 @@ export default function ParentSayPost({
                         )}
 
                         <div className={stylesModal.modalFooter}>
-                            <Button
-                                className="btn btn-primary-send"
-                                onClick={handleSubmit}
-                                disabled={disabled}
-                            >
-                                Send
-                            </Button>{" "}
+                            {!postData && (
+                                <Button
+                                    className="btn btn-primary-send"
+                                    onClick={handleSubmitCreate}
+                                    disabled={disabled}
+                                >
+                                    Send
+                                </Button>
+                            )}
+                            {postData && (
+                                <Button
+                                    className="btn btn-primary-send"
+                                    onClick={handleSubmitUpdate}
+                                    disabled={disabled}
+                                >
+                                    Update
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </Modal>

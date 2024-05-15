@@ -50,26 +50,30 @@ export default function PostContent({
 
     return (
         <div className="post-content">
-            {media.map((mediaItem) => (
-                <div
-                    key={mediaItem.id}
-                    onClick={() => openLargeImage(`/media/${mediaItem.url}`)}
-                >
-                    {mediaItem.type === "image" && (
-                        <img
-                            src={`/media/${mediaItem.url}`}
-                            alt="Media"
-                            loading="lazy"
-                            onLoad={handleImageLoad}
-                        />
-                    )}
+            <div className="grid grid-cols-3 gap-4">
+                {media.map((mediaItem) => (
+                    <div
+                        key={mediaItem.id}
+                        onClick={() =>
+                            openLargeImage(`/media/${mediaItem.url}`)
+                        }
+                        className="relative"
+                    >
+                        {mediaItem.type === "image" && (
+                            <img
+                                src={`/media/${mediaItem.url}`}
+                                alt="Media"
+                                loading="lazy"
+                                onLoad={handleImageLoad}
+                            />
+                        )}
 
-                    {mediaItem.type === "video" && (
-                        <video src={`/media/${mediaItem.url}`} controls />
-                    )}
-                </div>
-            ))}
-
+                        {mediaItem.type === "video" && (
+                            <video src={`/media/${mediaItem.url}`} controls />
+                        )}
+                    </div>
+                ))}
+            </div>
             {links.map((linksItem, index) => (
                 <div key={index}>
                     <LinkPreviewPost linkData={linksItem} />
@@ -89,7 +93,10 @@ export default function PostContent({
             )}
 
             {selectedImage && imageDimensions && (
-                <div className="large-image flex justify-content-center align-items-center" onClick={closeLargeImage}>
+                <div
+                    className="large-image flex justify-content-center align-items-center"
+                    onClick={closeLargeImage}
+                >
                     <div>
                         <img
                             src={selectedImage}

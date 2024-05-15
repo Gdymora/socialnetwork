@@ -48,12 +48,12 @@ return [
         ],
 
         // $path = $file->store('images', 'usersfile_images');
-        'usersfile_images' => [
+        'usersfile_image' => [
             'driver' => 'local',
             'root' => storage_path('app/usersfile'),
         ],
 
-        'usersfile_videos' => [
+        'usersfile_video' => [
             'driver' => 'local',
             'root' => storage_path('app/usersfile'), // 'video' - назва вашої папки
         ],
@@ -64,12 +64,12 @@ return [
         ],
 
         // $path = $file->store('images', 'post_images');
-        'post_images' => [
+        'post_image' => [
             'driver' => 'local',
             'root' => storage_path('app/posts'),
         ],
 
-        'post_videos' => [
+        'post_video' => [
             'driver' => 'local',
             'root' => storage_path('app/posts'),
         ],

@@ -47,7 +47,7 @@ export default function Dashboard({
             {/* Тут можна використовувати передані дані */}
             <main>
                 <div className="container ar-px">
-                    <div className="grid">
+                    <div className="gridcol">
                         <div className="left-sidebar">
                             <div className="section_1">
                                 <UserProfile
@@ -76,7 +76,7 @@ export default function Dashboard({
                     {/* Інші компоненти, які використовують ці дані */}
 
                     <div className="container ar-px">
-                        <div className="grid">
+                        <div className="gridcol">
                             <div className="fixed-bottom-right">
                                 <div className="note-count">
                                     <div className="circle">

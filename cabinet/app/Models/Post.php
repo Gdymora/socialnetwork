@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -58,9 +59,9 @@ class Post extends Model
     /**
      * Method to get posts for a specific user based on visibility.
      *
-     * @param User $user
+     * @param Authenticatable $user
      */
-    public static function getPostsForUser(User $user)
+    public static function getPostsForUser(Authenticatable  $user)
     {
         return self::where(function ($query) use ($user) {
             $query->where('visibility', 'public')
@@ -81,7 +82,7 @@ class Post extends Model
                     $subquery->where('visibility', 'custom')
                         ->where('user_access', 'LIKE', '%"' . $user->id . '"%');
                 });
-        })
+        })->orderBy('created_at', 'DESC')
             ->with(['comments.authorComments', 'author', 'media', 'links']) // додано вкладення
             ->get();
     }
@@ -97,12 +98,18 @@ class Post extends Model
             $query->where(function ($subquery) use ($user) {
                 $subquery->where('author_id', $user->id); // User can see their own posts
             });
-        })
+        })->orderBy('created_at', 'DESC')
             ->with(['comments.authorComments', 'author', 'media', 'links']) // додано вкладення
             ->get();
     }
-
-
+    public static function getOnePostsUser($userId, $id)
+    {
+        return self::where('author_id', $userId)
+                   ->where('id', $id)
+                   ->orderBy('created_at', 'DESC')
+                   ->with(['comments.authorComments', 'author', 'media', 'links'])
+                   ->firstOrFail();
+    }
 
     public static function getMostViewedPosts($count = 10)
     {

@@ -10,20 +10,26 @@ import Carousel from "./Carousel";
 interface PostProps {
     post: PostType;
     onChangeUpdatePost?: (id: number) => void;
+    onChangeDeletePost?: (id: number) => void;
 }
 
-export default function Post({ post, onChangeUpdatePost }: PostProps) {
+export default function Post({ post, onChangeUpdatePost, onChangeDeletePost }: PostProps) {
     const [showComments, setShowComments] = useState(false); 
     const toggleComments = () => {
         setShowComments(!showComments);
     };
 
     const onChangeUpdateId = (id: number) => {
-        if (onChangeUpdatePost) {
-            console.log(id)
+        if (onChangeUpdatePost) { 
             onChangeUpdatePost(id);
         }
     }; 
+
+    const onChangeDeleteId = (id: number) => {
+        if (onChangeDeletePost) { 
+            onChangeDeletePost(id);
+        }
+    };
 
     return (
         <div className="post"> 
@@ -33,6 +39,7 @@ export default function Post({ post, onChangeUpdatePost }: PostProps) {
                 createdAt={post.created_at}
                 visibility={post.visibility}
                 onChangeUpdate={onChangeUpdateId}
+                onChangeDelete={onChangeDeleteId}
             />
             <PostContent
                 title={post.title}

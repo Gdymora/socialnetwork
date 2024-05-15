@@ -60,7 +60,7 @@ export default function UserHome({
             {/* Контент нової сторінки */}
             <main>
                 <div className="container ar-px-profile">
-                    <div className="grid">
+                    <div className="gridcol">
                         <div className="sidebar">
                             <AboutMe profileData={profileData} />
                             <ParentModalFile

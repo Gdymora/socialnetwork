@@ -1,4 +1,4 @@
-import React, { useState, DragEvent, ChangeEvent, useEffect } from "react";
+import { useState, DragEvent, ChangeEvent, useEffect } from "react";
 
 interface UploaderProps {
     onChange: (files: FileList | null) => void;
@@ -8,15 +8,10 @@ interface UploaderProps {
     prewiewForUpdate?: { url: string; type: string }[] | null;
 }
 
-const Uploader = ({
-    onChange,
-    style,
-    className,
-    page,
-    prewiewForUpdate,
-}: UploaderProps) => {
+const UploaderLot = ({ onChange, style, className, page }: UploaderProps) => {
     const [files, setFiles] = useState<FileList | null>(null);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -47,35 +42,64 @@ const Uploader = ({
             onChange(selectedFiles);
         }
     };
+    /*  */
+    function createFileList(files: File[]): FileList {
+        const dataTransfer = new DataTransfer();
+        files.forEach((file) => dataTransfer.items.add(file));
+        return dataTransfer.files;
+    }
 
-    const handleDeleteFile = (index: number) => {
+    const handleDeleteFile = (
+        index: number,
+        event: React.MouseEvent<HTMLButtonElement>
+    ) => {
+        // Забороняємо подальше розповсюдження події кліку
+        event.stopPropagation();
         if (files && previewUrls) {
             const updatedFiles = Array.from(files);
             updatedFiles.splice(index, 1);
             const updatedUrls = Array.from(previewUrls);
             updatedUrls.splice(index, 1);
-            setFiles(new FileList(updatedFiles));
+            // Видаляємо видалені прев'юшки
+            const removedPreviewUrls = previewUrls.slice(index, index + 1);
+            removedPreviewUrls.forEach((url) => URL.revokeObjectURL(url));
+            setFiles(createFileList(updatedFiles));
             setPreviewUrls(updatedUrls);
-            onChange(new FileList(updatedFiles));
+            onChange(createFileList(updatedFiles));
         }
     };
-
-    useEffect(() => {
-        return () => {
-            if (previewUrls.length > 0) {
-                previewUrls.forEach((url) => URL.revokeObjectURL(url));
-            }
-        };
-    }, [previewUrls]);
 
     const uploaderStyle: React.CSSProperties = {
         border: "2px dashed #ccc",
         padding: "20px",
         textAlign: "center",
         cursor: "pointer",
+        display: "flex",
+        minHeight: "230px",
+        justifyContent: "center",
+        alignItems: "center",
         ...style,
     };
+    const previewStyle: React.CSSProperties = {
+        border: "2px dashed #ccc",
+        padding: "10px",
+        textAlign: "center",
+        cursor: "pointer",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    };
 
+    const deleteIconStyle = {
+        color: "#ea3f06",
+    };
+
+    const uploaderHoverStyle: React.CSSProperties = {
+        border: "2px dashed #05194fe8", // змінюємо колір при наведенні
+    };
+    const colorHoverStyle: React.CSSProperties = {
+        color: "#1137e3", // змінюємо колір при наведенні
+    };
     const imageVideoStyle: React.CSSProperties = {
         height: "100%",
         objectFit: "contain",
@@ -87,7 +111,12 @@ const Uploader = ({
 
     return (
         <div
-            style={uploaderStyle}
+            style={{
+                ...uploaderStyle,
+                ...(isHovered ? uploaderHoverStyle : {}),
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             className={className}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
@@ -100,42 +129,68 @@ const Uploader = ({
                 onChange={handleFileChange}
                 multiple
             />
-            Click or drag files here
-            {previewUrls.map((url, index) => (
-                <div key={index} style={{ marginTop: "10px" }}>
-                    {files && files[index] && (
-                        <div>
-                            <button onClick={() => handleDeleteFile(index)}>
-                                Delete
-                            </button>
-                            {files[index].type.startsWith("image/") && (
-                                <img
-                                    src={url}
-                                    alt="Preview"
-                                    style={imageVideoStyle}
-                                />
-                            )}
-                            {files[index].type.startsWith("video/") && (
-                                <video
-                                    src={url}
-                                    controls
-                                    style={imageVideoStyle}
-                                />
-                            )}
-                            {page !== "dashboard" &&
-                                files[index].type.startsWith("audio/") && (
-                                    <audio
+
+            {(!files || files.length <= 0) && (
+                <p style={isHovered ? colorHoverStyle : {}}>
+                    Click or drag files here
+                </p>
+            )}
+
+            <div className="grid grid-cols-3 gap-4">
+                {previewUrls.map((url, index) => (
+                    <div key={index} className="relative">
+                        {files && files[index] && (
+                            <div
+                                style={{
+                                    ...previewStyle,
+                                    ...(isHovered ? uploaderHoverStyle : {}),
+                                }}
+                            >
+                                {/* Кнопка видалення */}
+                                <button
+                                    onClick={(e) => handleDeleteFile(index, e)}
+                                    className="absolute top-3 right-3 bg-none rounded-md mx-2"
+                                >
+                                    <img
+                                        src="assets/images/svg/trash-can-red.svg"
+                                        alt="trash-can"
+                                        style={{
+                                            width: "1.5rem",
+                                            height: "1.5rem",
+                                        }}
+                                    />
+                                </button>
+                                {/* Прев'ю файлу */}
+                                {files[index].type.startsWith("image/") && (
+                                    <img
                                         src={url}
-                                        controls
-                                        style={audioStyle}
+                                        alt="Preview"
+                                        style={imageVideoStyle}
                                     />
                                 )}
-                        </div>
-                    )}
-                </div>
-            ))}
+                                {files[index].type.startsWith("video/") && (
+                                    <video
+                                        src={url}
+                                        controls
+                                        style={imageVideoStyle}
+                                    />
+                                )}
+
+                                {page !== "dashboard" &&
+                                    files[index].type.startsWith("audio/") && (
+                                        <audio
+                                            src={url}
+                                            controls
+                                            style={audioStyle}
+                                        />
+                                    )}
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
 
-export default Uploader;
+export default UploaderLot;

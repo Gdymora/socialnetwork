@@ -5,8 +5,7 @@ import { OnChangeFunction } from "@/types";
 const FileTabContent = ({
     className,
     onChange,
-    page,
-    prewiewForUpdate,
+    page, 
 }: {
     className: string;
     onChange: (files: FileList | null) => void;
@@ -24,8 +23,7 @@ const FileTabContent = ({
             /> */}
              <UploaderLot
                 onChange={onChange}
-                page={page}
-                prewiewForUpdate={prewiewForUpdate}
+                page={page} 
                 style={{}}
                 className="custom-uploader-class"
             />

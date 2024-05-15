@@ -1,88 +1,111 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\UserFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class UserFileController extends Controller
 {
+    /* 
+    composer require intervention/image
+    дозволяє легко змінювати розміри, виконувати стиснення та інші трансформації зображень.
+    composer require spatie/laravel-image-optimizer
+    дозволяє автоматично оптимізувати зображення під час завантаження.
+
+     */
+    public function index()
+    {
+        $userFiles = UserFile::all();
+        return response()->json($userFiles, 200);
+    }
+    public function sendFile($type, $filename)
+    {
+        if (!in_array($type, ['image', 'video', 'music'])) {
+            abort(404);
+        }
+
+        $filePath = "usersfile/{$type}/" . $filename;
+        if (!Storage::disk('local')->exists($filePath)) {
+            abort(404);
+        }
+
+        $file = Storage::disk('local')->get($filePath);
+        $response = response($file, 200);
+        return $response;
+    }
+    public function show($id)
+    {
+        $userFile = $this->findUserFile($id);
+        return response()->json($userFile, 200);
+    }
+
+    public function view($id)
+    {
+        return $this->show($id); // reuse show method as view is duplicating the same functionality
+    }
+
     public function store(Request $request)
     {
         \DB::beginTransaction();
-
         try {
-
             $validatedData = $request->validate([
-                'titleData' => 'string',
+                'titleData' => 'nullable|string',
                 'descriptionData' => 'nullable|string',
                 'selectedOption' => 'required|string',
-                'fileData' => 'nullable|file'  // |mimetypes:video/mp4,image/jpeg,image/png,audio/mpeg,audio/mp3'              
+                'fileData' => 'nullable|file'
             ]);
-            $userfile = new UserFile();
 
-            $userfile->description = $validatedData['descriptionData'];
-            // Створення нового посту
-            switch ($validatedData['selectedOption']) {
-                case '1':
-                    $userfile->visible = 'public';
-                    break;
-                case '2':
-                    $userfile->visible = 'private';
-                    break;
-                case '3':
-                    $userfile->visible = 'friends';
-                    break;
-                default:
-                    $userfile->visible = 'private';
+            $index = 0;
+            while ($request->hasFile("fileData{$index}")) {
+                $file = $request->file("fileData{$index}");
+                UserFile::storeFile($file, $validatedData);
+                $index++;
             }
 
-            if ($request->hasFile('fileData')) {
-                $file = $request->file('fileData');
-                $userfile->title = $validatedData['titleData'] ? $validatedData['titleData'] : $file->getClientOriginalName();
-                //TODO додати обробку по стисненню файлів
-                $fileMimeType = $file->getMimeType();
-                // Визначення типу медіа на основі MIME типу
-                if (str_contains($fileMimeType, 'image')) {
-                    $path = $file->store('images', 'usersfile_images');
-                    $userfile->type = 'image';
-                } elseif (str_contains($fileMimeType, 'video')) {
-                    $path = $file->store('videos', 'usersfile_videos');
-                    $userfile->type = 'video';
-                } elseif (str_contains($fileMimeType, 'audio')) {
-                    $path = $file->store('music', 'usersfile_music');
-                    $userfile->type = 'music';
-                } elseif (str_contains($fileMimeType, 'pdf')) {
-                    $path = $file->store('pdf', 'usersfile_pdf');
-                    $userfile->type = 'pdf';
-                } elseif (str_contains($fileMimeType, 'doc') || str_contains($fileMimeType, 'docx')) {
-                    $path = $file->store('doc', 'usersfile_doc');
-                    $userfile->type = 'doc';
-                } else {
-                    $path = $file->store('other', 'usersfile_other');
-                    $userfile->type = 'other';
-                }
-
-                if (!$path) {
-                    throw new \Exception("Failed to store userfile file.");
-                }
-
-                $userfile->url = $path;
-                $userfile->userfilable_id = auth()->id();
-                $userfile->userfilable_type = User::class;
-                $userfile->save();
-            }
-
-            \DB::commit(); // Завершення транзакції
-
-            return response()->json(['message' => 'Post created successfully']);
+            \DB::commit();
+            return response()->json(['message' => 'Files uploaded successfully'], 200);
         } catch (\Exception $e) {
-            \DB::rollBack(); // Відкат транзакції у разі помилки
+            \DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
+
+    public function destroy($id)
+    {
+        \DB::beginTransaction();
+        try {
+            $userFile = $this->findUserFile($id);
+            Storage::delete($userFile->url);  // Adjust if using different storage or path structures
+            $userFile->delete();
+            \DB::commit();
+            return response()->json(['message' => 'File deleted successfully'], 200);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function delete(Request $request)
+    {
+        \DB::beginTransaction();
+        try {
+            $requestids = $request->input('ids');
+            $ids = is_array($requestids) ? $requestids : [$requestids]; // Перетворюємо на масив, якщо передано одиночний ідентифікатор
+            $userFiles = UserFile::findMany($ids);
+
+            foreach ($userFiles as $userFile) {
+                Storage::delete($userFile->url);  // Перевірка існування файлу перед видаленням може бути корисною
+                $userFile->delete();
+            }
+
+            \DB::commit();
+            return response()->json(['message' => 'Files deleted successfully'], 200);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
     private function saveAlbumArt($path, $fileInfo)
     {
         if (isset($fileInfo['id3v2']['APIC'][0]['data'])) {

@@ -44,7 +44,7 @@ Route::get('/link-preview/{url}', [LinkPreviewController::class, 'show'])
 Route::get('/redirect', [RedirectController::class, 'redirectToExternalSite'])->name('external.redirect');
 
 Route::get('/media/{type}/{filename}', function ($type, $filename) {
-    if (!in_array($type, ['images', 'videos'])) {
+    if (!in_array($type, ['images', 'videos', 'image', 'video'])) {
         abort(404);
     }
 
@@ -75,12 +75,13 @@ Route::get('/media/{type}/{filename}', function ($type, $filename) {
 
     return response($file, 200)->header("Content-Type", $fileType);
 })->where('filename', '.*'); */
+
 Route::get('/user-file/{type}/{filename}', [FileController::class, 'sendFile'])->where('filename', '.*');
 Route::middleware('auth')->group(function () {
     //friend
     Route::get('/profile-friend/{id}', [ProfileFriendController::class, 'index'])->middleware(['auth', 'verified'])->name('profile-friend');
     // file
-    Route::post('/posts', [PostMediaController::class, 'store'])->name('posts');
+    // Route::post('/posts', [PostMediaController::class, 'store'])->name('posts');
     Route::post('/user-file', [UserFileController::class, 'store'])->name('user-file');
     // pages
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -92,9 +93,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/friends/{id}/follow', FollowController::class)->middleware(['auth', 'verified']);
     Route::patch('/friends/{id}/unfollow', UnFollowController::class)->middleware(['auth', 'verified']);
     Route::resources([
-       /*  'photos' => PhotoController::class, */
-        'post' => PostMediaController::class,
+        /*  'photos' => PhotoController::class, */
+        'posts' => PostMediaController::class,
+        'user-file' => UserFileController::class
     ]);
+    Route::post('/delete-user-files', [UserFileController::class, 'delete']); // Для множинних файлів, ідентифікатори передаються у тілі запиту
 
     Route::get('/work-shop', [WorkShopController::class, 'index'])->middleware(['auth', 'verified'])->name('work-shop');
     //

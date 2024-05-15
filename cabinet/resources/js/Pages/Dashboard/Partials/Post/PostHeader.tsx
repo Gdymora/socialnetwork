@@ -1,6 +1,8 @@
 import Dropdown from "@/Components/Dropdown";
+import ModalYesOrNot from "@/Components/ModalYesOrNot";
 import { Author } from "@/types";
 import moment from "moment";
+import { useState } from "react";
 
 export default function PostHeader({
     id,
@@ -8,23 +10,41 @@ export default function PostHeader({
     createdAt,
     visibility,
     onChangeUpdate,
+    onChangeDelete,
 }: {
     id: number;
     author: Author;
     createdAt: string;
     visibility: string;
     onChangeUpdate: (id: number) => void | undefined;
+    onChangeDelete: (id: number) => void | undefined;
 }) {
     const dateString = createdAt;
     const formattedDate = moment(dateString).format("DD.MM.YYYY HH:mm:ss");
     const currentPath = window.location.pathname === "/user-home";
+    const [isOpenDelete, setIsOpenDelete] = useState(false);
+    const [postData, setPostData] = useState({ id, author, visibility });
 
-    const handleClick = ( 
-        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    const handleClickUpdate = (
+        e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
-        console.log(id)
         onChangeUpdate(id);
     };
+    const handleClickDelete = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        setIsOpenDelete(true);
+    };
+
+    const closeDeleteModal = () => {
+        setIsOpenDelete(false);
+    };
+
+    const handleDeletePost = () => {
+        onChangeDelete(postData.id);
+        setIsOpenDelete(false);
+    };
+
     return (
         <div className="post-header">
             <div className="circle">
@@ -66,25 +86,29 @@ export default function PostHeader({
                             <>
                                 {
                                     <Dropdown.Link
-                                        href={route("post.show", { id: id })}
+                                        method="get"
+                                        as="button"
+                                        href={route("posts.show", { id: id })}
                                     >
                                         View
                                     </Dropdown.Link>
                                 }
                                 <div
                                     className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out "
-                                    onClick={handleClick as any}
+                                    onClick={(e) => {
+                                        handleClickUpdate(e);
+                                    }}
                                 >
                                     Edit
-                                </div>{" "}
-                                <Dropdown.Link
-                                    /*   method="delete"
-                                    as="button" */
-                                    /* href={route("posts.destroy", { id: id })} */
-                                    href="#"
+                                </div>
+                                <div
+                                    className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out "
+                                    onClick={(e) => {
+                                        handleClickDelete(e);
+                                    }}
                                 >
                                     Delete
-                                </Dropdown.Link>{" "}
+                                </div>
                             </>
                         )}
                         {/*  <Dropdown.Link href={route("profile.edit")}>
@@ -104,6 +128,16 @@ export default function PostHeader({
                     </Dropdown.Content>
                 </Dropdown>
             </div>
+            {isOpenDelete && (
+                <ModalYesOrNot
+                    closeModal={closeDeleteModal}
+                    handleButtonClick={handleDeletePost}
+                    text={{
+                        head: "Delete a post",
+                        title: "Do you want to delete a post?",
+                    }}
+                />
+            )}
         </div>
     );
 }

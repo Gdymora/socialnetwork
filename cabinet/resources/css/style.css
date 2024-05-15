@@ -272,7 +272,7 @@ main {
     padding: 20px 0;
 }
 
-.ar-px .grid {
+.ar-px .gridcol {
     display: grid;
     grid-template-columns: 25% 60% 25%;
     gap: 10px;

@@ -1,37 +1,52 @@
 import axios from "axios";
 import { useState } from "react";
+import { ErrorInfo } from "react-dom/client";
 
-const useAxios = (url: string) => {
+
+/* 
+якщо метод put на ларавел то надсилаємо методом post але додаємо атрибут _method
+const formData = new FormData(); 
+formData.append('_method', 'put'); 
+*/
+const useAxios = (url?: string) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [header, setHeader] = useState({});
+
     const sendRequest = async (
         method = "get",
         requestData = {},
-        config = {}
+        config = {},
+        customUrl?: string
     ) => {
         setLoading(true);
         setData(null);
         setError(null);
+
         try {
             const response = await axios({
-                url,
+                url: customUrl || url,
                 method,
                 data: requestData,
                 ...config,
             });
             setData(response.data);
-
-            setHeader(response.headers);
         } catch (error: any) {
+            console.log(error);
+            if (error.response && error.response.status === 401) {
+                window.location.href = "/";
+                localStorage.removeItem("token");
+            } else {
+                setError(error);
+            }
             setError(error);
+            // @ts-ignore
         } finally {
             setLoading(false);
         }
     };
 
-    return { sendRequest, data, loading, header, error };
+    return { sendRequest, data, loading, error };
 };
 
 export default useAxios;
