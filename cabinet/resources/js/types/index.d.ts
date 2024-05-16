@@ -18,7 +18,7 @@ export interface UserProfile {
     email: string;
     email_verified_at: string;
     gender: string | null;
-    id: number;
+    id: number | null;
     last_name: string | null;
     name: string | null;
     profile_image_url: string | null;

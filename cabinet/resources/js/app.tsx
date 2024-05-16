@@ -12,6 +12,8 @@ import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { BrowserRouter as Router } from "react-router-dom";
 import { StrictMode } from "react";
+import { Provider } from "react-redux";
+import store from "./store";
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({
@@ -27,11 +29,13 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
         root.render(
-            <Router>
-                <StrictMode>
-                    <App {...props} />
-                </StrictMode>
-            </Router>
+            <Provider store={store}>
+                <Router>
+                    <StrictMode>
+                        <App {...props} />
+                    </StrictMode>
+                </Router>
+            </Provider>
         );
     },
     progress: {

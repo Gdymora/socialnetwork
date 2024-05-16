@@ -47,10 +47,19 @@ export default function PostContent({
         const img = event.target as HTMLImageElement;
         setImageDimensions({ width: img.width, height: img.height });
     };
+    let gridClass = "grid-cols-3";
+
+    if (media.length === 1) {
+        gridClass = "grid-cols-1";
+    } else if (media.length === 2) {
+        gridClass = "grid-cols-2";
+    } else if (media.length > 2) {
+        gridClass = "grid-cols-3";
+    }
 
     return (
         <div className="post-content">
-            <div className="grid grid-cols-3 gap-4">
+            <div className={`grid ${gridClass} gap-4`}>
                 {media.map((mediaItem) => (
                     <div
                         key={mediaItem.id}

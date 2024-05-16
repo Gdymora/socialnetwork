@@ -22,9 +22,9 @@ export default function ParentSayPost({
     onUpdatePost,
 }: {
     profileData?: ProfileData;
-    postData?: PostType;
-    onCreatePost: (postData: PostType) => void;
-    onUpdatePost: (postData: PostType) => void;
+    postData?: PostType | undefined;
+    onCreatePost?: ((postData: PostType) => void) | undefined;
+    onUpdatePost?: ((postData: PostType) => void) | undefined;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         textData: "",
@@ -108,7 +108,7 @@ export default function ParentSayPost({
     formData.append("textData", textData);
     formData.append("linkData", JSON.stringify(linkData));
     formData.append("selectedOption", selectedOption as string);
-    formData.append("_method", "put");
+
     if (fileData) {
         Array.from(fileData).forEach((file, index) => {
             formData.append(`fileData${index}`, file);
@@ -116,12 +116,12 @@ export default function ParentSayPost({
     }
 
     useEffect(() => {
-        if (postUpdate) {
+        if (postUpdate && onUpdatePost) {
             const postObj: PostType = postUpdate["post"];
             onUpdatePost(postObj);
             toast.success(`Success update Post`);
         }
-        if (postCreate) {
+        if (postCreate && onCreatePost) {
             const postObj: PostType = postCreate["post"];
             onCreatePost(postObj);
             toast.success(`Success create Post`);
@@ -137,6 +137,7 @@ export default function ParentSayPost({
     }, [errorCreate, errorUpdate]);
 
     const handleSubmitUpdate = () => {
+        formData.append("_method", "put");
         sendRequestUpdate("post", formData, {
             url: `/posts/${postData?.id}`,
             headers: {

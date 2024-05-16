@@ -1,13 +1,15 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+
+import { useDispatch, useSelector } from "react-redux";
 import {
     Auth,
     ProfileData,
     FriendsAndFollowers,
-    PageProps,
     PostType,
     RandomUserForFriendship,
     postMostViewed,
+    UserProfile as UserProfileInterface,
 } from "@/types";
 import { SuggestionsList } from "./Partials/LeftSidebar/SuggestionsList";
 import UserProfile from "./Partials/LeftSidebar/UserProfile";
@@ -15,8 +17,10 @@ import PostsList from "./Partials/Post/PostList";
 import RightSidebar from "./Partials/RightSidebar/RightSidebar";
 import ParentSayPost from "./Partials/ModalSay/ParentSayPost";
 import MenegmentPost from "../UserHome/Partials/MenegmentPost";
-// Dashboard.tsx
-// інші необхідні імпорти
+import { useEffect } from "react";
+import { createAction } from "@reduxjs/toolkit"; 
+import { setUser } from "@/store/slices/userSlice";
+
 interface DashboardProps {
     auth: Auth;
     posts: PostType[];
@@ -33,6 +37,21 @@ export default function Dashboard({
     postMostViewed,
     randomUsersForFriendship,
 }: DashboardProps) {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const user: UserProfileInterface = auth.user;
+        // Збереження даних про користувача в Redux store
+        if (user && dispatch) {
+            dispatch(setUser(user));
+        }
+    }, [auth, dispatch]);
+
+    const user = useSelector((state: any) => state.user);
+
+    // Лог отриманих даних
+    console.log("User from Redux store:", user);
+
     return (
         <AuthenticatedLayout
             user={auth.user}

@@ -68,6 +68,11 @@ class UserFile extends Model
         return $userfile;
     }
 
+    private static function deleteFile($file)
+    {
+        Storage::disk("usersfile_{$file->type}")->delete($file->url);
+    }
+
     private static function optimizeFile($path, $userfile)
     {
         if (str_contains($userfile->type, 'image')) {

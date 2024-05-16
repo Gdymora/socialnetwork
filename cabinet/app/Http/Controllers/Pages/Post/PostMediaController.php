@@ -9,6 +9,7 @@ use App\Models\UserFile;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\FileBag;
@@ -250,8 +251,6 @@ class PostMediaController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
@@ -266,8 +265,15 @@ class PostMediaController extends Controller
         try {
             // Видалення коментарів
             $post->comments()->delete();
+
             // Видалення файлів
-            $post->media()->delete();
+            foreach ($post->media as $media) {
+                // return response()->json(['error' => $post->media, 'media' => $media], 500);
+                Storage::disk("post_{$media->type}")->delete($media->url);
+
+                $media->delete();
+            }
+
             // Видалення поста
             $post->delete();
             \DB::commit();

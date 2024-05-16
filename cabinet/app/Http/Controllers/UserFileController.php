@@ -77,7 +77,7 @@ class UserFileController extends Controller
         \DB::beginTransaction();
         try {
             $userFile = $this->findUserFile($id);
-            Storage::delete($userFile->url);  // Adjust if using different storage or path structures
+            Storage::disk("usersfile_{$userFile->type}")->delete($userFile->url);
             $userFile->delete();
             \DB::commit();
             return response()->json(['message' => 'File deleted successfully'], 200);
@@ -95,7 +95,8 @@ class UserFileController extends Controller
             $userFiles = UserFile::findMany($ids);
 
             foreach ($userFiles as $userFile) {
-                Storage::delete($userFile->url);  // Перевірка існування файлу перед видаленням може бути корисною
+               // Storage::delete($userFile->url);  // Перевірка існування файлу перед видаленням може бути корисною
+                Storage::disk("usersfile_{$userFile->type}")->delete($userFile->url);
                 $userFile->delete();
             }
 

@@ -1,8 +1,10 @@
 import Dropdown from "@/Components/Dropdown";
 import ModalYesOrNot from "@/Components/ModalYesOrNot";
+import store from "@/store";
 import { Author } from "@/types";
 import moment from "moment";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function PostHeader({
     id,
@@ -25,6 +27,10 @@ export default function PostHeader({
     const [isOpenDelete, setIsOpenDelete] = useState(false);
     const [postData, setPostData] = useState({ id, author, visibility });
 
+    const user = useSelector(
+        (state: ReturnType<typeof store.getState>) => state.user
+    );
+    console.log(user);
     const handleClickUpdate = (
         e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
@@ -109,6 +115,39 @@ export default function PostHeader({
                                 >
                                     Delete
                                 </div>
+                            </>
+                        )}
+                        {!currentPath && (
+                            <>
+                                {
+                                    <Dropdown.Link
+                                        method="get"
+                                        as="button"
+                                        href={route("posts.show", { id: id })}
+                                    >
+                                        View
+                                    </Dropdown.Link>
+                                }
+                                {author.id === user.id && (
+                                    <>
+                                        <div
+                                            className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out "
+                                            onClick={(e) => {
+                                                handleClickUpdate(e);
+                                            }}
+                                        >
+                                            Edit
+                                        </div>
+                                        <div
+                                            className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out "
+                                            onClick={(e) => {
+                                                handleClickDelete(e);
+                                            }}
+                                        >
+                                            Delete
+                                        </div>
+                                    </>
+                                )}
                             </>
                         )}
                         {/*  <Dropdown.Link href={route("profile.edit")}>
