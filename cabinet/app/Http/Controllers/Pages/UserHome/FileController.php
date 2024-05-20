@@ -9,7 +9,7 @@ class FileController extends Controller
 {
     public function sendFile($type, $filename)
     {
-        if (!in_array($type, ['images', 'videos', 'music'])) {
+        if (!in_array($type, ['image', 'video', 'music'])) {
             abort(404);
         }
 
@@ -25,7 +25,7 @@ class FileController extends Controller
 
     public function sendFileMimeType($type, $filename)
     {
-        if (!in_array($type, ['images', 'videos', 'music'])) {
+        if (!in_array($type, ['image', 'video', 'music'])) {
             abort(404);
         }
 
@@ -41,9 +41,9 @@ class FileController extends Controller
 
         if ($type === 'music') {
             $metadata = $this->getAudioMetadata($absolutePath);
-        } elseif ($type === 'videos') {
+        } elseif ($type === 'video') {
             $metadata = $this->getVideoMetadata($absolutePath);
-        } elseif ($type === 'images') {
+        } elseif ($type === 'image') {
             return $response;
         }
 

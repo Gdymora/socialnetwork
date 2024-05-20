@@ -53,7 +53,7 @@ class UserFile extends Model
             'userfilable_id' => auth()->id(),
             'userfilable_type' => User::class,
             'type' => $type
-        ]);
+        ]); 
         $path = $file->store($type, "usersfile_{$type}");
         if (!$path) {
             throw new \Exception("Failed to store file.");

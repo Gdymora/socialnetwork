@@ -26,11 +26,11 @@ export default function ParentSayPost({
     onCreatePost?: ((postData: PostType) => void) | undefined;
     onUpdatePost?: ((postData: PostType) => void) | undefined;
 }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+ /*    const { data, setData, post, processing, errors, reset } = useForm({
         textData: "",
         selectedOption: "",
         fileData: null,
-    });
+    }); */
     const {
         data: postCreate,
         error: errorCreate,

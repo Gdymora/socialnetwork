@@ -1,42 +1,46 @@
 import moment from "moment";
 import Dropdown from "@/Components/Dropdown";
-import { CSSProperties, MouseEvent } from "react";
-import { useExpandableContent } from "@/Hooks/useExpandableContent";
+import { CSSProperties, useEffect, useState } from "react"; 
 import axios from "axios";
-export default function FileViewHeader({
-    title,
-    createdAt,
-    visibility,
-    type,
-    url,
-}: {
-    title: string;
-    createdAt: string;
-    visibility: string;
-    type: string;
-    url: string;
-}) {
-    const dateString = createdAt;
+import { UserFile } from "@/types";
+import ModalYesOrNot from "@/Components/ModalYesOrNot";
+import useAxios from "@/Hooks/useAxios";
+import { toast } from "react-toastify";
+
+export default function FileViewHeader({ file }: { file: UserFile }) {
+    const dateString = file.created_at;
     const formattedDate = moment(dateString).format("DD.MM.YYYY HH:mm:ss");
-    const filePostHeader: CSSProperties = {
-        display: "grid",
-        gridTemplateColumns: "8fr 1fr",
-        margin: "10px",
-        alignContent: "center",
+    const filePostHeader: CSSProperties = { 
+        margin: "5px", 
     };
 
-    const maxLength = 10; // Встановіть максимальну довжину тексту
-    const text = title ? title : "";
-    const { isExpanded, toggleExpanded, renderContent } = useExpandableContent(
-        text,
-        maxLength
-    );
+    const [isOpenDelete, setIsOpenDelete] = useState(false);
+    const [fileIdDelete, setFileIdDelete] = useState<number | null>(null);
+    const {
+        sendRequest: sendRequestDelete,
+        data: dataDelete,
+        error: errorDelete,
+    } = useAxios();
 
-    const handleSetAsProfilePicture = (event: MouseEvent<HTMLDivElement>) => {
-        event.preventDefault();
+    useEffect(() => {
+        if (dataDelete) {
+            toast.success("Successfully deleted");
+        }
+    }, [dataDelete]);
+
+    useEffect(() => {
+        const errorNow = errorDelete;
+        if (errorNow) {
+            toast.error("Error:", (errorNow as any).message);
+        }
+    }, [errorDelete]);
+
+    const handleSetAsProfilePicture = () => {
+        // event.preventDefault();
         axios
-            .patch("/user-about-me", { profile_image_url: url })
+            .patch("/user-about-me", { profile_image_url: file.url })
             .then((response) => {
+                
                 // Обробка успішної відповіді
                 console.log(response.data);
             })
@@ -45,24 +49,30 @@ export default function FileViewHeader({
                 console.error("Error:", error);
             });
     };
+    const openDeleteModal = (Id: number) => {
+        setIsOpenDelete(true);
+        setFileIdDelete(Id);
+    };
+    const closeDeleteModal = () => {
+        setIsOpenDelete(false);
+    };
+
+    const handleDeleteFile = () => {
+        if (fileIdDelete) {
+            deleteFile(fileIdDelete);
+        }
+        setIsOpenDelete(false);
+    };
+
+    const deleteFile = (id: number) =>
+        sendRequestDelete("delete", {}, {url:`/user-file/${id}`}); 
 
     return (
-        <div className="" style={filePostHeader}>
-            <span className="bold" style={{ fontSize: "0.7rem" }}>
-                <p>
-                    {renderContent()}
-                    {text.length > maxLength && (
-                        <button onClick={toggleExpanded}>
-                            {isExpanded ? "<-" : "..."}
-                        </button>
-                    )}
-                </p>
-            </span>
+        <div className="flex-grow" style={filePostHeader}>            
             <div className="flex justify-content-right">
-                <Dropdown >
+                <Dropdown>
                     <Dropdown.Trigger>
                         <button
-                           
                             className="nav-link dropdown-toggle button-icon"
                             id="navbarDropdown"
                             role="button"
@@ -75,10 +85,17 @@ export default function FileViewHeader({
                     </Dropdown.Trigger>
 
                     <Dropdown.Content align={"right"}>
+                        <button
+                            type="button"
+                            className="m-2"
+                            onClick={() => openDeleteModal(file.id)}
+                        >
+                            Delete
+                        </button>
                         <Dropdown.Link href={route("profile.edit")}>
                             Profile
                         </Dropdown.Link>{" "}
-                        {type === "image" && (
+                        {file.type === "image" && (
                             <Dropdown.Link
                                 onClick={handleSetAsProfilePicture}
                                 method="post"
@@ -92,6 +109,16 @@ export default function FileViewHeader({
                     </Dropdown.Content>
                 </Dropdown>
             </div>
+            {isOpenDelete && (
+                <ModalYesOrNot
+                    closeModal={closeDeleteModal}
+                    handleButtonClick={handleDeleteFile}
+                    text={{
+                        head: "Delete a file",
+                        title: "Do you want to delete a file?",
+                    }}
+                />
+            )}
         </div>
     );
 }

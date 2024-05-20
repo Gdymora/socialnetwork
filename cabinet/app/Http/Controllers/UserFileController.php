@@ -36,7 +36,7 @@ class UserFileController extends Controller
     }
     public function show($id)
     {
-        $userFile = $this->findUserFile($id);
+        $userFile = UserFile::findOrFail($id);
         return response()->json($userFile, 200);
     }
 
@@ -76,7 +76,11 @@ class UserFileController extends Controller
     {
         \DB::beginTransaction();
         try {
-            $userFile = $this->findUserFile($id);
+            $userFile = UserFile::findOrFail($id);
+            // Перевірка прав доступу до видалення
+            if ($userFile->userfilable_id !== auth()->id()) {
+                return response()->json(['error' => 'Forbidden'], 403);
+            }
             Storage::disk("usersfile_{$userFile->type}")->delete($userFile->url);
             $userFile->delete();
             \DB::commit();
@@ -95,7 +99,6 @@ class UserFileController extends Controller
             $userFiles = UserFile::findMany($ids);
 
             foreach ($userFiles as $userFile) {
-               // Storage::delete($userFile->url);  // Перевірка існування файлу перед видаленням може бути корисною
                 Storage::disk("usersfile_{$userFile->type}")->delete($userFile->url);
                 $userFile->delete();
             }
@@ -106,22 +109,5 @@ class UserFileController extends Controller
             \DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
-    }
-    private function saveAlbumArt($path, $fileInfo)
-    {
-        if (isset($fileInfo['id3v2']['APIC'][0]['data'])) {
-            $data = $fileInfo['id3v2']['APIC'][0]['data'];
-            $mimeType = $fileInfo['id3v2']['APIC'][0]['mime'];
-            $extension = explode('/', $mimeType)[1]; // Визначення розширення файлу з MIME типу
-            // Створення імені файлу для зображення
-            $filename = uniqid('album_art_', true) . '.' . $extension;
-            $savePath = 'public/album_arts/' . $filename; // Вказівка шляху зберігання
-            // Зберігання файлу
-            Storage::disk('local')->put($savePath, $data);
-            // Повернення URL до зображення
-            return Storage::url($savePath);
-        }
-
-        return null;
     }
 }

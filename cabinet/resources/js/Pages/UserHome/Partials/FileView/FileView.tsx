@@ -9,39 +9,55 @@ interface UserFileProps {
     contentModal?: boolean;
     onFileClick?: () => void | null;
     onNextClick?: () => void | null;
-    onPrevClick?: () => void | null;
+    onPrevClick?: () => void | null; 
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>, item: File) => void;
+    selectedItems: File[];
 }
 
-export default function FileView({ file, onFileClick }: UserFileProps) {
+const postFile: CSSProperties = {
+    maxWidth: "100%",
+    backgroundColor: "var(--content-bg-color)",
+    border: "1px solid #ddd",
+    padding: "7px",
+    margin: "4px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+};
+
+export default function FileView({
+    file,
+    onFileClick,
+    handleChange,
+    selectedItems,
+}: UserFileProps) {
     const [showComments, setShowComments] = useState(false);
 
     const toggleComments = () => {
         setShowComments(!showComments);
     };
 
-    const postFile: CSSProperties = {
-        maxWidth: "100%",
-        backgroundColor: "var(--content-bg-color)",
-        border: "1px solid #ddd",
-        padding: "7px",
-        margin: "4px",
-    };
-
     return (
         <div style={postFile}>
-            <FileViewHeader
-                title={file.title}
-                createdAt={file.created_at}
-                visibility={file.visible}
-                type={file.type}
-                url={file.url}
-            />{" "}
-            <div onClick={onFileClick}>{<FileViewContent media={file} />} </div>
+            <div>
+                <div className="flex justify-between items-center">
+                    <input
+                        type="checkbox"
+                        className="mr-2"
+                        checked={selectedItems.some((i) => i.id === file.id)}
+                        onChange={(e) => handleChange(e, file)}
+                    />
+                    <FileViewHeader file={file} />
+                </div>
+                <div onClick={onFileClick}>
+                    <FileViewContent media={file} />
+                </div>
+            </div>
             <FileViewFooter
                 onToggleComments={toggleComments}
                 description={file.description}
+                title={file.title}
             />
-            {/* <Carousel users={randomUsersForFriendship}/> */}
         </div>
     );
 }

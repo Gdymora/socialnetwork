@@ -201,7 +201,7 @@ class New_UserFileController extends Controller
         });
 
         $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-        $path = 'images/' . $fileName;
+        $path = 'image/' . $fileName;
 
         Storage::disk('public')->put($path, (string) $image->encode());
 

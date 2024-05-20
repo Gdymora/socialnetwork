@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import Modal from "@/Components/Modal";
 import { ProfileData } from "@/types";
-import styles from "./ModalAddFile/TabContent.module.css";
 import Button from "@/Components/Button";
 import stylesModal from "./ModalAddFile/Modal.module.css";
 import SelectButton from "@/Components/SelectButton";
-import FileTabContent from "./ModalAddFile/FileTabContent";
 import { useForm } from "@inertiajs/react";
-import axios from "axios";
 import Videos from "./Videos";
 import TextInput from "@/Components/TextInput";
 import Music from "./Music";
 import Posts from "./Posts";
 import Images from "./Images";
 import { toast } from "react-toastify";
+import UploaderLot from "@/Components/UploaderLot";
+import useAxios from "@/Hooks/useAxios";
 
 export default function ParentModalFile({
     profileData,
@@ -29,10 +28,31 @@ export default function ParentModalFile({
         fileData: null,
     });
 
+    const {
+        data: dataCreate,
+        error: errorCreate,
+        sendRequest: sendRequestCreate,
+    } = useAxios();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string | number>("");
-    const [fileData, setFileData] = useState<File | null>(null);
+    const [fileData, setFileData] = useState<FileList | null>(null);
     const [disabled, setDisabled] = useState(true);
+
+    useEffect(() => {
+        if (dataCreate) {
+            toast.success((dataCreate as any).message);
+            setDisabled(true);
+        }
+    }, [dataCreate]);
+
+    useEffect(() => {
+        const errorNow: any = errorCreate;
+        if (errorNow) {
+            toast.error("Error:", errorNow.message);
+        }
+    }, [errorCreate]);
+
     const handleOpenModal = (content: string) => {
         setIsModalOpen(true);
     };
@@ -42,38 +62,36 @@ export default function ParentModalFile({
         setSelectedOption(value);
     };
 
-    const handleFileChange = (data: File | null) => {
+    const handleFileChange = (data: FileList | null) => {
         setFileData(data);
-        if (data?.name) {
-            setData("title", data.name);
+        if (data?.length == 1 && data[0].name) {
+            setData("title", data[0].name);
         }
         setDisabled(false);
     };
 
-    const formData = new FormData();
-    formData.append("selectedOption", selectedOption as string);
-    formData.append("titleData", data.title);
-    formData.append("descriptionData", data.descriptionData);
-    if (fileData) {
-        formData.append("fileData", fileData);
-    }
-
     const handleSubmit = () => {
-        axios
-            .post(route("user-file"), formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
-            .then((res) => {
-                console.log(res);
-                toast.success(res.data.message);
-                setDisabled(true);
-            })
-            .catch((error) => {
-                console.error("Error submitting post data", error);
-                toast.error("Error submitting post data", error);
+        const formData = new FormData();
+        formData.append("selectedOption", selectedOption as string);
+        formData.append("titleData", data.title);
+        formData.append("descriptionData", data.descriptionData);
+        if (fileData) {
+            Array.from(fileData).forEach((file, index) => {
+                formData.append(`fileData${index}`, file);
             });
+        }
+
+        if (fileData) {
+            Array.from(fileData).forEach((file, index) => {
+                formData.append(`fileData${index}`, file);
+            });
+        }
+        sendRequestCreate("post", formData, {
+            url: `/user-file`,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
     };
 
     return (
@@ -180,14 +198,33 @@ export default function ParentModalFile({
                                         }
                                     />
                                 </div>
-                                <FileTabContent
+                                <div className="overflow-y-auto max-h-[80vh]">
+                                    <div className={stylesModal.modalContent}>
+                                        <div className={stylesModal.gridBlock}>
+                                            <div> </div>
+                                            <div
+                                                className={
+                                                    stylesModal.textFlexCenter
+                                                }
+                                            >
+                                                <p className="bold"></p>
+                                            </div>
+                                        </div>
+                                        <UploaderLot
+                                            onChange={handleFileChange}
+                                            style={{}}
+                                            className="custom-uploader-class"
+                                        />
+                                    </div>
+                                </div>
+                                {/*   <FileTabContent
                                     className={
                                         true
                                             ? styles.imageTabContentActive
                                             : styles.imageTabContent
                                     }
                                     onChange={handleFileChange}
-                                />
+                                /> */}
                             </div>
                         </div>
                         <div className={stylesModal.modalFooter}>

@@ -1,42 +1,11 @@
 import { UserFile, UserFileFilteredByVisibility } from "@/types";
-import FileView from "./FileView";
-import { CSSProperties, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SelectButton from "@/Components/SelectButton";
 import MediaCarousel from "@/Components/MediaCarousel";
+import FileCategoryView from "./FileCategoryView";
+
 interface FileViewProps {
     files: UserFileFilteredByVisibility;
-}
-
-function FileCategoryView({
-    title,
-    files,
-    onFileClick,
-}: {
-    title?: string;
-    files: UserFile[];
-    onFileClick: (file: UserFile, index: number) => void;
-}) {
-    const contentGrid: CSSProperties = {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(145px, 1fr))",
-        margin: "10px",
-        justifyItems: "center",
-    };
-
-    return (
-        <div className="post">
-            {title && <h3>{title}</h3>}
-            <div style={contentGrid}>
-                {files.map((file, index) => (
-                    <FileView
-                        key={file.id}
-                        file={file}
-                        onFileClick={() => onFileClick(file, index)}
-                    />
-                ))}
-            </div>
-        </div>
-    );
 }
 
 export default function FileViewList({ files }: FileViewProps) {
