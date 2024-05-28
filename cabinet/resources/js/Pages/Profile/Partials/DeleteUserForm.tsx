@@ -28,7 +28,7 @@ export default function DeleteUserForm({ className = '' }: { className?: string 
 
     const deleteUser: FormEventHandler = (e) => {
         e.preventDefault();
-
+// @ts-expect-error
         destroy(route('profile.destroy'), {
             preserveScroll: true,
             onSuccess: () => closeModal(),

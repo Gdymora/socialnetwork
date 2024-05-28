@@ -22,7 +22,7 @@ export default function ResetPassword({ token, email }: { token: string, email: 
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
+// @ts-expect-error
         post(route('password.store'));
     };
 

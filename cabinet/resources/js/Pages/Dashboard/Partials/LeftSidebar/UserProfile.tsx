@@ -17,7 +17,7 @@ export default function UserProfile({
                             profileData.profile_image_url
                                 ? `/user-file/${profileData.profile_image_url}`
                                 : "/assets/images/noimg.png"
-                        } 
+                        }
                         loading="lazy"
                         alt={`${profileData?.name} ${profileData?.last_name}`}
                     />
@@ -55,7 +55,7 @@ export default function UserProfile({
                 </div>
                 <div className="border-block-end"></div>
                 <div>
-                    <a href={route("user-home")}>View Profile</a>
+                    <a href={"user-home"}>View Profile</a>
                 </div>
             </div>
         </div>

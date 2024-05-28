@@ -8,7 +8,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
+  // @ts-expect-error
         post(route('verification.send'));
     };
 
@@ -32,6 +32,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     <PrimaryButton disabled={processing}>Resend Verification Email</PrimaryButton>
 
                     <Link
+                    // @ts-expect-error
                         href={route('logout')}
                         method="post"
                         as="button"

@@ -54,6 +54,7 @@ export function SuggestionsList({
                                 <button
                                     onClick={() =>
                                         Inertia.visit(
+                                            // @ts-expect-error
                                             route("profile-friend", {
                                                 id: friend.id,
                                             })

@@ -28,7 +28,10 @@ export default function FriendCard({
 
     return (
         <div className="user-galery-card">
-            <a href={route("profile-friend", { id: id })}>
+            <a href={
+                // @ts-expect-error
+                route("profile-friend", { id: id })
+                }>
                 <img
                     src={
                         profile_image_url

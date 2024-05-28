@@ -1,6 +1,6 @@
 import RightSidebarHeader from "./RightSidebarHeader";
 
-export default function SidebarSection2({ title, children }) {
+export default function SidebarSection2({ title, children }: any) {
     return (
         <div className="section_2">
             <div className="section_2">

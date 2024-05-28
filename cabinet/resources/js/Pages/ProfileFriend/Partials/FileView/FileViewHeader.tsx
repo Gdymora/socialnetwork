@@ -32,7 +32,7 @@ export default function FileViewHeader({
         maxLength
     );
 
-    const handleSetAsProfilePicture = (event: MouseEvent<HTMLDivElement>) => {
+    const handleSetAsProfilePicture = (event: MouseEvent<HTMLDivElement>):any => {
         event.preventDefault();
         axios
             .patch("/user-about-me", { profile_image_url: url })
@@ -74,12 +74,15 @@ export default function FileViewHeader({
                     </Dropdown.Trigger>
 
                     <Dropdown.Content>
-                        <Dropdown.Link href={route("profile.edit")}>
+                        <Dropdown.Link href={
+                            // @ts-expect-error
+                            route("profile.edit")
+                            }>
                             Profile
                         </Dropdown.Link>{" "}
                         {visibility === "private" && type === "image" && (
                             <Dropdown.Link
-                                onClick={handleSetAsProfilePicture}
+                                onClick={handleSetAsProfilePicture as any}
                                 method="post"
                                 as="button"
                                 href="#"

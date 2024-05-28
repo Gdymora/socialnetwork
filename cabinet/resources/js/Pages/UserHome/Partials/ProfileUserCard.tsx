@@ -16,7 +16,12 @@ export default function ProfileUserCard({ user }: { user: Friend }) {
                 loading="lazy"
                 alt={`Аватар ${name}`}
             />
-            <a href={route("profile-friend", { id: id })}>
+            <a
+                href={
+                    // @ts-expect-error
+                    route("profile-friend", { id: id })
+                }
+            >
                 {" "}
                 <p>
                     {name} {last_name}

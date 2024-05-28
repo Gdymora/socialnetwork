@@ -30,7 +30,7 @@ export default function FileView({
     onFileClick,
     handleChange,
     selectedItems,
-}: UserFileProps) {
+}: any) {
     const [showComments, setShowComments] = useState(false);
 
     const toggleComments = () => {
@@ -44,8 +44,8 @@ export default function FileView({
                     <input
                         type="checkbox"
                         className="mr-2"
-                        checked={selectedItems.some((i) => i.id === file.id)}
-                        onChange={(e) => handleChange(e, file)}
+                        checked={selectedItems.some((i: any) => i.id === file.id)}
+                        onChange={(e) => handleChange(e, file as any)}
                     />
                     <FileViewHeader file={file} />
                 </div>

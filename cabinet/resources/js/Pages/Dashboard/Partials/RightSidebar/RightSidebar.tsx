@@ -2,8 +2,7 @@ import SidebarItem from "./SidebarItem";
 import SidebarSection1 from "./SidebarSection1";
 import SidebarSection3 from "./SidebarSection3";
 import SidebarSection2 from "./SidebarSection2";
-import { postMostViewed } from "@/types";
-import { title } from "process";
+import { postMostViewed } from "@/types"; 
 
 export default function RightSidebar({
     postMostViewed,

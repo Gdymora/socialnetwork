@@ -19,7 +19,7 @@ export default function ConfirmPassword() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
+// @ts-expect-error
         post(route('password.confirm'));
     };
 

@@ -12,7 +12,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
+// @ts-expect-error
         post(route('password.email'));
     };
 

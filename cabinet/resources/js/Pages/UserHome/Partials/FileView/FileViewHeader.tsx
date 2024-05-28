@@ -1,6 +1,6 @@
 import moment from "moment";
 import Dropdown from "@/Components/Dropdown";
-import { CSSProperties, useEffect, useState } from "react"; 
+import { CSSProperties, useEffect, useState } from "react";
 import axios from "axios";
 import { UserFile } from "@/types";
 import ModalYesOrNot from "@/Components/ModalYesOrNot";
@@ -10,8 +10,8 @@ import { toast } from "react-toastify";
 export default function FileViewHeader({ file }: { file: UserFile }) {
     const dateString = file.created_at;
     const formattedDate = moment(dateString).format("DD.MM.YYYY HH:mm:ss");
-    const filePostHeader: CSSProperties = { 
-        margin: "5px", 
+    const filePostHeader: CSSProperties = {
+        margin: "5px",
     };
 
     const [isOpenDelete, setIsOpenDelete] = useState(false);
@@ -40,7 +40,6 @@ export default function FileViewHeader({ file }: { file: UserFile }) {
         axios
             .patch("/user-about-me", { profile_image_url: file.url })
             .then((response) => {
-                
                 // Обробка успішної відповіді
                 console.log(response.data);
             })
@@ -65,10 +64,10 @@ export default function FileViewHeader({ file }: { file: UserFile }) {
     };
 
     const deleteFile = (id: number) =>
-        sendRequestDelete("delete", {}, {url:`/user-file/${id}`}); 
+        sendRequestDelete("delete", {}, { url: `/user-file/${id}` });
 
     return (
-        <div className="flex-grow" style={filePostHeader}>            
+        <div className="flex-grow" style={filePostHeader}>
             <div className="flex justify-content-right">
                 <Dropdown>
                     <Dropdown.Trigger>
@@ -92,7 +91,12 @@ export default function FileViewHeader({ file }: { file: UserFile }) {
                         >
                             Delete
                         </button>
-                        <Dropdown.Link href={route("profile.edit")}>
+                        <Dropdown.Link
+                            href={
+                                // @ts-expect-error
+                                route("profile.edit")
+                            }
+                        >
                             Profile
                         </Dropdown.Link>{" "}
                         {file.type === "image" && (

@@ -24,41 +24,42 @@ export default function Header() {
                     <ul>
                         {/* ... інші елементи меню */}
                         <li>
-                            <a href={route("dashboard")}>
+                            <a href={"dashboard"}>
                                 <i className="bi bi-house-door-fill"></i>Home
                             </a>
                         </li>
+                        {/* 
                         <li>
                             <NavLink
-                                href={route("dashboard")}
+                                href={"./dashboard"}
                                 active={route().current("dashboard.index")}
                             >
                                 <i className="bi bi-house-door-fill"></i>Home
                             </NavLink>
-                        </li>{" "}
+                        </li>{" "} */}
                         <li>
-                            <a href={route("user-home")}>
+                            <a href={"user-home"}>
                                 <i className="bi bi-person-fill"></i>Profile
                             </a>
                         </li>
                         <li>
-                            <a href={route("friends")}>
+                            <a href={"friends"}>
                                 <i className="bi bi-people-fill"></i>Friends
                             </a>
                         </li>
                         <li>
-                            <a href={route("galery")}>
+                            <a href={"galery"}>
                                 <i className="bi bi-people-fill"></i>Galery
                             </a>
                         </li>
                         <li>
-                            <a href={route("message")}>
+                            <a href={"message"}>
                                 <i className="bi bi-chat-square-text-fill"></i>
                                 Message
                             </a>
                         </li>
                         <li>
-                            <a href={route("work-shop")}>
+                            <a href={"work-shop"}>
                                 <i className="bi bi-hammer"></i>Workshop
                             </a>
                         </li>
@@ -81,11 +82,11 @@ export default function Header() {
                             </Dropdown.Trigger>
 
                             <Dropdown.Content>
-                                <Dropdown.Link href={route("profile.edit")}>
+                                <Dropdown.Link href={"profile.edit"}>
                                     Profile
                                 </Dropdown.Link>
                                 <Dropdown.Link
-                                    href={route("logout")}
+                                    href={"logout"}
                                     method="post"
                                     as="button"
                                 >

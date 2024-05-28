@@ -67,8 +67,8 @@ const LinkPreviewPost = ({
             <div style={styles.body}>
                 <p style={styles.description}>{description}</p>
                 <a
-                    /* 
-                     */href={route("external.redirect", { url: url })}
+                    // @ts-expect-error
+                    href={route("external.redirect", { url: url })}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={styles.url}

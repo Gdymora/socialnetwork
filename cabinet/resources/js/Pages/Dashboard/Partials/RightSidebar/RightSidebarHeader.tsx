@@ -1,4 +1,4 @@
-export default function RightSidebarHeader({ title }) {
+export default function RightSidebarHeader({ title }: any) {
     return (
         <div className="header-card">
             <div className="space-between">

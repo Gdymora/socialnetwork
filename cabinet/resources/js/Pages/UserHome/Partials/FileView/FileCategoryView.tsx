@@ -43,7 +43,7 @@ function FileCategoryView({
     }, [dataDelete]);
 
     useEffect(() => {
-        const errorNow = errorDelete;
+        const errorNow: any = errorDelete;
         if (errorNow) {
             toast.error("Error:", errorNow.message);
         }
@@ -56,7 +56,7 @@ function FileCategoryView({
         if (isChecked) {
             setSelectedItems((prev) => [...prev, item]);
         } else {
-            setSelectedItems((prev) => prev.filter((i) => i.id !== item.id));
+            setSelectedItems((prev) => prev.filter((i: any) => i.id !== (item as any)));
         }
     };
 
@@ -71,7 +71,7 @@ function FileCategoryView({
     const closeModalList = () => setIsOpenList(false);
 
     const openDeleteModalArray = () => {
-        const arrayID = selectedItems.map((item) => item.id); 
+        const arrayID = selectedItems.map((item: any) => item.id); 
         deleteFile(arrayID);
         closeModalList();
       };
@@ -107,7 +107,7 @@ function FileCategoryView({
                         <div>
                             <h2>List items:</h2>
                             <ul>
-                                {selectedItems.map((item, index) => (
+                                {selectedItems.map((item:any, index) => (
                                     <li key={index}>
                                         {index + 1} {item.title}
                                         <input
@@ -116,7 +116,7 @@ function FileCategoryView({
                                                 handleChange(e, item)
                                             }
                                             checked={selectedItems.some(
-                                                (i) => i.id === item.id
+                                                (i:any) => i.id === item.id
                                             )}
                                         />
                                     </li>
