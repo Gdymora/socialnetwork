@@ -14,11 +14,21 @@ class UserFileController extends Controller
     дозволяє автоматично оптимізувати зображення під час завантаження.
 
      */
+     
+    public function viewFilesForIds(Request $request)
+    {
+        $requestids = $request->input('ids');
+        $ids = is_array($requestids) ? $requestids : [$requestids];  
+        $files = UserFile::findMany($ids);
+        return response()->json($files, 200);
+    }
+    
     public function index()
     {
         $userFiles = UserFile::all();
         return response()->json($userFiles, 200);
     }
+    
     public function sendFile($type, $filename)
     {
         if (!in_array($type, ['image', 'video', 'music'])) {
@@ -90,16 +100,22 @@ class UserFileController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
     public function delete(Request $request)
     {
         \DB::beginTransaction();
         try {
-            $requestids = $request->input('ids');
-            $ids = is_array($requestids) ? $requestids : [$requestids]; // Перетворюємо на масив, якщо передано одиночний ідентифікатор
-            $userFiles = UserFile::findMany($ids);
+            $requestIds = $request->input('ids');
+            $ids = is_array($requestIds) ? $requestIds : [$requestIds]; // Ensure ids are in an array
+
+            // Retrieve files that belong to the user and are within the provided IDs
+            $userFiles = UserFile::whereIn('id', $ids)->where('userfilable_id', auth()->id())->get();
 
             foreach ($userFiles as $userFile) {
-                Storage::disk("usersfile_{$userFile->type}")->delete($userFile->url);
+                // Check if the file exists before attempting to delete
+                if (Storage::exists($userFile->url)) {
+                    Storage::delete($userFile->url);
+                }
                 $userFile->delete();
             }
 
@@ -110,4 +126,5 @@ class UserFileController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
 }
