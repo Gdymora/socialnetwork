@@ -16,6 +16,7 @@ export default defineConfig(({command})=>({
             ],
             ssr: "resources/js/ssr.tsx",
             refresh: true,
+            buildDirectory: 'build'
         }),
         react()
     ],
@@ -53,8 +54,19 @@ export default defineConfig(({command})=>({
                         : undefined,
             },
         },
+        manifest: true,
+        outDir: 'public/build',
+        rollupOptions: {
+            input: 'resources/js/app.tsx',
+        },
+        assetsDir: '',
     },
     optimizeDeps: {
         include: ["@inertiajs/inertia", "@inertiajs/inertia-react"],
+    },
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+        },
     },
 }));
