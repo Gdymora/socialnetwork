@@ -14,7 +14,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { StrictMode } from "react";
 import { Provider } from "react-redux";
 import store from "./store";
-const appName = import.meta.env.VITE_APP_NAME || "Laravel";
+
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

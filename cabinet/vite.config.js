@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig(({command})=>({
+export default defineConfig({
     plugins: [
         laravel({
             input: [
@@ -16,9 +16,8 @@ export default defineConfig(({command})=>({
             ],
             ssr: "resources/js/ssr.tsx",
             refresh: true,
-            buildDirectory: 'build'
         }),
-        react()
+        react(),
     ],
     server: {
         host: "0.0.0.0",
@@ -28,43 +27,6 @@ export default defineConfig(({command})=>({
         watch: {
             usePolling: true,
         },
-        port: 5174,
+        port: 5173,
     },
-    build: {
-        chunkSizeWarningLimit: 1600,
-        rollupOptions: {
-            output: {
-                manualChunks:
-                    command === "build" && !process.env.SSR
-                        ? {
-                              // Розділяємо тільки великі third-party бібліотеки
-                              redux: ["@reduxjs/toolkit", "react-redux"],
-                              router: ["react-router-dom"],
-                              utils: [
-                                  "moment",
-                                  "howler",
-                                  "music-metadata-browser",
-                              ],
-                              ui: [
-                                  "react-toastify",
-                                  "@headlessui/react",
-                                  "@heroicons/react",
-                              ],
-                          }
-                        : undefined,
-            },
-            input: 'resources/js/app.tsx',
-        },
-        manifest: true,
-        outDir: 'public/build', 
-        assetsDir: '',
-    },
-    optimizeDeps: {
-        include: ["@inertiajs/inertia", "@inertiajs/inertia-react"],
-    },
-    resolve: {
-        alias: {
-            '@': '/resources/js',
-        },
-    },
-}));
+});

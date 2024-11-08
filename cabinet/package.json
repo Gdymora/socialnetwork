@@ -4,11 +4,13 @@
     "scripts": {
         "dev": "vite --host 0.0.0.0",
         "build": "tsc && vite build && SSR=true vite build --ssr",
+        "clean": "rm -rf public/build",
+        "rebuild": "npm run clean && npm run build",
         "serve": "vite preview"
     },
     "devDependencies": {
         "@headlessui/react": "^1.4.2",
-        "@inertiajs/react": "^1.0.0",
+        "@inertiajs/react": "^1.2.0",
         "@tailwindcss/forms": "^0.5.3",
         "@types/howler": "^2.2.11",
         "@types/node": "^18.13.0",

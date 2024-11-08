@@ -1,0 +1,1 @@
+import{j as t}from"./app-e8313916.js";/* empty css            *//* empty css               *//* empty css                *//* empty css              *//* empty css                 *//* empty css              */const x=({className:r})=>t.jsx("div",{className:r,children:t.jsx("p",{children:"TextTabContent"})});export{x as default};
