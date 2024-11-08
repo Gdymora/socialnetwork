@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({
+export default defineConfig(({command})=>({
     plugins: [
         laravel({
             input: [
@@ -17,7 +17,7 @@ export default defineConfig({
             ssr: "resources/js/ssr.tsx",
             refresh: true,
         }),
-        react(),
+        react()
     ],
     server: {
         host: "0.0.0.0",
@@ -27,6 +27,34 @@ export default defineConfig({
         watch: {
             usePolling: true,
         },
-        port: 5173,
+        port: 5174,
     },
-});
+    build: {
+        chunkSizeWarningLimit: 1600,
+        rollupOptions: {
+            output: {
+                manualChunks:
+                    command === "build" && !process.env.SSR
+                        ? {
+                              // Розділяємо тільки великі third-party бібліотеки
+                              redux: ["@reduxjs/toolkit", "react-redux"],
+                              router: ["react-router-dom"],
+                              utils: [
+                                  "moment",
+                                  "howler",
+                                  "music-metadata-browser",
+                              ],
+                              ui: [
+                                  "react-toastify",
+                                  "@headlessui/react",
+                                  "@heroicons/react",
+                              ],
+                          }
+                        : undefined,
+            },
+        },
+    },
+    optimizeDeps: {
+        include: ["@inertiajs/inertia", "@inertiajs/inertia-react"],
+    },
+}));

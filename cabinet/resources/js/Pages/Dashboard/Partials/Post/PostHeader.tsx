@@ -93,8 +93,7 @@ export default function PostHeader({
                                 {
                                     <Dropdown.Link
                                         method="get"
-                                        as="button"
-                                        // @ts-expect-error
+                                        as="button" 
                                         href={route("posts.show", { id: id })}
                                     >
                                         View
@@ -123,8 +122,7 @@ export default function PostHeader({
                                 {
                                     <Dropdown.Link
                                         method="get"
-                                        as="button"
-                                        // @ts-expect-error
+                                        as="button" 
                                         href={route("posts.show", { id: id })}
                                     >
                                         View

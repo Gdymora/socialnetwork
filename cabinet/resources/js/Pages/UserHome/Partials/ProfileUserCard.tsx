@@ -18,7 +18,6 @@ export default function ProfileUserCard({ user }: { user: Friend }) {
             />
             <a
                 href={
-                    // @ts-expect-error
                     route("profile-friend", { id: id })
                 }
             >

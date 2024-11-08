@@ -26,7 +26,6 @@ export default function UpdateProfileInformation({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // @ts-expect-error
         patch(route("profile.update"));
     };
 
@@ -81,7 +80,6 @@ export default function UpdateProfileInformation({
                             Your email address is unverified.
                             <Link
                                 href={
-                                    // @ts-expect-error
                                     route("verification.send")
                                 }
                                 method="post"

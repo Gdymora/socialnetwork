@@ -21,8 +21,7 @@ export default function Login({ status, canResetPassword }: { status?: string, c
     }, []);
 
     const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-// @ts-expect-error
+        e.preventDefault(); 
         post(route('login'));
     };
 
@@ -81,7 +80,6 @@ export default function Login({ status, canResetPassword }: { status?: string, c
                     {canResetPassword && (
                         
                         <Link
-                        // @ts-expect-error
                             href={route('password.request')}
                             className="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                         >

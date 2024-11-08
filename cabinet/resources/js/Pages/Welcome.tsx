@@ -13,8 +13,7 @@ export default function Welcome({
                 <div className="sm:fixed sm:top-0 sm:right-0 p-6 text-right">
                     {auth.user ? (
                         <Link
-                            href={
-                                // @ts-expect-error
+                            href={ 
                                 route("dashboard")
                             }
                             className="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
@@ -24,8 +23,7 @@ export default function Welcome({
                     ) : (
                         <>
                             <Link
-                                href={
-                                    // @ts-expect-error
+                                href={ 
                                     route("login")
                                 }
                                 className="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
@@ -34,8 +32,7 @@ export default function Welcome({
                             </Link>
 
                             <Link
-                                href={
-                                    // @ts-expect-error
+                                href={ 
                                     route("register")
                                 }
                                 className="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"

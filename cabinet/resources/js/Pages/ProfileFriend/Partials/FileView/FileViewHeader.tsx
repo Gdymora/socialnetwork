@@ -75,7 +75,6 @@ export default function FileViewHeader({
 
                     <Dropdown.Content>
                         <Dropdown.Link href={
-                            // @ts-expect-error
                             route("profile.edit")
                             }>
                             Profile
