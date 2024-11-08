@@ -40,7 +40,7 @@ import "./Comment-d5f73ae4.js";
 import "./Modal.module-5acca05a.js";
 import "./Videos-03cc7185.js";
 import "./Music-6f38130d.js";
-import "./Posts-58f50fe4.js";
+import "./Posts-38373ab1.js";
 import "./Images-dc28d36f.js";
 import "howler";
 import "./FileCategoryView-b2a98b8c.js";

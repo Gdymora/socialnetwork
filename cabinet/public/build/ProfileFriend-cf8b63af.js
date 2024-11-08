@@ -46,7 +46,7 @@ import "@heroicons/react/16/solid";
 import "./FileViewFooter-58e55ffa.js";
 import "./Videos-3b71ac9d.js";
 import "./Music-ad5ce7b3.js";
-import "./Posts-38373ab1.js";
+import "./Posts-58f50fe4.js";
 import "./Images-d1c7ebbd.js";
 function ProfileFriend({
   auth,

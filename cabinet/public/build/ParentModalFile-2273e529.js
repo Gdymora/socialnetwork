@@ -8,7 +8,7 @@ import { useForm } from "@inertiajs/react";
 import Videos from "./Videos-03cc7185.js";
 import { T as TextInput } from "./TextInput-3550b10b.js";
 import Music from "./Music-6f38130d.js";
-import Posts from "./Posts-58f50fe4.js";
+import Posts from "./Posts-38373ab1.js";
 import Images from "./Images-dc28d36f.js";
 import { toast } from "react-toastify";
 import { U as UploaderLot } from "./UploaderLot-cdead3c3.js";

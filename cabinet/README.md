@@ -11,3 +11,5 @@ sudo service nginx stop
 ```bash
 sudo kill -9 $(sudo lsof -t -i:8000)
 ```
+
+sudo chown -R ${USER}:${USER} public/build

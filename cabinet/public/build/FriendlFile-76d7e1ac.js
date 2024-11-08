@@ -1,7 +1,7 @@
 import { jsxs, Fragment, jsx } from "react/jsx-runtime";
 import Videos from "./Videos-3b71ac9d.js";
 import Music from "./Music-ad5ce7b3.js";
-import Posts from "./Posts-38373ab1.js";
+import Posts from "./Posts-58f50fe4.js";
 import Images from "./Images-d1c7ebbd.js";
 function FriendFile({
   profileData,
