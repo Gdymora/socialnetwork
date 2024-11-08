@@ -241,7 +241,7 @@
     "src": "resources/js/Pages/Dashboard/Partials/ModalSay/TextTabContent.tsx"
   },
   "resources/js/Pages/Dashboard/Partials/Post/Carousel.tsx": {
-    "file": "Carousel-976e68fd.js",
+    "file": "Carousel-9f3d7757.js",
     "imports": [
       "resources/js/Pages/Dashboard/Partials/Post/UserCard.tsx"
     ],
@@ -500,7 +500,7 @@
     "src": "resources/js/Pages/ProfileFriend/Partials/AboutFriend.tsx"
   },
   "resources/js/Pages/ProfileFriend/Partials/FileView/Carousel.tsx": {
-    "file": "Carousel-9f3d7757.js",
+    "file": "Carousel-976e68fd.js",
     "imports": [
       "resources/js/Pages/Dashboard/Partials/Post/UserCard.tsx"
     ],
@@ -798,12 +798,12 @@
     "src": "resources/js/Pages/UserHome/Partials/ModalAddFile/FileTabContent.tsx"
   },
   "resources/js/Pages/UserHome/Partials/ModalAddFile/TextTabContent.tsx": {
-    "file": "TextTabContent-62eea939.js",
+    "file": "TextTabContent-a937f326.js",
     "isDynamicEntry": true,
     "src": "resources/js/Pages/UserHome/Partials/ModalAddFile/TextTabContent.tsx"
   },
   "resources/js/Pages/UserHome/Partials/ModalViewFile/TextTabContent.tsx": {
-    "file": "TextTabContent-a937f326.js",
+    "file": "TextTabContent-62eea939.js",
     "isDynamicEntry": true,
     "src": "resources/js/Pages/UserHome/Partials/ModalViewFile/TextTabContent.tsx"
   },
