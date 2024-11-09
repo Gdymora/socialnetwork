@@ -7,6 +7,7 @@ import "../css/workshop.css";
 import "../css/audioAndVideo.css";
 import "../css/scrollbar.css";
 import "../css/style.css";
+import "../css/mobileLayout.css";
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";

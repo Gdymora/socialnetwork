@@ -16,9 +16,8 @@ import UserProfile from "./Partials/LeftSidebar/UserProfile";
 import PostsList from "./Partials/Post/PostList";
 import RightSidebar from "./Partials/RightSidebar/RightSidebar";
 import ParentSayPost from "./Partials/ModalSay/ParentSayPost";
-import MenegmentPost from "../UserHome/Partials/MenegmentPost";
 import { useEffect } from "react";
-import { createAction } from "@reduxjs/toolkit"; 
+import { createAction } from "@reduxjs/toolkit";
 import { setUser } from "@/store/slices/userSlice";
 
 interface DashboardProps {
@@ -60,10 +59,13 @@ export default function Dashboard({
                     Dashboard
                 </h2>
             }
+            posts={posts}
+            friendsAndFollowers={friendsAndFollowers}
+            profileData={profileData}
+            postMostViewed={postMostViewed}
+            randomUsersForFriendship={randomUsersForFriendship}
         >
             <Head title="Dashboard" />
-
-            {/* Тут можна використовувати передані дані */}
             <main>
                 <div className="container ar-px">
                     <div className="gridcol">

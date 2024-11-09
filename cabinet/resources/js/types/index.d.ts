@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface User {
     id: number;
     name: string;
@@ -147,3 +149,28 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
 };
 
 export type OnChangeFunction = (file: File | null) => void;
+export interface PostsListProps {
+    posts: PostType[];
+}
+
+export interface AuthenticatedProps {
+    user: User;
+    header?: ReactNode;
+    children?: ReactNode;
+    [key: string]: any; // Це дозволить передавати будь-які додаткові пропси
+}
+
+// Або більш типобезпечний варіант
+interface AuthenticatedBaseProps {
+    user: User;
+    header?: ReactNode;
+    children?: ReactNode;
+}
+
+interface AuthenticatedDashboardProps extends AuthenticatedBaseProps {
+    posts?: PostType[];
+    friendsAndFollowers?: FriendsAndFollowers;
+    profileData?: ProfileData;
+    postMostViewed?: postMostViewed[];
+    randomUsersForFriendship?: RandomUserForFriendship[];
+}

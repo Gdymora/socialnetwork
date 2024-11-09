@@ -1,13 +1,11 @@
-import { PostType, RandomUserForFriendship } from "@/types";
+import { PostType, PostsListProps, RandomUserForFriendship } from "@/types";
 import Post from "./Post";
 import ParentSayPost from "../ModalSay/ParentSayPost";
 import { useEffect, useState } from "react";
 import useAxios from "@/Hooks/useAxios";
 import { toast } from "react-toastify";
 
-interface PostsListProps {
-    posts: PostType[];
-}
+
 
 export default function PostsList({ posts }: PostsListProps) {
     const {
