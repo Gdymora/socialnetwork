@@ -1,4 +1,6 @@
 import MobileDashboard from "@/MobileVersion/MobileDashboard";
+import MobileParentSayPost from "@/MobileVersion/MobileParentSayPost";
+import ParentSayPost from "@/Pages/Dashboard/Partials/ModalSay/ParentSayPost";
 import {
     FriendsAndFollowers,
     PostType,
@@ -30,6 +32,7 @@ const MobileLayout = ({
     postMostViewed,
     randomUsersForFriendship,
 }: MobileLayoutProps) => {
+    const [isPostModalOpen, setIsPostModalOpen] = useState(false);
     const [currentSection, setCurrentSection] = useState<
         "main" | "friends" | "gallery"
     >("main");
@@ -175,7 +178,10 @@ const MobileLayout = ({
                     <i className="bi bi-search"></i>
                     <span>Search</span>
                 </button> */}
-                <button className="nav-btn">
+                <button
+                    className="nav-btn"
+                    onClick={() => setIsPostModalOpen(true)}
+                >
                     <i className="bi bi-plus-square"></i>
                     <span>Add</span>
                 </button>
@@ -188,6 +194,15 @@ const MobileLayout = ({
                     <span>Profile</span>
                 </button>
             </nav>
+            {isPostModalOpen && profileData && (
+                <MobileParentSayPost
+                    profileData={profileData}
+                    onCreatePost={(post) => {
+                        setIsPostModalOpen(false);
+                    }}
+                    onClose={() => setIsPostModalOpen(false)}
+                />
+            )}
         </div>
     );
 };

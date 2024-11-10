@@ -6,6 +6,7 @@ import { UserFile } from "@/types";
 import ModalYesOrNot from "@/Components/ModalYesOrNot";
 import useAxios from "@/Hooks/useAxios";
 import { toast } from "react-toastify";
+import { router } from "@inertiajs/react";
 
 export default function FileViewHeader({ file }: { file: UserFile }) {
     const dateString = file.created_at;
@@ -35,12 +36,12 @@ export default function FileViewHeader({ file }: { file: UserFile }) {
         }
     }, [errorDelete]);
 
-    const handleSetAsProfilePicture = () => {
-        // event.preventDefault();
+    const handleSetAsProfilePicture = (e: React.MouseEvent) => {
+        e.preventDefault();
         axios
             .patch("/user-about-me", { profile_image_url: file.url })
             .then((response) => {
-                // Обробка успішної відповіді
+                router.reload({ only: ["user"] }); // Оновить тільки дані користувача
                 console.log(response.data);
             })
             .catch((error) => {
@@ -91,23 +92,16 @@ export default function FileViewHeader({ file }: { file: UserFile }) {
                         >
                             Delete
                         </button>
-                        <Dropdown.Link
-                            href={
-                                route("profile.edit")
-                            }
-                        >
+                        <Dropdown.Link href={route("profile.edit")}>
                             Profile
                         </Dropdown.Link>{" "}
                         {file.type === "image" && (
-                            <Dropdown.Link
+                            <button
                                 onClick={handleSetAsProfilePicture}
-                                method="post"
-                                as="button"
-                                href="#"
+                                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                             >
-                                {" "}
                                 Set as profile picture
-                            </Dropdown.Link>
+                            </button>
                         )}
                     </Dropdown.Content>
                 </Dropdown>

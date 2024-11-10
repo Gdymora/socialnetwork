@@ -27,13 +27,10 @@ function MobileDashboard({
 }: MobileDashboardProps) {
     const [currentPostIndex, setCurrentPostIndex] = useState(0);
     const touchStart = useRef<number>(0);
-    const currentPost = posts[currentPostIndex];
 
-    // Для дебагу
-    console.log("Current Post:", currentPost);
-
+    const currentPost: PostType | null = posts ? posts[currentPostIndex] : null;
     const handleNextPost = () => {
-        if (currentPostIndex < posts.length - 1) {
+        if (posts && currentPostIndex < posts.length - 1) {
             setCurrentPostIndex((prev) => prev + 1);
         }
     };
@@ -93,25 +90,39 @@ function MobileDashboard({
                 </button>
                 <button className="action-btn">
                     <i className="bi bi-share"></i>
-                    <span>{currentPost?.shares || "17K"}</span>
+                    <span>{currentPost?.share || "17K"}</span>
                 </button>
+                <div className="user-avatar">
+                    <div className="circle">
+                        <img
+                            src={
+                                currentPost?.author.profile_image_url
+                                    ? `/user-file/${currentPost?.author.profile_image_url}`
+                                    : "/assets/images/noimg.png"
+                            }
+                            alt={currentPost?.author?.name || "User"}
+                            loading="lazy"
+                        />
+                    </div>
+                </div>
             </div>
 
-            <div className="user-info">
+            {/* <div className="user-info">
                 <div className="user-details">
                     <img
                         src={
-                            currentPost?.user?.avatar ||
-                            "/api/placeholder/40/40"
+                            currentPost?.author.profile_image_url
+                                ? `/user-file/${currentPost?.author.profile_image_url}`
+                                : "/assets/images/noimg.png"
                         }
-                        alt={currentPost?.user?.name || "User"}
+                        alt={currentPost?.author?.name || "User"}
                         className="user-avatar"
                     />
                     <span className="username">
-                        {currentPost?.user?.name || "username"}
+                        {currentPost?.author?.name || "username"}
                     </span>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }
