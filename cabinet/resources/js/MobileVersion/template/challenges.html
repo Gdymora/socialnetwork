@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Челенджі</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            }
+
+            body {
+                background: #000;
+                color: white;
+            }
+
+            /* Шапка */
+            .header {
+                padding: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #000;
+                border-bottom: 1px solid #333;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            /* Категорії */
+            .categories {
+                padding: 10px 15px;
+                display: flex;
+                gap: 10px;
+                overflow-x: auto;
+                scrollbar-width: none;
+                background: #000;
+                border-bottom: 1px solid #333;
+            }
+
+            .categories::-webkit-scrollbar {
+                display: none;
+            }
+
+            .category {
+                padding: 8px 16px;
+                background: #1e1e1e;
+                border-radius: 20px;
+                font-size: 14px;
+                white-space: nowrap;
+                cursor: pointer;
+            }
+
+            .category.active {
+                background: #ff0050;
+            }
+
+            /* Популярні челенджі */
+            .featured-challenges {
+                padding: 15px;
+            }
+
+            .challenge-card {
+                background: #1e1e1e;
+                border-radius: 12px;
+                overflow: hidden;
+                margin-bottom: 15px;
+            }
+
+            .challenge-preview {
+                position: relative;
+                aspect-ratio: 16/9;
+                background: #333;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .prize-badge {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #ff0050;
+                padding: 5px 10px;
+                border-radius: 20px;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .timer {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                background: rgba(0, 0, 0, 0.5);
+                padding: 5px 10px;
+                border-radius: 20px;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .challenge-info {
+                padding: 15px;
+            }
+
+            .challenge-title {
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .challenge-stats {
+                display: flex;
+                gap: 15px;
+                font-size: 14px;
+                color: #999;
+            }
+
+            .participation-btn {
+                background: #ff0050;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 14px;
+                cursor: pointer;
+                margin-top: 10px;
+            }
+
+            /* Список учасників */
+            .participants {
+                display: flex;
+                padding: 10px 0;
+                gap: 10px;
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+            .participants::-webkit-scrollbar {
+                display: none;
+            }
+
+            .participant {
+                width: 40px;
+                height: 40px;
+                border-radius: 20px;
+                background: #333;
+                flex-shrink: 0;
+            }
+
+            /* Детальна сторінка челенджу */
+            .challenge-details {
+                position: fixed;
+                inset: 0;
+                background: #000;
+                z-index: 1000;
+                display: none;
+                animation: slideUp 0.3s ease;
+            }
+
+            .challenge-details.active {
+                display: block;
+            }
+
+            @keyframes slideUp {
+                from {
+                    transform: translateY(100%);
+                }
+                to {
+                    transform: translateY(0);
+                }
+            }
+
+            .details-header {
+                padding: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #333;
+            }
+
+            .details-content {
+                padding: 15px;
+            }
+
+            .details-section {
+                margin-bottom: 20px;
+            }
+
+            .section-title {
+                font-size: 14px;
+                color: #999;
+                margin-bottom: 10px;
+            }
+
+            /* Таби в деталях */
+            .tabs {
+                display: flex;
+                border-bottom: 1px solid #333;
+            }
+
+            .tab {
+                flex: 1;
+                padding: 15px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .tab.active {
+                color: #ff0050;
+                border-bottom: 2px solid #ff0050;
+            }
+
+            /* Сітка відео */
+            .videos-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2px;
+                padding: 2px;
+            }
+
+            .video-item {
+                aspect-ratio: 1;
+                background: #1e1e1e;
+                position: relative;
+            }
+
+            .video-stats {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 5px;
+                background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+                font-size: 12px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            /* Рейтинг учасників */
+            .leaderboard {
+                padding: 15px;
+            }
+
+            .leader-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 10px;
+                background: #1e1e1e;
+                border-radius: 8px;
+                margin-bottom: 10px;
+            }
+
+            .rank {
+                width: 24px;
+                height: 24px;
+                background: #333;
+                border-radius: 12px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 12px;
+            }
+
+            .rank.top-1 {
+                background: gold;
+                color: black;
+            }
+
+            .rank.top-2 {
+                background: silver;
+                color: black;
+            }
+
+            .rank.top-3 {
+                background: #cd7f32;
+                color: black;
+            }
+
+            .leader-info {
+                flex: 1;
+            }
+
+            .leader-score {
+                font-weight: 600;
+            }
+
+            /* Анімації */
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.05);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            .participation-btn:active {
+                animation: pulse 0.3s ease;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="challenges-container">
+            <!-- Шапка -->
+            <div class="header">
+                <button
+                    style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 24px;
+                    "
+                >
+                    ←
+                </button>
+                <h2>Челенджі</h2>
+                <div style="width: 24px"></div>
+            </div>
+
+            <!-- Категорії -->
+            <div class="categories">
+                <div class="category active">Усі</div>
+                <div class="category">Офіційні</div>
+                <div class="category">Брендові</div>
+                <div class="category">Музичні</div>
+                <div class="category">Танці</div>
+                <div class="category">Спорт</div>
+            </div>
+
+            <!-- Популярні челенджі -->
+            <div class="featured-challenges">
+                <div class="challenge-card" onclick="openChallenge()">
+                    <div class="challenge-preview">
+                        <span style="font-size: 24px">🎵</span>
+                        <div class="prize-badge">
+                            <span>🏆</span>
+                            <span>100,000 ₴</span>
+                        </div>
+                        <div class="timer">
+                            <span>⏰</span>
+                            <span>2 дні</span>
+                        </div>
+                    </div>
+                    <div class="challenge-info">
+                        <div class="challenge-title">#DanceChallenge2024</div>
+                        <div class="challenge-stats">
+                            <span>👤 1.2K учасників</span>
+                            <span>👁️ 2.5M переглядів</span>
+                        </div>
+                        <div class="participants">
+                            <div class="participant"></div>
+                            <div class="participant"></div>
+                            <div class="participant"></div>
+                            <div class="participant"></div>
+                            <div class="participant"></div>
+                        </div>
+                        <button class="participation-btn">Взяти участь</button>
+                    </div>
+                </div>
+
+                <div class="challenge-card">
+                    <div class="challenge-preview">
+                        <span style="font-size: 24px">🎮</span>
+                        <div class="prize-badge">
+                            <span>🏆</span>
+                            <span>50,000 ₴</span>
+                        </div>
+                        <div class="timer">
+                            <span>⏰</span>
+                            <span>5 днів</span>
+                        </div>
+                    </div>
+                    <div class="challenge-info">
+                        <div class="challenge-title">#GamingMoments</div>
+                        <div class="challenge-stats">
+                            <span>👤 856 учасників</span>
+                            <span>👁️ 1.8M переглядів</span>
+                        </div>
+                        <div class="participants">
+                            <div class="participant"></div>
+                            <div class="participant"></div>
+                            <div class="participant"></div>
+                        </div>
+                        <button class="participation-btn">Взяти участь</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Детальна сторінка челенджу -->
+        <div class="challenge-details" id="challengeDetails">
+            <div class="details-header">
+                <button
+                    onclick="closeChallenge()"
+                    style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 24px;
+                    "
+                >
+                    ←
+                </button>
+                <h2>#DanceChallenge2024</h2>
+                <div style="width: 24px"></div>
+            </div>
+
+            <div class="details-content">
+                <!-- Інформація про челендж -->
+                <div class="details-section">
+                    <div
+                        class="prize-badge"
+                        style="
+                            position: static;
+                            display: inline-flex;
+                            margin-bottom: 10px;
+                        "
+                    >
+                        <span>🏆</span>
+                        <span>100,000 ₴</span>
+                    </div>
+                    <p style="margin: 10px 0">
+                        Покажіть свої найкращі танцювальні рухи під новий трек!
+                        Переможці отримають призовий фонд та спеціальний значок.
+                    </p>
+                    <div class="challenge-stats" style="margin: 10px 0">
+                        <span>⏰ Залишилось 2 дні</span>
+                        <span>👤 1.2K учасників</span>
+                    </div>
+                </div>
+
+                <!-- Таби -->
+                <div class="tabs">
+                    <div class="tab active">Топ відео</div>
+                    <div class="tab">Нові</div>
+                    <div class="tab">Рейтинг</div>
+                </div>
+
+                <!-- Сітка відео -->
+                <div class="videos-grid">
+                    <div class="video-item">
+                        <div class="video-stats">
+                            <span>❤️ 12.5K</span>
+                            <span>1</span>
+                        </div>
+                    </div>
+                    <div class="video-item">
+                        <div class="video-stats">
+                            <span>❤️ 8.9K</span>
+                            <span>2</span>
+                        </div>
+                    </div>
+                    <div class="video-item">
+                        <div class="video-stats">
+                            <span>❤️ 7.2K</span>
+                            <span>3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Рейтинг -->
+                <div class="leaderboard" style="display: none">
+                    <div class="leader-item">
+                        <div class="rank top-1">1</div>
+                        <div class="leader-info">
+                            <div>@username1</div>
+                            <div style="font-size: 12px; color: #999">
+                                12.5K лайків
+                            </div>
+                        </div>
+                        <div class="leader-score">🏆</div>
+                    </div>
+                    <div class="leader-item">
+                        <div class="rank top-2">2</div>
+                        <div class="leader-info">
+                            <div>@username2</div>
+                            <div style="font-size: 12px; color: #999">
+                                8.9K лайків
+                            </div>
+                        </div>
+                        <div class="leader-score">🥈</div>
+                    </div>
+                    <div class="leader-item">
+                        <div class="rank top-3">3</div>
+                        <div class="leader-info">
+                            <div>@username3</div>
+                            <div style="font-size: 12px; color: #999">
+                                7.2K лайків
+                            </div>
+                        </div>
+                        <div class="leader-score">🥉</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openChallenge() {
+                document.getElementById('challengeDetails').classList.add('active');
+            }
+
+            function closeChallenge() {
+                document.getElementById('challengeDetails').classList.remove('active');
+            }
+
+            // Переключення табів
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                });
+            });
+
+            // Переключення категорій
+            document.querySelectorAll('.category').forEach(category => {
+                category.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                });
+            });
+        </script>
+    </body>
+</html>

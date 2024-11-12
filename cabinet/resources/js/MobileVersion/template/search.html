@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пошук</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Шапка пошуку */
+        .search-header {
+            padding: 15px;
+            background: #000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #1e1e1e;
+            padding: 10px 15px;
+            border-radius: 25px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-btn {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Фільтри */
+        .filters-scroll {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 15px;
+            margin-top: 10px;
+            scrollbar-width: none;
+        }
+
+        .filters-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-right: 8px;
+            background: #1e1e1e;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-chip.active {
+            background: #FF0050;
+        }
+
+        /* Результати пошуку */
+        .search-results {
+            padding: 15px;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Користувачі */
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            gap: 15px;
+            margin-bottom: 10px;
+            background: #1e1e1e;
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .username {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .verified-badge {
+            width: 14px;
+            height: 14px;
+            background: #FF0050;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8px;
+        }
+
+        .user-stats {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .follow-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            background: #FF0050;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .follow-btn.following {
+            background: transparent;
+            border: 1px solid #333;
+        }
+
+        /* Пости */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-top: 15px;
+        }
+
+        .post-item {
+            aspect-ratio: 1;
+            background: #1e1e1e;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .post-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            font-size: 12px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Хештеги */
+        .hashtag-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .hashtag-name {
+            color: #FF0050;
+        }
+
+        .hashtag-count {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Фільтри розширеного пошуку */
+        .advanced-filters {
+            background: #1e1e1e;
+            border-radius: 12px;
+            margin: 15px;
+            overflow: hidden;
+        }
+
+        .filter-section {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .filter-title {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #333;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-option.selected {
+            background: #FF0050;
+        }
+
+        /* Анімації */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-results > * {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .post-item:hover {
+            transform: scale(0.98);
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <!-- Шапка пошуку -->
+        <div class="search-header">
+            <div class="search-bar">
+                <button class="search-btn">←</button>
+                <input type="text" class="search-input" placeholder="Пошук...">
+                <button class="search-btn">🔍</button>
+            </div>
+            <!-- Фільтри -->
+            <div class="filters-scroll">
+                <div class="filter-chip active">Все</div>
+                <div class="filter-chip">Люди</div>
+                <div class="filter-chip">Відео</div>
+                <div class="filter-chip">Фото</div>
+                <div class="filter-chip">Хештеги</div>
+                <div class="filter-chip">Музика</div>
+            </div>
+        </div>
+
+        <!-- Результати пошуку -->
+        <div class="search-results">
+            <!-- Популярні користувачі -->
+            <div class="section-title">
+                <h3>Популярні користувачі</h3>
+                <span style="color: #999; font-size: 14px;">Дивитися всі</span>
+            </div>
+
+            <div class="user-item">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <div class="username">
+                        username
+                        <span class="verified-badge">✓</span>
+                    </div>
+                    <div class="user-stats">1.2M підписників • 45 відео</div>
+                </div>
+                <button class="follow-btn">Підписатися</button>
+            </div>
+
+            <!-- Популярні пости -->
+            <div class="section-title" style="margin-top: 20px;">
+                <h3>Популярні пости</h3>
+                <span style="color: #999; font-size: 14px;">Дивитися всі</span>
+            </div>
+
+            <div class="posts-grid">
+                <div class="post-item">
+                    <div>🎬</div>
+                    <div class="post-overlay">
+                        <span>👁️ 12.5K</span>
+                        <span>❤️ 2.3K</span>
+                    </div>
+                </div>
+                <div class="post-item">
+                    <div>📸</div>
+                    <div class="post-overlay">
+                        <span>👁️ 8.9K</span>
+                        <span>❤️ 1.8K</span>
+                    </div>
+                </div>
+                <div class="post-item">
+                    <div>🎵</div>
+                    <div class="post-overlay">
+                        <span>👁️ 15.2K</span>
+                        <span>❤️ 3.4K</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Популярні хештеги -->
+            <div class="section-title" style="margin-top: 20px;">
+                <h3>Трендові хештеги</h3>
+                <span style="color: #999; font-size: 14px;">Дивитися всі</span>
+            </div>
+
+            <div class="hashtag-item">
+                <div class="hashtag-name">#тренд</div>
+                <div class="hashtag-count">1.2M постів</div>
+            </div>
+
+            <div class="hashtag-item">
+                <div class="hashtag-name">#challenge</div>
+                <div class="hashtag-count">890K постів</div>
+            </div>
+        </div>
+
+        <!-- Розширені фільтри -->
+        <div class="advanced-filters">
+            <div class="filter-section">
+                <div class="filter-title">Сортування</div>
+                <div class="filter-options">
+                    <div class="filter-option selected">За популярністю</div>
+                    <div class="filter-option">Найновіші</div>
+                    <div class="filter-option">Найбільше лайків</div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Тривалість</div>
+                <div class="filter-options">
+                    <div class="filter-option">Короткі</div>
+                    <div class="filter-option">Середні</div>
+                    <div class="filter-option">Довгі</div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Дата публікації</div>
+                <div class="filter-options">
+                    <div class="filter-option">Сьогодні</div>
+                    <div class="filter-option">Цього тижня</div>
+                    <div class="filter-option">Цього місяця</div>
+                    <div class="filter-option">Цього року</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Перемикання фільтрів
+        document.querySelectorAll('.filter-chip').forEach(filter => {
+            filter.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(f => {
+                    f.classList.remove('active');
+                });
+                filter.classList.add('active');
+            });
+        });
+
+        // Кнопка підписки
+        document.querySelectorAll('.follow-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('following');
+                btn.textContent = btn.classList.contains('following') ? 
+                    'Підписані' : 'Підписатися';
+            });
+        });
+
+        // Розширені фільтри
+        document.querySelectorAll('.filter-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const parent = option.parentElement;
+                parent.querySelectorAll('.filter-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+            });
+        });
+
+        // Живий пошук
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', () => {
+            // Тут можна додати логіку живого пошуку
+            console.log('Пошук:', searchInput.value);
+        });
+    </script>
+</body>
+</html>

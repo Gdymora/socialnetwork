@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Соціальна мережа</title>
+    <style>
+        /* Базові стилі залишаються... */
+
+        /* Стилі для категорій */
+        .categories {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            z-index: 100;
+        }
+
+        .category {
+            color: rgba(255,255,255,0.6);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            font-weight: 500;
+        }
+
+        /* Стилі для прогрес-бару */
+        .progress-container {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255,255,255,0.2);
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #FF0050;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Стилі для відео-контейнера */
+        .video-container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            background: #1e1e1e;
+        }
+
+        /* Стилі для аудіо-плашки */
+        .audio-tag {
+            position: absolute;
+            bottom: 100px;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            z-index: 10;
+        }
+
+        .music-disc {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+            animation: rotate 3s linear infinite;
+            position: relative;
+        }
+
+        .music-disc::after {
+            content: '♪';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Стилі для дій */
+        .video-actions {
+            position: absolute;
+            right: 15px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .action-count {
+            font-size: 12px;
+            color: white;
+        }
+
+        /* Анімація для лайку */
+        .like-animation {
+            animation: likeEffect 0.5s ease;
+        }
+
+        @keyframes likeEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); color: #FF0050; }
+            100% { transform: scale(1); }
+        }
+
+        /* Стилі для хештегів */
+        .hashtags {
+            position: absolute;
+            bottom: 70px;
+            left: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .hashtag {
+            color: white;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Стилі для міток користувачів */
+        .user-tags {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .video-container:hover .user-tags {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="home-page" class="page active">
+        <!-- Категорії зверху -->
+        <div class="categories">
+            <div class="category active" onclick="switchCategory(this)">Для тебе</div>
+            <div class="category" onclick="switchCategory(this)">Підписки</div>
+            <div class="category" onclick="switchCategory(this)">Тренди</div>
+        </div>
+
+        <!-- Прогрес-бар -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Відео контейнер -->
+        <div class="video-container">
+            <div class="video-placeholder">Відео контент</div>
+
+            <!-- Аудіо плашка -->
+            <div class="audio-tag">
+                <div class="music-disc"></div>
+                <div class="music-info">
+                    <div>Назва треку</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Виконавець</div>
+                </div>
+            </div>
+
+            <!-- Мітки користувачів -->
+            <div class="user-tags">
+                @username та інші
+            </div>
+
+            <!-- Дії справа -->
+            <div class="video-actions">
+                <button class="action-button" onclick="handleLike(this)">
+                    <div class="action-icon">❤️</div>
+                    <span class="action-count">1.2K</span>
+                </button>
+                <button class="action-button">
+                    <div class="action-icon">💬</div>
+                    <span class="action-count">234</span>
+                </button>
+                <button class="action-button">
+                    <div class="action-icon">⭐</div>
+                    <span class="action-count">56</span>
+                </button>
+                <button class="action-button">
+                    <div class="action-icon">↪️</div>
+                    <span class="action-count">Share</span>
+                </button>
+            </div>
+
+            <!-- Хештеги -->
+            <div class="hashtags">
+                <span class="hashtag">#тренди</span>
+                <span class="hashtag">#рекомендації</span>
+                <span class="hashtag">#вайб</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Симуляція прогресу відео
+        let progress = 0;
+        const progressBar = document.getElementById('progressBar');
+        
+        function updateProgress() {
+            if (progress < 100) {
+                progress += 0.5;
+                progressBar.style.width = progress + '%';
+                requestAnimationFrame(updateProgress);
+            } else {
+                progress = 0;
+                progressBar.style.width = '0%';
+                requestAnimationFrame(updateProgress);
+            }
+        }
+        
+        updateProgress();
+
+        // Обробка лайків
+        function handleLike(button) {
+            const icon = button.querySelector('.action-icon');
+            const count = button.querySelector('.action-count');
+            
+            icon.classList.add('like-animation');
+            
+            // Оновлення лічильника
+            let currentCount = parseInt(count.textContent);
+            count.textContent = (currentCount + 1) + 'K';
+            
+            // Видалення класу анімації
+            setTimeout(() => {
+                icon.classList.remove('like-animation');
+            }, 500);
+        }
+
+        // Переключення категорій
+        function switchCategory(element) {
+            document.querySelectorAll('.category').forEach(cat => {
+                cat.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>

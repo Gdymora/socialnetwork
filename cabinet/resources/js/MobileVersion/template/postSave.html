@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Збережене</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        .container {
+            min-height: 100vh;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-btn {
+            padding: 8px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Статистика */
+        .stats-bar {
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #333;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Колекції */
+        .collections-grid {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .collection-card {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .collection-preview {
+            width: 100%;
+            height: 100%;
+            background: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        .collection-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+
+        .collection-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .collection-count {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Сітка постів */
+        .posts-grid {
+            padding: 2px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .post-item {
+            aspect-ratio: 1;
+            background: #1e1e1e;
+            position: relative;
+        }
+
+        .post-preview {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .post-type {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 16px;
+        }
+
+        /* Модальне вікно */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e1e1e;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Форми */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #999;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-button {
+            width: 100%;
+            padding: 12px;
+            background: #FF0050;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Меню опцій */
+        .options-menu {
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .menu-item:active {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .menu-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        /* Перемикачі видів */
+        .view-switcher {
+            display: flex;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .view-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            background: #1e1e1e;
+            cursor: pointer;
+        }
+
+        .view-option.active {
+            background: #FF0050;
+        }
+
+        /* Анімації */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .collection-card:hover {
+            animation: pulse 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <div class="header">
+            <button class="header-btn">←</button>
+            <h2>Збережене</h2>
+            <button class="header-btn" onclick="showCreateModal()">+</button>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Колекцій</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">256</div>
+                <div class="stat-label">Збережень</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">45</div>
+                <div class="stat-label">Відео</div>
+            </div>
+        </div>
+
+        <!-- Перемикач виду -->
+        <div class="view-switcher">
+            <div class="view-option active">Колекції</div>
+            <div class="view-option">Усі збереження</div>
+        </div>
+
+        <!-- Колекції -->
+        <div class="collections-grid">
+            <!-- Колекція -->
+            <div class="collection-card" onclick="openCollection(this)">
+                <div class="collection-preview">🎬</div>
+                <div class="collection-info">
+                    <div class="collection-name">Відео</div>
+                    <div class="collection-count">45 збережень</div>
+                </div>
+            </div>
+
+            <!-- Колекція -->
+            <div class="collection-card" onclick="openCollection(this)">
+                <div class="collection-preview">📸</div>
+                <div class="collection-info">
+                    <div class="collection-name">Фото</div>
+                    <div class="collection-count">89 збережень</div>
+                </div>
+            </div>
+
+            <!-- Колекція -->
+            <div class="collection-card" onclick="openCollection(this)">
+                <div class="collection-preview">⭐</div>
+                <div class="collection-info">
+                    <div class="collection-name">Улюблене</div>
+                    <div class="collection-count">122 збереження</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сітка постів (спочатку прихована) -->
+        <div class="posts-grid" style="display: none;">
+            <div class="post-item">
+                <div class="post-preview">📸</div>
+                <div class="post-type">🎬</div>
+            </div>
+            <!-- Більше постів... -->
+        </div>
+    </div>
+
+    <!-- Модальне вікно створення колекції -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Нова колекція</h3>
+                <button class="header-btn" onclick="closeModal()">✕</button>
+            </div>
+            <form onsubmit="createCollection(event)">
+                <div class="form-group">
+                    <label class="form-label">Назва колекції</label>
+                    <input type="text" class="form-input" placeholder="Введіть назву...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Приватність</label>
+                    <select class="form-input">
+                        <option>Приватна</option>
+                        <option>Публічна</option>
+                    </select>
+                </div>
+                <button class="form-button">Створити</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальне вікно опцій колекції -->
+    <div class="modal" id="collectionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Опції колекції</h3>
+                <button class="header-btn" onclick="closeModal()">✕</button>
+            </div>
+            <div class="options-menu">
+                <div class="menu-item">
+                    <div class="menu-icon">✏️</div>
+                    <span>Редагувати</span>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon">🔄</div>
+                    <span>Змінити обкладинку</span>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon">🔒</div>
+                    <span>Змінити приватність</span>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon">↪️</div>
+                    <span>Поділитися</span>
+                </div>
+                <div class="menu-item" style="color: #FF4444;">
+                    <div class="menu-icon">🗑️</div>
+                    <span>Видалити</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Перемикання між колекціями та всіма збереженнями
+        const viewOptions = document.querySelectorAll('.view-option');
+        const collectionsGrid = document.querySelector('.collections-grid');
+        const postsGrid = document.querySelector('.posts-grid');
+
+        viewOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                viewOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+
+                if (option.textContent === 'Колекції') {
+                    collectionsGrid.style.display = 'grid';
+                    postsGrid.style.display = 'none';
+                } else {
+                    collectionsGrid.style.display = 'none';
+                    postsGrid.style.display = 'grid';
+                }
+            });
+        });
+
+        // Модальні вікна
+        function showCreateModal() {
+            document.getElementById('createModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+
+        // Відкриття колекції
+        function openCollection(collection) {
+            // Тут можна додати перехід до вмісту колекції
+            document.getElementById('collectionModal').classList.add('active');
+        }
+
+        // Створення колекції
+        function createCollection(e) {
+            e.preventDefault();
+            // Тут можна додати логіку створення колекції
+            closeModal();
+        }
+
+        // Закриття модальних вікон при кліку поза ними
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сповіщення</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Фільтри */
+        .filters {
+            padding: 10px 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            background: #000;
+            scrollbar-width: none;
+        }
+
+        .filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #1e1e1e;
+            color: #999;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .filter-chip.active {
+            background: #FF0050;
+            color: white;
+        }
+
+        /* Секції сповіщень */
+        .notifications-section {
+            margin: 10px 0;
+        }
+
+        .section-title {
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #999;
+            background: #000;
+            position: sticky;
+            top: 106px;
+            z-index: 90;
+        }
+
+        /* Сповіщення */
+        .notification {
+            display: flex;
+            gap: 12px;
+            padding: 15px;
+            border-bottom: 1px solid #1e1e1e;
+            cursor: pointer;
+        }
+
+        .notification:active {
+            background: #1e1e1e;
+        }
+
+        .notification.unread {
+            background: rgba(255,0,80,0.05);
+        }
+
+        .notification-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #333;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .notification-preview {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: #333;
+            flex-shrink: 0;
+        }
+
+        /* Типи сповіщень */
+        .notification-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .icon-like {
+            background: #FF0050;
+        }
+
+        .icon-comment {
+            background: #00B2FF;
+        }
+
+        .icon-follow {
+            background: #4CAF50;
+        }
+
+        .avatar-container {
+            position: relative;
+        }
+
+        /* Групові аватари */
+        .group-avatars {
+            display: flex;
+            margin-left: 10px;
+        }
+
+        .group-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #333;
+            border: 2px solid #000;
+            margin-left: -10px;
+        }
+
+        /* Кнопки дій */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-follow {
+            background: #FF0050;
+            color: white;
+            border: none;
+        }
+
+        .btn-following {
+            background: transparent;
+            border: 1px solid #333;
+            color: white;
+        }
+
+        /* Індикатор завантаження */
+        .loading-indicator {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            display: none;
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: dotPulse 1.5s infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="notifications-container">
+        <!-- Шапка -->
+        <div class="header">
+            <h2>Сповіщення</h2>
+            <button style="background: none; border: none; color: #FF0050;">
+                Позначити всі прочитаними
+            </button>
+        </div>
+
+        <!-- Фільтри -->
+        <div class="filters">
+            <div class="filter-chip active">Усі</div>
+            <div class="filter-chip">Лайки</div>
+            <div class="filter-chip">Коментарі</div>
+            <div class="filter-chip">Згадування</div>
+            <div class="filter-chip">Нові підписники</div>
+        </div>
+
+        <!-- Сьогодні -->
+        <div class="notifications-section">
+            <div class="section-title">Сьогодні</div>
+
+            <!-- Сповіщення про лайк -->
+            <div class="notification unread">
+                <div class="avatar-container">
+                    <div class="notification-avatar"></div>
+                    <div class="notification-icon icon-like">❤️</div>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <strong>username</strong> та ще 24 людини вподобали ваше відео
+                    </div>
+                    <div class="notification-time">2 год</div>
+                </div>
+                <div class="notification-preview"></div>
+            </div>
+
+            <!-- Сповіщення про коментар -->
+            <div class="notification">
+                <div class="avatar-container">
+                    <div class="notification-avatar"></div>
+                    <div class="notification-icon icon-comment">💬</div>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <strong>user123</strong> прокоментував: "Дуже круте відео! 🔥"
+                    </div>
+                    <div class="notification-time">3 год</div>
+                </div>
+                <div class="notification-preview"></div>
+            </div>
+        </div>
+
+        <!-- Цього тижня -->
+        <div class="notifications-section">
+            <div class="section-title">Цього тижня</div>
+
+            <!-- Сповіщення про нового підписника -->
+            <div class="notification">
+                <div class="avatar-container">
+                    <div class="notification-avatar"></div>
+                    <div class="notification-icon icon-follow">👤</div>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <strong>newuser</strong> підписався на ваші оновлення
+                    </div>
+                    <div class="notification-time">2 дні</div>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-follow">Підписатися у відповідь</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Сповіщення про групові лайки -->
+            <div class="notification">
+                <div class="avatar-container">
+                    <div class="notification-avatar"></div>
+                    <div class="notification-icon icon-like">❤️</div>
+                </div>
+                <div class="group-avatars">
+                    <div class="group-avatar"></div>
+                    <div class="group-avatar"></div>
+                    <div class="group-avatar"></div>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-text">
+                        <strong>user456</strong> та ще 45 людей вподобали ваші фото
+                    </div>
+                    <div class="notification-time">3 дні</div>
+                </div>
+                <div class="notification-preview"></div>
+            </div>
+        </div>
+
+        <!-- Індикатор завантаження -->
+        <div class="loading-indicator">
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Фільтрація сповіщень
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                // Видалити активний клас з усіх фільтрів
+                document.querySelectorAll('.filter-chip').forEach(c => {
+                    c.classList.remove('active');
+                });
+                // Додати активний клас вибраному фільтру
+                chip.classList.add('active');
+            });
+        });
+
+        // Позначити як прочитане при кліку
+        document.querySelectorAll('.notification').forEach(notification => {
+            notification.addEventListener('click', () => {
+                notification.classList.remove('unread');
+            });
+        });
+
+        // Кнопка "Підписатися у відповідь"
+        document.querySelectorAll('.btn-follow').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (btn.classList.contains('btn-follow')) {
+                    btn.classList.remove('btn-follow');
+                    btn.classList.add('btn-following');
+                    btn.textContent = 'Підписані';
+                } else {
+                    btn.classList.remove('btn-following');
+                    btn.classList.add('btn-follow');
+                    btn.textContent = 'Підписатися у відповідь';
+                }
+            });
+        });
+
+        // Нескінченне прокручування
+        let isLoading = false;
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                if (!isLoading) {
+                    isLoading = true;
+                    document.querySelector('.loading-indicator').style.display = 'block';
+                    
+                    // Імітація завантаження нових сповіщень
+                    setTimeout(() => {
+                        // Тут можна додати нові сповіщення
+                        document.querySelector('.loading-indicator').style.display = 'none';
+                        isLoading = false;
+                    }, 1500);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -8,15 +8,19 @@ export default function MobilePostContent({
     media,
     links,
     maxLength,
+    onReadMore,
 }: {
     title: string;
     media: Media[];
     links: LinkData[];
     content: string;
     maxLength: number;
+    onReadMore?: () => void;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState<number | null>(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState<number | null>(
+        null
+    );
 
     const renderContent = () => {
         if (isExpanded || content.length <= maxLength) {
@@ -27,12 +31,12 @@ export default function MobilePostContent({
 
     const showFullScreenImage = (index: number) => {
         setCurrentImageIndex(index);
-        document.body.style.overflow = 'hidden'; // Запобігаємо прокрутці фону
+        document.body.style.overflow = "hidden"; // Запобігаємо прокрутці фону
     };
 
     const closeFullScreenImage = () => {
         setCurrentImageIndex(null);
-        document.body.style.overflow = 'auto'; // Відновлюємо прокрутку
+        document.body.style.overflow = "auto"; // Відновлюємо прокрутку
     };
 
     return (
@@ -40,7 +44,10 @@ export default function MobilePostContent({
             {/* Медіа галерея */}
             <div className="media-gallery">
                 {media.length === 1 ? (
-                    <div className="single-media" onClick={() => showFullScreenImage(0)}>
+                    <div
+                        className="single-media"
+                        onClick={() => showFullScreenImage(0)}
+                    >
                         {media[0].type === "image" ? (
                             <img src={`/media/${media[0].url}`} alt="Media" />
                         ) : (
@@ -50,15 +57,21 @@ export default function MobilePostContent({
                 ) : (
                     <div className={`media-grid grid-${media.length}`}>
                         {media.map((item, index) => (
-                            <div 
-                                key={item.id} 
+                            <div
+                                key={item.id}
                                 className="media-item"
                                 onClick={() => showFullScreenImage(index)}
                             >
                                 {item.type === "image" ? (
-                                    <img src={`/media/${item.url}`} alt="Media" />
+                                    <img
+                                        src={`/media/${item.url}`}
+                                        alt="Media"
+                                    />
                                 ) : (
-                                    <video src={`/media/${item.url}`} controls />
+                                    <video
+                                        src={`/media/${item.url}`}
+                                        controls
+                                    />
                                 )}
                             </div>
                         ))}
@@ -74,12 +87,15 @@ export default function MobilePostContent({
             ))}
 
             {/* Контент */}
-            <div className="post-text">
+            <div className="post-text" onClick={onReadMore}>
                 <p>{renderContent()}</p>
                 {content.length > maxLength && (
-                    <button 
+                    <button
                         className="view-more-btn"
-                        onClick={() => setIsExpanded(!isExpanded)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsExpanded(!isExpanded);
+                        }}
                     >
                         {isExpanded ? "View less" : "View more"}
                     </button>
@@ -88,18 +104,21 @@ export default function MobilePostContent({
 
             {/* Повноекранне зображення */}
             {currentImageIndex !== null && (
-                <div className="fullscreen-media" onClick={closeFullScreenImage}>
+                <div
+                    className="fullscreen-media"
+                    onClick={closeFullScreenImage}
+                >
                     <div className="media-container">
                         {media[currentImageIndex].type === "image" ? (
-                            <img 
-                                src={`/media/${media[currentImageIndex].url}`} 
-                                alt="Fullscreen" 
+                            <img
+                                src={`/media/${media[currentImageIndex].url}`}
+                                alt="Fullscreen"
                             />
                         ) : (
-                            <video 
-                                src={`/media/${media[currentImageIndex].url}`} 
-                                controls 
-                                autoPlay 
+                            <video
+                                src={`/media/${media[currentImageIndex].url}`}
+                                controls
+                                autoPlay
                             />
                         )}
                     </div>
@@ -108,4 +127,4 @@ export default function MobilePostContent({
             )}
         </div>
     );
-};
+}

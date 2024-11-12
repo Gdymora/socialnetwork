@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Фільтри періоду */
+        .period-filter {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            background: #000;
+            border-bottom: 1px solid #333;
+        }
+
+        .period-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #1e1e1e;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .period-option.active {
+            background: #FF0050;
+        }
+
+        /* Основні метрики */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .metric-card {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .metric-title {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-change {
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        .metric-change.negative {
+            background: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+        }
+
+        /* Графік */
+        .chart-container {
+            margin: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .chart {
+            height: 200px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        /* Топ контент */
+        .top-content {
+            margin: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .content-header {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-list {
+            padding: 15px;
+        }
+
+        .content-item {
+            display: flex;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .content-preview {
+            width: 60px;
+            height: 60px;
+            background: #333;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-info {
+            flex: 1;
+        }
+
+        .content-title {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .content-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Аудиторія */
+        .audience-section {
+            margin: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .demographic-bar {
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-segment {
+            height: 100%;
+            position: absolute;
+            transition: width 0.3s ease;
+        }
+
+        .segment-label {
+            font-size: 12px;
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Активність за часом */
+        .activity-heatmap {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 15px;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            background: #333;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+        }
+
+        /* Анімації */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .metric-card:hover {
+            animation: pulse 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="analytics-container">
+        <!-- Шапка -->
+        <div class="header">
+            <h2>Статистика</h2>
+            <select style="background: none; border: none; color: white;">
+                <option>Останні 7 днів</option>
+                <option>Останні 30 днів</option>
+                <option>Цей рік</option>
+            </select>
+        </div>
+
+        <!-- Фільтр періоду -->
+        <div class="period-filter">
+            <div class="period-option active">7 днів</div>
+            <div class="period-option">30 днів</div>
+            <div class="period-option">3 місяці</div>
+            <div class="period-option">Рік</div>
+        </div>
+
+        <!-- Основні метрики -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-title">Перегляди</div>
+                <div class="metric-value">
+                    24.5K
+                    <span class="metric-change">+12.3%</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Підписники</div>
+                <div class="metric-value">
+                    1,234
+                    <span class="metric-change">+5.7%</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Лайки</div>
+                <div class="metric-value">
+                    15.2K
+                    <span class="metric-change negative">-2.1%</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Коментарі</div>
+                <div class="metric-value">
+                    892
+                    <span class="metric-change">+8.4%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Графік активності -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Активність</h3>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FF0050;"></div>
+                        <span>Перегляди</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #00B2FF;"></div>
+                        <span>Лайки</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chart">
+                <!-- Тут буде графік -->
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Топ контент -->
+        <div class="top-content">
+            <div class="content-header">
+                <h3>Найпопулярніші пости</h3>
+                <select style="background: none; border: none; color: white;">
+                    <option>За переглядами</option>
+                    <option>За лайками</option>
+                </select>
+            </div>
+            <div class="content-list">
+                <div class="content-item">
+                    <div class="content-preview">🎬</div>
+                    <div class="content-info">
+                        <div class="content-title">Назва відео</div>
+                        <div class="content-stats">
+                            <span>12.3K переглядів</span>
+                            <span>1.2K лайків</span>
+                            <span>234 коментарів</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Більше постів... -->
+            </div>
+        </div>
+
+        <!-- Демографія аудиторії -->
+        <div class="audience-section">
+            <h3>Аудиторія</h3>
+            <div style="margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>Вік</span>
+                    <span>Розподіл</span>
+                </div>
+                <div class="demographic-bar">
+                    <div class="bar-segment" style="width: 25%; left: 0; background: #FF0050;"></div>
+                    <div class="bar-segment" style="width: 35%; left: 25%; background: #FF4081;"></div>
+                    <div class="bar-segment" style="width: 20%; left: 60%; background: #FF80AB;"></div>
+                    <div class="bar-segment" style="width: 20%; left: 80%; background: #FF80AB;"></div>
+                </div>
+                <div class="segment-label">
+                    <span>13-17</span>
+                    <span>18-24</span>
+                    <span>25-34</span>
+                    <span>35+</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>Стать</span>
+                    <span>Розподіл</span>
+                </div>
+                <div class="demographic-bar">
+                    <div class="bar-segment" style="width: 65%; left: 0; background: #2196F3;"></div>
+                    <div class="bar-segment" style="width: 35%; left: 65%; background: #FF4081;"></div>
+                </div>
+                <div class="segment-label">
+                    <span>Чоловіки (65%)</span>
+                    <span>Жінки (35%)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Активність за часом -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Активність за часом</h3>
+            </div>
+            <div class="activity-heatmap">
+                <!-- 24 години * 7 днів -->
+                <div class="heatmap-cell" style="background: #FF005033;"></div>
+                <div class="heatmap-cell" style="background: #FF005066;"></div>
+                <div class="heatmap-cell" style="background: #FF005099;"></div>
+                <div class="heatmap-cell" style="background: #FF0050CC;"></div>
+                <div class="heatmap-cell" style="background: #FF0050;"></div>
+                <!-- Більше клітинок... -->
+            </div>
+            <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #999;">
+                Найактивніший час: 18:00 - 21:00
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Перемикання періоду
+        document.querySelectorAll('.period-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.period-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                option.classList.add('active');
+                // Тут можна додати оновлення даних
+            });
+        });
+
+        // Приклад графіка з використанням Canvas
+        const canvas = document.getElementById('activityChart');
+        const ctx = canvas.getContext('2d');
+        
+        // Налаштування розміру canvas
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+
+        // Малювання графіка (спрощений приклад)
+        function drawChart() {
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            // Лінія переглядів
+            ctx.beginPath();
+            ctx.moveTo(0, height * 0.8);
+            ctx.bezierCurveTo(
+                width * 0.3, height * 0.4,
+                width * 0.6, height * 0.6,
+                width, height * 0.2
+            );
+            ctx.strokeStyle = '#FF0050';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Лінія лайків
+            ctx.beginPath();
+            ctx.moveTo(0, height * 0.9);
+            ctx.bezierCurveTo(
+                width * 0.3, height * 0.7,
+                width * 0.6, height * 0.8,
+                width, height * 0.5
+            );
+            ctx.strokeStyle = '#00B2FF';
+            //todo
+        }
+        </script>

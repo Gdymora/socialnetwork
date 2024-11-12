@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Повідомлення</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка */
+        .chat-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* Пошук */
+        .search-bar {
+            padding: 10px 15px;
+            background: #000;
+            border-bottom: 1px solid #333;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: none;
+            background: #1e1e1e;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Список чатів */
+        .chats-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .chat-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .chat-item:hover {
+            background: #1e1e1e;
+        }
+
+        .chat-item.active {
+            background: #1e1e1e;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #333;
+            position: relative;
+        }
+
+        .online-indicator {
+            width: 12px;
+            height: 12px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid #000;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .chat-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .verified-badge {
+            width: 14px;
+            height: 14px;
+            background: #FF0050;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8px;
+        }
+
+        .last-message {
+            color: #999;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .unread-indicator {
+            width: 8px;
+            height: 8px;
+            background: #FF0050;
+            border-radius: 50%;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #999;
+            margin-left: auto;
+        }
+
+        /* Чат */
+        .chat-container {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            z-index: 100;
+        }
+
+        .chat-container.active {
+            display: flex;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .message.received {
+            background: #1e1e1e;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.sent {
+            background: #FF0050;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .message.sent .message-time {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Форма повідомлення */
+        .message-form {
+            padding: 15px;
+            background: #000;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            background: #1e1e1e;
+            color: white;
+            font-size: 14px;
+        }
+
+        .attachment-btn {
+            padding: 8px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Швидкі дії */
+        .quick-actions {
+            display: flex;
+            padding: 10px 15px;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .action-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #1e1e1e;
+            color: white;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        /* Анімації */
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); }
+            to { transform: translateX(100%); }
+        }
+
+        .chat-container.active {
+            animation: slideIn 0.3s ease;
+        }
+
+        .chat-container.closing {
+            animation: slideOut 0.3s ease;
+        }
+
+        /* Індикатор набору повідомлення */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 10px;
+            color: #999;
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background: #999;
+            border-radius: 50%;
+            animation: typingAnimation 1s infinite;
+        }
+
+        @keyframes typingAnimation {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+            100% { transform: translateY(0); }
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Список чатів -->
+    <div class="chats-container">
+        <div class="chat-header">
+            <h2>Повідомлення</h2>
+            <button class="header-btn">✎</button>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Пошук повідомлень...">
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-chip">Усі повідомлення</div>
+            <div class="action-chip">Непрочитані</div>
+            <div class="action-chip">Запити</div>
+        </div>
+
+        <div class="chats-list">
+            <!-- Чат -->
+            <div class="chat-item" onclick="openChat(this)">
+                <div class="chat-avatar">
+                    <div class="online-indicator"></div>
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">
+                        John Doe
+                        <span class="verified-badge">✓</span>
+                    </div>
+                    <div class="last-message">
+                        <span class="unread-indicator"></span>
+                        Привіт! Як справи?
+                    </div>
+                </div>
+                <span class="message-time">14:30</span>
+            </div>
+
+            <!-- Ще чати -->
+            <div class="chat-item" onclick="openChat(this)">
+                <div class="chat-avatar"></div>
+                <div class="chat-info">
+                    <div class="chat-name">Jane Smith</div>
+                    <div class="last-message">Дякую за відео! 👍</div>
+                </div>
+                <span class="message-time">Вчора</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вікно чату -->
+    <div class="chat-container">
+        <div class="chat-header">
+            <button class="header-btn" onclick="closeChat()">←</button>
+            <div class="chat-name">
+                <span>John Doe</span>
+                <span class="verified-badge">✓</span>
+            </div>
+            <button class="header-btn">⋮</button>
+        </div>
+
+        <div class="chat-messages">
+            <div class="message received">
+                Привіт! Як справи?
+                <div class="message-time">14:30</div>
+            </div>
+            <div class="message sent">
+                Привіт! Все добре, дякую. Як ти?
+                <div class="message-time">14:31</div>
+            </div>
+            <div class="typing-indicator">
+                <span>John друкує</span>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+
+        <div class="message-form">
+            <button class="attachment-btn">📎</button>
+            <input type="text" class="message-input" placeholder="Повідомлення...">
+            <button class="attachment-btn">😊</button>
+            <button class="attachment-btn">➤</button>
+        </div>
+    </div>
+
+    <script>
+        function openChat(chatItem) {
+            document.querySelector('.chat-container').classList.add('active');
+            // Видалити індикатор непрочитаного повідомлення
+            const unreadIndicator = chatItem.querySelector('.unread-indicator');
+            if (unreadIndicator) {
+                unreadIndicator.remove();
+            }
+        }
+
+        function closeChat() {
+            const chatContainer = document.querySelector('.chat-container');
+            chatContainer.classList.add('closing');
+            setTimeout(() => {
+                chatContainer.classList.remove('active', 'closing');
+            }, 300);
+        }
+
+        // Надсилання повідомлення
+        const messageForm = document.querySelector('.message-form');
+        const messageInput = messageForm.querySelector('.message-input');
+        const sendButton = messageForm.querySelector('.attachment-btn:last-child');
+
+        sendButton.addEventListener('click', () => {
+            const text = messageInput.value.trim();
+            if (text) {
+                const messagesContainer = document.querySelector('.chat-messages');
+                const message = document.createElement('div');
+                message.className = 'message sent';
+                message.innerHTML = `
+                    ${text}
+                    <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                `;
+                messagesContainer.appendChild(message);
+                messageInput.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        });
+
+        // Пошук чатів
+        const searchInput = document.querySelector('.search-input');
+        const chatItems = document.querySelectorAll('.chat-item');
+
+        searchInput.addEventListener('input', () => {
+            const searchText = searchInput.value.toLowerCase();
+            chatItems.forEach(chat => {
+                const chatName = chat.querySelector('.chat-name').textContent.toLowerCase();
+                const lastMessage = chat.querySelector('.last-message').textContent.toLowerCase();
+                if (chatName.includes(searchText) || lastMessage.includes(searchText)) {
+                    chat.style.display = 'flex';
+                } else {
+                    chat.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="uk">
+<!-- Попередні стилі залишаються... Додаємо нові: -->
+<head>
+    <style>
+        /* Попередні стилі... */
+
+        /* Стилі для форми відповіді */
+        .reply-form {
+            margin-left: 52px;
+            margin-top: 10px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .reply-form.active {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Меню дій коментаря */
+        .comment-menu {
+            position: relative;
+        }
+
+        .menu-dots {
+            padding: 5px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .menu-options {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 150px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 100;
+        }
+
+        .menu-options.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .menu-option {
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .menu-option.delete {
+            color: #FF4444;
+        }
+
+        /* Стилі для розкритих відповідей */
+        .replies-container {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .replies-container.active {
+            display: block;
+        }
+
+        .show-replies {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .show-replies::before {
+            content: '';
+            width: 20px;
+            height: 1px;
+            background: #FF0050;
+        }
+
+        /* Стилі для видалення */
+        .comment.deleting {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            to { 
+                opacity: 0;
+                transform: translateX(20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="comments-modal">
+        <!-- Шапка коментарів -->
+        <div class="comments-header">
+            <h2>Коментарі (125)</h2>
+            <button class="action-btn">✕</button>
+        </div>
+
+        <!-- Список коментарів -->
+        <div class="comments-container">
+            <!-- Коментар -->
+            <div class="comment" data-comment-id="1">
+                <div class="comment-avatar"></div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <div>
+                            <span class="comment-username">username</span>
+                            <span class="verified-badge">✓</span>
+                        </div>
+                        <div class="comment-menu">
+                            <div class="menu-dots">⋮</div>
+                            <div class="menu-options">
+                                <div class="menu-option">
+                                    <span>📝</span>
+                                    <span>Редагувати</span>
+                                </div>
+                                <div class="menu-option">
+                                    <span>📌</span>
+                                    <span>Закріпити</span>
+                                </div>
+                                <div class="menu-option delete">
+                                    <span>🗑️</span>
+                                    <span>Видалити</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-text">
+                        Дуже круте відео! 🔥
+                    </div>
+                    <div class="comment-actions">
+                        <button class="action-btn">
+                            <span>❤️</span>
+                            <span>123</span>
+                        </button>
+                        <button class="action-btn reply-btn">
+                            <span>💬</span>
+                            <span>Відповісти</span>
+                        </button>
+                    </div>
+                    <!-- Форма відповіді -->
+                    <div class="reply-form">
+                        <div class="comment-avatar"></div>
+                        <input type="text" class="comment-input" placeholder="Напишіть відповідь...">
+                        <button class="send-btn">➤</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Коментар з відповідями -->
+            <div class="comment" data-comment-id="2">
+                <div class="comment-avatar"></div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-username">user123</span>
+                        <div class="comment-menu">
+                            <div class="menu-dots">⋮</div>
+                            <div class="menu-options">
+                                <div class="menu-option">
+                                    <span>📝</span>
+                                    <span>Редагувати</span>
+                                </div>
+                                <div class="menu-option">
+                                    <span>📌</span>
+                                    <span>Закріпити</span>
+                                </div>
+                                <div class="menu-option delete">
+                                    <span>🗑️</span>
+                                    <span>Видалити</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-text">
+                        Дуже цікаво! Розкажіть більше про локацію.
+                    </div>
+                    <div class="comment-actions">
+                        <button class="action-btn">
+                            <span>❤️</span>
+                            <span>45</span>
+                        </button>
+                        <button class="action-btn reply-btn">
+                            <span>💬</span>
+                            <span>Відповісти</span>
+                        </button>
+                    </div>
+                    <!-- Форма відповіді -->
+                    <div class="reply-form">
+                        <div class="comment-avatar"></div>
+                        <input type="text" class="comment-input" placeholder="Напишіть відповідь...">
+                        <button class="send-btn">➤</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="show-replies" data-replies="3">
+                Показати відповіді (3)
+            </button>
+
+            <div class="replies-container">
+                <!-- Відповіді на коментар -->
+                <div class="comment reply">
+                    <div class="comment-avatar"></div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="comment-username">author</span>
+                            <div class="comment-menu">
+                                <div class="menu-dots">⋮</div>
+                                <div class="menu-options">
+                                    <div class="menu-option delete">
+                                        <span>🗑️</span>
+                                        <span>Видалити</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comment-text">
+                            Звісно! Це водоспад Шипіт в Карпатах 😊
+                        </div>
+                        <div class="comment-actions">
+                            <button class="action-btn">
+                                <span>❤️</span>
+                                <span>28</span>
+                            </button>
+                            <button class="action-btn reply-btn">
+                                <span>💬</span>
+                                <span>Відповісти</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Додаткові відповіді... -->
+            </div>
+        </div>
+
+        <!-- Форма коментаря -->
+        <div class="comment-form">
+            <div class="comment-avatar"></div>
+            <input type="text" class="comment-input" placeholder="Додайте коментар...">
+            <button class="send-btn">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // Функціонал меню коментаря
+        document.querySelectorAll('.menu-dots').forEach(dots => {
+            dots.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Закрити всі інші меню
+                document.querySelectorAll('.menu-options').forEach(menu => {
+                    if (menu !== dots.nextElementSibling) {
+                        menu.classList.remove('active');
+                    }
+                });
+                dots.nextElementSibling.classList.toggle('active');
+            });
+        });
+
+        // Закрити меню при кліку поза ним
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.menu-options').forEach(menu => {
+                menu.classList.remove('active');
+            });
+        });
+
+        // Видалення коментаря
+        document.querySelectorAll('.menu-option.delete').forEach(option => {
+            option.addEventListener('click', () => {
+                const comment = option.closest('.comment');
+                comment.classList.add('deleting');
+                setTimeout(() => {
+                    comment.remove();
+                }, 300);
+            });
+        });
+
+        // Показати/сховати форму відповіді
+        document.querySelectorAll('.reply-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const replyForm = btn.closest('.comment-content').querySelector('.reply-form');
+                replyForm.classList.toggle('active');
+                replyForm.querySelector('input').focus();
+            });
+        });
+
+        // Показати/сховати відповіді
+        document.querySelectorAll('.show-replies').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const repliesContainer = btn.nextElementSibling;
+                repliesContainer.classList.toggle('active');
+                const isShowing = repliesContainer.classList.contains('active');
+                btn.textContent = isShowing ? 
+                    `Сховати відповіді (${btn.dataset.replies})` : 
+                    `Показати відповіді (${btn.dataset.replies})`;
+            });
+        });
+
+        // Додавання нової відповіді
+        function addReply(text, parentComment) {
+            const repliesContainer = parentComment.nextElementSibling.nextElementSibling;
+            const newReply = document.createElement('div');
+            newReply.className = 'comment reply';
+            newReply.innerHTML = `
+                <div class="comment-avatar"></div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-username">Ви</span>
+                        <div class="comment-menu">
+                            <div class="menu-dots">⋮</div>
+                            <div class="menu-options">
+                                <div class="menu-option delete">
+                                    <span>🗑️</span>
+                                    <span>Видалити</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-text">${text}</div>
+                    <div class="comment-actions">
+                        <button class="action-btn">
+                            <span>❤️</span>
+                            <span>0</span>
+                        </button>
+                        <button class="action-btn reply-btn">
+                            <span>💬</span>
+                            <span>Відповісти</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            repliesContainer.insertBefore(newReply, repliesContainer.firstChild);
+            
+            // Оновити лічильник відповідей
+            const showRepliesBtn = parentComment.nextElementSibling;
+            const currentCount = parseInt(showRepliesBtn.dataset.replies);
+            showRepliesBtn.dataset.replies = currentCount + 1;
+            showRepliesBtn.textContent = `Показати відповіді (${currentCount + 1})`;
+        }
+
+        // Обробка відправки відповіді
+        document.querySelectorAll('.reply-form .send-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.previousElementSibling;
+                const text = input.value.trim();
+                if (text) {
+                    const parentComment = btn.closest('.comment');
+                    addReply(text, parentComment);
+                    input.value = '';
+                    btn.closest('.reply-form').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

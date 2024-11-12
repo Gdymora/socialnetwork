@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Коментарі</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        .comments-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* Шапка коментарів */
+        .comments-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e1e1e;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        /* Список коментарів */
+        .comments-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #000;
+        }
+
+        /* Окремий коментар */
+        .comment {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .comment-username {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .comment-text {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Відповіді на коментар */
+        .comment-replies {
+            margin-left: 52px;
+            margin-top: 10px;
+        }
+
+        .show-replies {
+            color: #FF0050;
+            font-size: 12px;
+            margin-left: 52px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        /* Форма додавання коментаря */
+        .comment-form {
+            padding: 15px;
+            background: #1e1e1e;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-top: 1px solid #333;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            background: #000;
+            color: white;
+            font-size: 14px;
+        }
+
+        .send-btn {
+            background: none;
+            border: none;
+            color: #FF0050;
+            font-size: 16px;
+            padding: 8px;
+            cursor: pointer;
+            opacity: 0.5;
+        }
+
+        .send-btn.active {
+            opacity: 1;
+        }
+
+        /* Реакції на коментар */
+        .reactions-popup {
+            position: absolute;
+            background: #1e1e1e;
+            border-radius: 30px;
+            padding: 8px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            animation: scaleIn 0.2s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .reaction-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: #333;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Підсвічування при наведенні */
+        .comment:hover {
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+        }
+
+        .action-btn:hover {
+            color: white;
+        }
+
+        /* Статус верифікації */
+        .verified-badge {
+            width: 14px;
+            height: 14px;
+            background: #FF0050;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8px;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="comments-modal">
+        <!-- Шапка коментарів -->
+        <div class="comments-header">
+            <h2>Коментарі (125)</h2>
+            <button class="action-btn">✕</button>
+        </div>
+
+        <!-- Список коментарів -->
+        <div class="comments-container">
+            <!-- Коментар -->
+            <div class="comment">
+                <div class="comment-avatar"></div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <div>
+                            <span class="comment-username">username</span>
+                            <span class="verified-badge">✓</span>
+                        </div>
+                        <span class="comment-time">2г</span>
+                    </div>
+                    <div class="comment-text">
+                        Дуже круте відео! 🔥 Продовжуй в тому ж дусі!
+                    </div>
+                    <div class="comment-actions">
+                        <button class="action-btn">
+                            <span>❤️</span>
+                            <span>123</span>
+                        </button>
+                        <button class="action-btn">
+                            <span>💬</span>
+                            <span>Відповісти</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Коментар з відповідями -->
+            <div class="comment">
+                <div class="comment-avatar"></div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-username">user123</span>
+                        <span class="comment-time">5г</span>
+                    </div>
+                    <div class="comment-text">
+                        Класне відео! Де це знімали?
+                    </div>
+                    <div class="comment-actions">
+                        <button class="action-btn">
+                            <span>❤️</span>
+                            <span>45</span>
+                        </button>
+                        <button class="action-btn">
+                            <span>💬</span>
+                            <span>Відповісти</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button class="show-replies">Показати відповіді (3)</button>
+            <div class="comment-replies">
+                <div class="comment">
+                    <div class="comment-avatar"></div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="comment-username">author</span>
+                            <span class="comment-time">4г</span>
+                        </div>
+                        <div class="comment-text">
+                            Це Карпати, біля водоспаду Шипіт 😊
+                        </div>
+                        <div class="comment-actions">
+                            <button class="action-btn">
+                                <span>❤️</span>
+                                <span>28</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>💬</span>
+                                <span>Відповісти</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Форма коментаря -->
+        <div class="comment-form">
+            <div class="comment-avatar"></div>
+            <input type="text" class="comment-input" placeholder="Додайте коментар...">
+            <button class="send-btn">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // Активація кнопки відправки при введенні тексту
+        const commentInput = document.querySelector('.comment-input');
+        const sendButton = document.querySelector('.send-btn');
+
+        commentInput.addEventListener('input', () => {
+            sendButton.classList.toggle('active', commentInput.value.trim().length > 0);
+        });
+
+        // Додавання нового коментаря
+        let lastCommentId = 0;
+
+        function addComment(text) {
+            const container = document.querySelector('.comments-container');
+            const newComment = document.createElement('div');
+            newComment.className = 'comment';
+            newComment.innerHTML = `
+                <div class="comment-avatar"></div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-username">Ви</span>
+                        <span class="comment-time">щойно</span>
+                    </div>
+                    <div class="comment-text">${text}</div>
+                    <div class="comment-actions">
+                        <button class="action-btn">
+                            <span>❤️</span>
+                            <span>0</span>
+                        </button>
+                        <button class="action-btn">
+                            <span>💬</span>
+                            <span>Відповісти</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.insertBefore(newComment, container.firstChild);
+        }
+
+        // Обробка відправки коментаря
+        sendButton.addEventListener('click', () => {
+            const text = commentInput.value.trim();
+            if (text) {
+                addComment(text);
+                commentInput.value = '';
+                sendButton.classList.remove('active');
+            }
+        });
+
+        // Обробка лайків
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.action-btn') && e.target.closest('.action-btn').querySelector('span').textContent === '❤️') {
+                const likeButton = e.target.closest('.action-btn');
+                const likeCount = likeButton.querySelector('span:last-child');
+                const currentLikes = parseInt(likeCount.textContent);
+                likeCount.textContent = currentLikes + 1;
+                likeButton.style.color = '#FF0050';
+            }
+        });
+    </script>
+</body>
+</html>

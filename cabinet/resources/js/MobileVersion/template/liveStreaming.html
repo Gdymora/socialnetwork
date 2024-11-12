@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Живі трансляції</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Головний контейнер */
+        .live-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Категорії трансляцій */
+        .categories {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            border-bottom: 1px solid #333;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-chip {
+            padding: 8px 16px;
+            background: #1e1e1e;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .category-chip.active {
+            background: #FF0050;
+        }
+
+        /* Сітка трансляцій */
+        .streams-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .stream-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            background: #1e1e1e;
+        }
+
+        .stream-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        .stream-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+
+        .stream-title {
+            font-size: 14px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stream-stats {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .live-badge {
+            background: #FF0050;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Кнопка створення трансляції */
+        .create-stream-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: #FF0050;
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(255,0,80,0.3);
+        }
+
+        /* Модальне вікно створення трансляції */
+        .stream-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #999;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .stream-preview-section {
+            aspect-ratio: 16/9;
+            background: #333;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        .start-stream-btn {
+            width: 100%;
+            padding: 12px;
+            background: #FF0050;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Секція активної трансляції */
+        .active-stream {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            background: #000;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+        }
+
+        .stream-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.8);
+        }
+
+        .streamer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .streamer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: #333;
+        }
+
+        .viewer-count {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .stream-footer {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.8);
+        }
+
+        .stream-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Чат трансляції */
+        .stream-chat {
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 300px;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message-author {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .message-text {
+            font-size: 14px;
+        }
+
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 14px;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: #FF0050;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Gifts panel */
+        .gifts-panel {
+            position: fixed;
+            bottom: 80px;
+            left: 0;
+            right: 300px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            display: none;
+        }
+
+        .gifts-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .gift-item {
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .gift-icon {
+            font-size: 24px;
+        }
+
+        .gift-price {
+            font-size: 12px;
+            color: #FF0050;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .stream-card {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            animation: slideUp 0.3s ease;
+        }
+
+        /* Gift animation */
+        .gift-animation {
+            position: fixed;
+            left: 50%;
+            bottom: 20%;
+            transform: translateX(-50%);
+            font-size: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: giftFloat 2s ease-out forwards;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes giftFloat {
+            0% { transform: translate(-50%, 0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translate(-50%, -100px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="live-container">
+        <!-- Шапка -->
+        <div class="header">
+            <button class="back-btn">←</button>
+            <h2>Живі трансляції</h2>
+            <div style="width: 24px;"></div>
+        </div>
+
+        <!-- Категорії -->
+        <div class="categories">
+            <div class="category-chip active">Усі</div>
+            <div class="category-chip">Ігри</div>
+            <div class="category-chip">Музика</div>
+            <div class="category-chip">Спорт</div>
+            <div class="category-chip">Подорожі</div>
+            <div class="category-chip">Готування</div>
+        </div>
+
+        <!-- Сітка трансляцій -->
+        <div class="streams-grid">
+            <div class="stream-card" onclick="openStream()">
+                <div class="stream-preview">🎮</div>
+                <div class="stream-info">
+                    <div class="stream-title">Гра в CS:GO</div>
+                    <div class="stream-stats">
+                        <span class="live-badge">LIVE</span>
+                        <span>👁️ 1.2K</span>
+                        <span>@username</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stream-card" onclick="openStream()">
+                <div class="stream-preview">🎵</div>
+                <div class="stream-info">
+                    <div class="stream-title">Музичний вечір</div>
+                    <div class="stream-stats">
+                        <span class="live-badge">LIVE</span>
+                        <span>👁️ 856</span>
+                        <span>@musician</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Додаткові карточки трансляцій... -->
+        </div>
+
+        <!-- Кнопка створення трансляції -->
+        <button class="create-stream-btn" onclick="showCreateModal()">📱</button>
+    </div>
+
+    <!-- Модальне вікно створення трансляції -->
+    <div class="stream-modal" id="createStreamModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Нова трансляція</h3>
+                <button class="close-btn" onclick="hideCreateModal()">✕</button>
+            </div>
+            <div class="stream-preview-section">
+                📱
+            </div>
+            <div class="form-group">
+                <label class="form-label">Назва трансляції</label>
+                <input type="text" class="form-input" placeholder="Введіть назву...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Категорія</label>
+                <select class="form-input">
+                    <option>Ігри</option>
+                    <option>Музика</option>
+                    <option>Спорт</option>
+                    <option>Подорожі</option>
+                    <option>Готування</option>
+                </select>
+            </div>
+            <button class="start-stream-btn" onclick="startStream()">Почати трансляцію</button>
+        </div>
+    </div>
+
+    <!-- Активна трансляція -->

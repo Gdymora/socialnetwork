@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Соціальна мережа - Друзі</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Стилі для шапки */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #000;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+        }
+
+        .search-bar {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 20px;
+            border: none;
+            background: #1e1e1e;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Стилі для історій */
+        .stories-container {
+            padding: 15px;
+            overflow-x: auto;
+            white-space: nowrap;
+            background: linear-gradient(to bottom, #000, transparent);
+            margin-top: 65px;
+        }
+
+        .story {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .story-ring {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(45deg, #FF0050, #00F2EA);
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .story-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #333;
+            border: 2px solid #000;
+        }
+
+        .story-username {
+            font-size: 12px;
+            color: white;
+            max-width: 65px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Стилі для фільтрів */
+        .filters {
+            padding: 10px 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #1e1e1e;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-chip.active {
+            background: #FF0050;
+        }
+
+        /* Стилі для секцій */
+        .section-title {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Стилі для карток друзів */
+        .friend-card {
+            margin: 10px 15px;
+            padding: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .friend-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #333;
+            margin-right: 15px;
+        }
+
+        .friend-info {
+            flex: 1;
+        }
+
+        .friend-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .friend-username {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .friend-stats {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .friend-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn.primary {
+            background: #FF0050;
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            border: 1px solid #333;
+            color: white;
+        }
+
+        /* Стилі для спільних друзів */
+        .mutual-friends {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .mutual-avatars {
+            display: flex;
+        }
+
+        .mutual-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #333;
+            border: 2px solid #1e1e1e;
+            margin-left: -8px;
+        }
+
+        .mutual-avatar:first-child {
+            margin-left: 0;
+        }
+
+        /* Анімації для кнопок */
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Статус активності */
+        .online-status {
+            width: 12px;
+            height: 12px;
+            background: #4CAF50;
+            border-radius: 50%;
+            border: 2px solid #1e1e1e;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .friend-avatar-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div id="friends-page" class="page active">
+        <!-- Шапка з пошуком -->
+        <div class="header">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Пошук друзів...">
+            </div>
+        </div>
+
+        <!-- Історії -->
+        <div class="stories-container">
+            <div class="story">
+                <div class="story-ring">
+                    <div class="story-avatar"></div>
+                </div>
+                <span class="story-username">Ваша історія</span>
+            </div>
+            <div class="story">
+                <div class="story-ring">
+                    <div class="story-avatar"></div>
+                </div>
+                <span class="story-username">user123</span>
+            </div>
+            <div class="story">
+                <div class="story-ring">
+                    <div class="story-avatar"></div>
+                </div>
+                <span class="story-username">friend456</span>
+            </div>
+            <!-- Додаткові історії -->
+        </div>
+
+        <!-- Фільтри -->
+        <div class="filters">
+            <div class="filter-chip active">Усі</div>
+            <div class="filter-chip">Онлайн</div>
+            <div class="filter-chip">Нові</div>
+            <div class="filter-chip">Спільні друзі</div>
+            <div class="filter-chip">Рекомендації</div>
+        </div>
+
+        <!-- Секція популярних -->
+        <div class="section-title">Популярні</div>
+        <div class="friend-card">
+            <div class="friend-avatar-container">
+                <div class="friend-avatar"></div>
+                <div class="online-status"></div>
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">Іван Петренко</div>
+                <div class="friend-username">@ivan_p</div>
+                <div class="friend-stats">3.2K підписників • 120 відео</div>
+                <div class="mutual-friends">
+                    <div class="mutual-avatars">
+                        <div class="mutual-avatar"></div>
+                        <div class="mutual-avatar"></div>
+                    </div>
+                    <span>12 спільних друзів</span>
+                </div>
+            </div>
+            <div class="friend-actions">
+                <button class="action-btn primary">Підписатися</button>
+            </div>
+        </div>
+
+        <!-- Секція рекомендацій -->
+        <div class="section-title">Рекомендації</div>
+        <div class="friend-card">
+            <div class="friend-avatar-container">
+                <div class="friend-avatar"></div>
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">Марія Ковальчук</div>
+                <div class="friend-username">@maria_k</div>
+                <div class="friend-stats">1.8K підписників • 85 відео</div>
+                <div class="mutual-friends">
+                    <div class="mutual-avatars">
+                        <div class="mutual-avatar"></div>
+                        <div class="mutual-avatar"></div>
+                        <div class="mutual-avatar"></div>
+                    </div>
+                    <span>8 спільних друзів</span>
+                </div>
+            </div>
+            <div class="friend-actions">
+                <button class="action-btn primary">Підписатися</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Обробка кліків по фільтрах
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.filter-chip').forEach(c => {
+                    c.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // Обробка підписки
+        document.querySelectorAll('.action-btn.primary').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.textContent === 'Підписатися') {
+                    this.textContent = 'Відписатися';
+                    this.classList.remove('primary');
+                    this.classList.add('secondary');
+                } else {
+                    this.textContent = 'Підписатися';
+                    this.classList.remove('secondary');
+                    this.classList.add('primary');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

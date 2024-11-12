@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор тексту</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Область редагування */
+        .editor-area {
+            flex: 1;
+            position: relative;
+            background: #1e1e1e;
+            overflow: hidden;
+        }
+
+        /* Текстовий блок */
+        .text-block {
+            position: absolute;
+            padding: 10px;
+            min-width: 50px;
+            cursor: move;
+            user-select: none;
+            transform-origin: center;
+        }
+
+        .text-block.selected {
+            border: 1px dashed #FF0050;
+        }
+
+        .text-content {
+            outline: none;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* Маркери масштабування */
+        .resize-handle {
+            width: 20px;
+            height: 20px;
+            background: #FF0050;
+            border-radius: 50%;
+            position: absolute;
+            display: none;
+        }
+
+        .resize-handle.top-left { top: -10px; left: -10px; cursor: nw-resize; }
+        .resize-handle.top-right { top: -10px; right: -10px; cursor: ne-resize; }
+        .resize-handle.bottom-left { bottom: -10px; left: -10px; cursor: sw-resize; }
+        .resize-handle.bottom-right { bottom: -10px; right: -10px; cursor: se-resize; }
+
+        .text-block.selected .resize-handle {
+            display: block;
+        }
+
+        /* Панель інструментів тексту */
+        .text-toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e1e1e;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-top: 1px solid #333;
+        }
+
+        /* Стилі тексту */
+        .text-styles {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 5px;
+        }
+
+        .style-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #333;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .style-option.active {
+            background: #FF0050;
+        }
+
+        /* Налаштування тексту */
+        .text-settings {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .setting-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Палітра кольорів */
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            padding: 5px;
+            overflow-x: auto;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .color-option.active {
+            border-color: #FF0050;
+        }
+
+        /* Анімації тексту */
+        .animation-options {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 5px;
+        }
+
+        .animation-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .animation-option.active {
+            background: #FF0050;
+        }
+
+        /* Шапка */
+        .editor-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .header-btn.apply {
+            background: #FF0050;
+            color: white;
+        }
+
+        /* Попередньо встановлені стилі тексту */
+        .text-preset {
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .preset-neon {
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6;
+        }
+
+        .preset-retro {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .preset-bold {
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .preset-outline {
+            -webkit-text-stroke: 1px white;
+            color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка редактора -->
+    <div class="editor-header">
+        <button class="header-btn">Скасувати</button>
+        <h2>Додати текст</h2>
+        <button class="header-btn apply">Готово</button>
+    </div>
+
+    <!-- Область редагування -->
+    <div class="editor-area">
+        <div class="text-block" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <div class="resize-handle top-left"></div>
+            <div class="resize-handle top-right"></div>
+            <div class="resize-handle bottom-left"></div>
+            <div class="resize-handle bottom-right"></div>
+            <div class="text-content" contenteditable="true">Торкніться щоб редагувати</div>
+        </div>
+    </div>
+
+    <!-- Панель інструментів тексту -->
+    <div class="text-toolbar">
+        <!-- Попередньо встановлені стилі -->
+        <div class="text-styles">
+            <div class="text-preset">Звичайний</div>
+            <div class="text-preset preset-neon">Неоновий</div>
+            <div class="text-preset preset-retro">Ретро</div>
+            <div class="text-preset preset-bold">Жирний</div>
+            <div class="text-preset preset-outline">Контур</div>
+        </div>
+
+        <!-- Налаштування тексту -->
+        <div class="text-settings">
+            <button class="setting-btn" title="Розмір">A</button>
+            <button class="setting-btn" title="Жирний">B</button>
+            <button class="setting-btn" title="Курсив">I</button>
+            <button class="setting-btn" title="Підкреслення">U</button>
+            <button class="setting-btn" title="Вирівнювання">≡</button>
+        </div>
+
+        <!-- Палітра кольорів -->
+        <div class="color-palette">
+            <div class="color-option active" style="background: white;"></div>
+            <div class="color-option" style="background: #FF0050;"></div>
+            <div class="color-option" style="background: #00F2EA;"></div>
+            <div class="color-option" style="background: #FFD700;"></div>
+            <div class="color-option" style="background: #4CAF50;"></div>
+            <div class="color-option" style="background: #9C27B0;"></div>
+        </div>
+
+        <!-- Анімації -->
+        <div class="animation-options">
+            <div class="animation-option">Без анімації</div>
+            <div class="animation-option">Поява</div>
+            <div class="animation-option">Пульсація</div>
+            <div class="animation-option">Хвиля</div>
+            <div class="animation-option">Обертання</div>
+        </div>
+    </div>
+
+    <script>
+        // Вибір текстового блоку
+        const textBlock = document.querySelector('.text-block');
+        const textContent = document.querySelector('.text-content');
+
+        textBlock.addEventListener('click', () => {
+            document.querySelectorAll('.text-block').forEach(block => {
+                block.classList.remove('selected');
+            });
+            textBlock.classList.add('selected');
+        });
+
+        // Перетягування тексту
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        textBlock.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+
+        function dragStart(e) {
+            if (e.target === textContent) return;
+            
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+
+            if (e.target === textBlock) {
+                isDragging = true;
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                setTranslate(currentX, currentY, textBlock);
+            }
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+        }
+
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+        }
+
+        // Застосування стилів
+        document.querySelectorAll('.text-preset').forEach(preset => {
+            preset.addEventListener('click', () => {
+                const selectedText = document.querySelector('.text-block.selected .text-content');
+                if (!selectedText) return;
+
+                // Видалити всі попередні класи стилів
+                selectedText.className = 'text-content';
+                
+                // Додати новий клас стилю
+                if (preset.classList.contains('preset-neon')) {
+                    selectedText.classList.add('preset-neon');
+                } else if (preset.classList.contains('preset-retro')) {
+                    selectedText.classList.add('preset-retro');
+                } else if (preset.classList.contains('preset-bold')) {
+                    selectedText.classList.add('preset-bold');
+                } else if (preset.classList.contains('preset-outline')) {
+                    selectedText.classList.add('preset-outline');
+                }
+            });
+        });
+
+        // Зміна кольору тексту
+        document.querySelectorAll('.color-option').forEach(color => {
+            color.addEventListener('click', () => {
+                const selectedText = document.querySelector('.text-block.selected .text-content');
+                if (!selectedText) return;
+
+                document.querySelectorAll('.color-option').forEach(c => {
+                    c.classList.remove('active');
+                });
+                color.classList.add('active');
+                selectedText.style.color = color.style.backgroundColor;
+            });
+        });
+    </script>
+</body>
+</html>

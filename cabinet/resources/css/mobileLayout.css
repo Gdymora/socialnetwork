@@ -23,13 +23,13 @@
     margin-bottom: 10px;
 }
 
-.header-actions {
+.mobile-layout .header-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.header-title {
+.mobile-layout .header-title {
     font-size: 18px;
     font-weight: bold;
 }
@@ -190,7 +190,7 @@
 .single-media img,
 .single-media video {
     width: 100%;
-    max-height: 80vh;
+    max-height: 70vh;
     object-fit: cover;
 }
 
@@ -340,11 +340,11 @@
     transform: translateX(0);
 }
 
-.section-friends {
+.section-post-friends {
     transform: translateX(-100%);
 }
 
-.section-gallery {
+.media-post-section{
     transform: translateX(-200%);
 }
 
@@ -353,8 +353,8 @@
     transition: transform 0.3s ease-out;
 }
 
-.friends-section,
-.gallery-section {
+.friends-post-section,
+.media-post-section {
     position: absolute;
     top: 0;
     left: 0;
@@ -415,6 +415,13 @@
     color: white;
 }
 
+
+.mobile-post-send {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
 .mobile-submit-btn {
     width: 100%;
     padding: 12px;
@@ -425,18 +432,846 @@
     font-weight: bold;
 }
 
-.mobile-post-send {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
 .mobile-close-btn {
     width: 100%;
     padding: 12px;
-    background: var(--header-bg-color);
-    color: white;
+    background: #360c7a;
+    color: rgb(79, 76, 76);
     border: none;
     border-radius: 20px;
     font-weight: bold;
 }
+
+/*************************************** post text FULL ****************************/ 
+.mobile-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+.main-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease-out;
+    transform: translateX(0);
+}
+
+.main-content.active {
+    transform: translateX(0);
+}
+
+.main-content:not(.active) {
+    transform: translateX(-100%);
+}
+.mobile-layout .page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+}
+
+.mobile-layout .page.active {
+    transform: translateX(0);
+}
+
+.mobile-layout .page #post-detail-page {
+    background: #000;
+}
+
+.mobile-layout .header {
+    position: sticky;
+    top: -20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    background: #000;
+    color: white;
+    z-index: 10;
+}
+.mobile-layout .header .back-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    padding-left: 8px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.mobile-layout .header h1 {
+    color: white;
+    margin: 0;
+    font-size: 18px;
+}
+
+.mobile-dashboard .post-content {
+    margin-top: 37px;
+}
+
+/******************* PROFILESECTION ********************************************** */
+.gradient-bg {
+    background: linear-gradient(45deg, #FF0050, #00F2EA);
+    opacity: 0.8;
+}
+
+.glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Оновлені стилі профілю */
+.profile-content {
+    padding: 6px 0 0 0;
+    text-align: center;
+}
+
+.profile-header {
+    padding: 20px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4), #000);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: #333;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    border: 3px solid #FF0050;
+    position: relative;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #999;
+}
+
+.edit-profile-btn {
+    background: transparent;
+    border: 1px solid #FF0050;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 20px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+/* Стилі для табів */
+.profile-tabs {
+    display: flex;
+    border-bottom: 1px solid #333;
+    margin-top: 20px;
+}
+
+.tab {
+    flex: 1;
+    padding: 15px;
+    text-align: center;
+    color: #999;
+    cursor: pointer;
+    position: relative;
+}
+
+.tab.active {
+    color: white;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #FF0050;
+}
+
+.tab-content {
+    /* display: none; */
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Сітка для постів у профілі */
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 2px;
+}
+
+.profile-post {
+    aspect-ratio: 1;
+    background: #333;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-post:hover .post-overlay {
+    opacity: 1;
+}
+
+.post-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.post-stats {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+}
+
+/* Анімації для взаємодії */
+.nav-item:active {
+    transform: scale(0.95);
+}
+
+.add-button:active {
+    transform: scale(0.9);
+}
+
+@keyframes likeAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Оновлені стилі для кнопок дій */
+.action-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: white;
+    padding: 8px;
+}
+
+.action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.1);
+    transition: background 0.3s;
+}
+
+.action-button:active .action-icon {
+    background: rgba(255,0,80,0.2);
+    animation: likeAnimation 0.3s ease;
+}
+
+/******************************FRIEND SECTION  ********************************/
+.profile-content {
+    padding: 6px 0 0 0;
+    text-align: center;
+}
+   /* Стилі для шапки */
+   .friends-page-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #000;
+    z-index: 100;
+    border-bottom: 1px solid #333;
+}
+
+.friends-page-search-bar {
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.friends-page-search-input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    background: #1e1e1e;
+    color: white;
+    font-size: 14px;
+}
+
+/* Стилі для історій */
+.stories-container {
+    padding: 15px;
+    overflow-x: auto;
+    white-space: nowrap;
+    background: linear-gradient(to bottom, #000, transparent);
+    margin-top: 65px;
+}
+
+.story {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.story-ring {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(45deg, #FF0050, #00F2EA);
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.story-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #333;
+    border: 2px solid #000;
+}
+
+.story-username {
+    font-size: 12px;
+    color: white;
+    max-width: 65px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Стилі для фільтрів */
+.filters {
+    padding: 10px 15px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.filter-chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: #1e1e1e;
+    font-size: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filter-chip.active {
+    background: #FF0050;
+}
+
+/* Стилі для секцій */
+.section-title {
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Стилі для карток друзів */
+.friend-card {
+    margin: 10px 15px;
+    padding: 15px;
+    background: #1e1e1e;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.friend-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #333;
+    margin-right: 15px;
+}
+
+.friend-info {
+    flex: 1;
+}
+
+.friend-name {
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.friend-username {
+    color: #999;
+    font-size: 14px;
+}
+
+.friend-stats {
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+}
+
+.friend-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.action-btn.primary {
+    background: #FF0050;
+    color: white;
+}
+
+.action-btn.secondary {
+    background: transparent;
+    border: 1px solid #333;
+    color: white;
+}
+
+/* Стилі для спільних друзів */
+.mutual-friends {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #999;
+}
+
+.mutual-avatars {
+    display: flex;
+}
+
+.mutual-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #333;
+    border: 2px solid #1e1e1e;
+    margin-left: -8px;
+}
+
+.mutual-avatar:first-child {
+    margin-left: 0;
+}
+
+/* Анімації для кнопок */
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+/* Статус активності */
+.online-status {
+    width: 12px;
+    height: 12px;
+    background: #4CAF50;
+    border-radius: 50%;
+    border: 2px solid #1e1e1e;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.friend-avatar-container {
+    position: relative;
+}
+
+/* ******************************GALLERY***************************** */
+.gallery-content {
+    padding: 6px 0 0 0;
+    text-align: center;
+}
+/* Стилі для шапки */
+.gallery-header {
+    position: fixed;
+    top: 50px;
+    width: 100%;
+    background: #000;
+    z-index: 100;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.gallery-header-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.gallery-header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+/* Стилі для фільтрів */
+.filters-container {
+    position: fixed;
+    top: 60px;
+    width: 100%;
+    background: #000;
+    z-index: 99;
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+}
+
+.filters-scroll {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0 15px;
+}
+
+.filter-chip {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-right: 8px;
+    border-radius: 20px;
+    background: #1e1e1e;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filter-chip.active {
+    background: #FF0050;
+}
+
+/* Стилі для альбомів */
+.albums-section {
+    margin-top: 38px;
+    padding: 15px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.albums-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.album-card {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1e1e1e;
+}
+
+.album-preview {
+    width: 100%;
+    height: 100%;
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.album-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+}
+
+.album-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.album-count {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Стилі для сітки медіа */
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 2px;
+}
+
+.media-item {
+    position: relative;
+    aspect-ratio: 1;
+    background: #1e1e1e;
+    overflow: hidden;
+}
+
+.media-preview {
+    width: 100%;
+    height: 100%;
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.media-type {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.media-select {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: rgba(0,0,0,0.5); 
+}
+
+.media-item.selected .media-select {
+    display: block;
+    background: #FF0050;
+}
+
+/* Стилі для режиму вибору */
+.selection-header { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: #FF0050;
+    z-index: 101;
+}
+
+.selection-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selection-mode .selection-header {
+    display: block;
+}
+
+.selection-mode .media-select {
+    display: block;
+}
+
+/* Спливаюче меню для медіа */
+.media-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    justify-content: space-around;
+}
+
+.media-item:hover .media-actions {
+    opacity: 1;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Анімації */
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.media-item {
+    animation: scaleIn 0.3s ease;
+}
+    /* Стилі для модального вікна альбому */
+    .album-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    z-index: 1000; 
+    flex-direction: column;
+}
+
+.album-modal.active {
+    display: flex;
+}
+
+.album-modal-header {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+}
+
+.album-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.album-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.album-info-bar {
+    padding: 15px;
+    background: #1e1e1e;
+    margin-bottom: 15px;
+    border-radius: 12px;
+}
+
+.album-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Стилі для меню налаштувань */
+.settings-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1e1e1e;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    transform: translateY(-12%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.settings-menu.active {
+    transform: translateY(0);
+}
+
+.menu-header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.menu-indicator {
+    width: 40px;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    margin: 0 auto 15px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-icon {
+    width: 30px;
+    height: 30px;
+    background: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Overlay для фону */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+
+ 

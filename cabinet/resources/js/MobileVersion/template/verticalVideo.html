@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор відео</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+            max-width: 100vw;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        /* Контейнер редактора */
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Шапка */
+        .header {
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            background: #000;
+            border-bottom: 1px solid #333;
+        }
+
+        .header-btn {
+            padding: 8px 15px;
+            border: none;
+            background: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        .header-btn.save {
+            color: #FF0050;
+        }
+
+        /* Область відео */
+        .video-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-frame {
+            width: 56.25vh;
+            /* Висота буде 90% від доступної висоти */
+            height: 90vh;
+            max-width: 100vw;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Нижня панель */
+        .bottom-panel {
+            height: auto;
+            background: #000;
+            border-top: 1px solid #333;
+        }
+
+        /* Інструменти */
+        .tools-panel {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px;
+            gap: 15px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .tools-panel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tool-btn {
+            min-width: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 12px;
+        }
+
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            background: #222;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        /* Таймлайн */
+        .timeline {
+            padding: 10px 15px;
+            border-top: 1px solid #333;
+        }
+
+        .timeline-track {
+            height: 40px;
+            background: #222;
+            border-radius: 8px;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 30%;
+            background: #FF0050;
+            opacity: 0.3;
+            border-radius: 8px;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Модальні панелі налаштувань */
+        .settings-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #111;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .settings-panel.active {
+            transform: translateY(0);
+        }
+
+        .settings-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .settings-content {
+            padding: 15px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        /* Плеєр контроли */
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px 0;
+        }
+
+        .player-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <!-- Шапка -->
+        <div class="header">
+            <button class="header-btn">Скасувати</button>
+            <span>Редагувати відео</span>
+            <button class="header-btn save">Зберегти</button>
+        </div>
+
+        <!-- Область відео -->
+        <div class="video-container">
+            <div class="video-frame">
+                Вертикальне відео 9:16
+            </div>
+        </div>
+
+        <!-- Нижня панель -->
+        <div class="bottom-panel">
+            <!-- Інструменти -->
+            <div class="tools-panel">
+                <button class="tool-btn" onclick="showSettings('trim')">
+                    <div class="tool-icon">✂️</div>
+                    <span>Обрізати</span>
+                </button>
+                <button class="tool-btn" onclick="showSettings('filter')">
+                    <div class="tool-icon">🎨</div>
+                    <span>Фільтри</span>
+                </button>
+                <button class="tool-btn" onclick="showSettings('music')">
+                    <div class="tool-icon">🎵</div>
+                    <span>Музика</span>
+                </button>
+                <button class="tool-btn" onclick="showSettings('text')">
+                    <div class="tool-icon">📝</div>
+                    <span>Текст</span>
+                </button>
+                <button class="tool-btn" onclick="showSettings('effects')">
+                    <div class="tool-icon">✨</div>
+                    <span>Ефекти</span>
+                </button>
+                <button class="tool-btn" onclick="showSettings('stickers')">
+                    <div class="tool-icon">😊</div>
+                    <span>Стікери</span>
+                </button>
+            </div>
+
+            <!-- Таймлайн -->
+            <div class="timeline">
+                <div class="player-controls">
+                    <button class="player-btn">⏪</button>
+                    <button class="player-btn">▶️</button>
+                    <button class="player-btn">⏩</button>
+                </div>
+                <div class="timeline-track">
+                    <div class="timeline-progress"></div>
+                </div>
+                <div class="time-display">
+                    <span>00:00</span>
+                    <span>00:30</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно налаштувань -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <span id="settingsTitle">Налаштування</span>
+            <button class="header-btn" onclick="hideSettings()">✕</button>
+        </div>
+        <div class="settings-content" id="settingsContent">
+            <!-- Контент буде додаватися динамічно -->
+        </div>
+    </div>
+
+    <script>
+        function showSettings(type) {
+            const panel = document.getElementById('settingsPanel');
+            const title = document.getElementById('settingsTitle');
+            const content = document.getElementById('settingsContent');
+
+            panel.classList.add('active');
+
+            switch(type) {
+                case 'trim':
+                    title.textContent = 'Обрізати відео';
+                    break;
+                case 'filter':
+                    title.textContent = 'Фільтри';
+                    break;
+                case 'music':
+                    title.textContent = 'Музика';
+                    break;
+                case 'text':
+                    title.textContent = 'Текст';
+                    break;
+                case 'effects':
+                    title.textContent = 'Ефекти';
+                    break;
+                case 'stickers':
+                    title.textContent = 'Стікери';
+                    break;
+            }
+        }
+
+        function hideSettings() {
+            document.getElementById('settingsPanel').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

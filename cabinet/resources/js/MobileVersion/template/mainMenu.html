@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головна</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Головний контейнер */
+        .app-container {
+            height: 100vh;
+            display: flex;
+        }
+
+        /* Бокове меню */
+        .side-menu {
+            width: 280px;
+            background: #1e1e1e;
+            padding: 20px;
+            transform: translateX(-100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .side-menu.active {
+            transform: translateX(0);
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .menu-section {
+            margin-bottom: 20px;
+        }
+
+        .menu-title {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .menu-icon {
+            width: 32px;
+            height: 32px;
+            background: #333;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        /* Основний контент */
+        .main-content {
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 60px;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF0050;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 2px solid #000;
+        }
+
+        /* Контент відео */
+        .video-feed {
+            height: calc(100vh - 120px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-container {
+            height: 100%;
+            position: relative;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        /* Інформація про відео */
+        .video-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+
+        .video-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        .video-description {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .video-tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            color: #FF0050;
+            font-size: 14px;
+        }
+
+        /* Дії з відео */
+        .video-actions {
+            position: absolute;
+            right: 15px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .action-count {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Нижня навігація */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #333;
+            z-index: 100;
+        }
+
+        .nav-item {
+            color: #999;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #FF0050;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        /* Кнопка створення */
+        .create-btn {
+            width: 45px;
+            height: 28px;
+            background: linear-gradient(45deg, #FF0050, #00F2EA);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Анімації */
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .video-info {
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .video-actions {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Бокове меню -->
+    <div class="side-menu">
+        <div class="menu-header">
+            <h2>Меню</h2>
+            <button class="menu-close" onclick="toggleMenu()">✕</button>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">ПРОФІЛЬ</div>
+            <div class="menu-item" onclick="navigateTo('profile')">
+                <div class="menu-icon">👤</div>
+                <span>Мій профіль</span>
+            </div>
+            <div class="menu-item" onclick="navigateTo('settings')">
+                <div class="menu-icon">⚙️</div>
+                <span>Налаштування</span>
+            </div>
+            <div class="menu-item" onclick="navigateTo('statistics')">
+                <div class="menu-icon">📊</div>
+                <span>Статистика</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">КОНТЕНТ</div>
+            <div class="menu-item" onclick="navigateTo('saved')">
+                <div class="menu-icon">⭐</div>
+                <span>Збережене</span>
+            </div>
+            <div class="menu-item" onclick="navigateTo('collections')">
+                <div class="menu-icon">📁</div>
+                <span>Колекції</span>
+            </div>
+            <div class="menu-item" onclick="navigateTo('drafts')">
+                <div class="menu-icon">📝</div>
+                <span>Чернетки</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-title">ІНШЕ</div>
+            <div class="menu-item" onclick="navigateTo('help')">
+                <div class="menu-icon">❓</div>
+                <span>Допомога</span>
+            </div>
+            <div class="menu-item" onclick="navigateTo('logout')" style="color: #FF4444;">
+                <div class="menu-icon">🚪</div>
+                <span>Вийти</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Основний контент -->
+        <div class="main-content">
+            <!-- Шапка -->
+            <div class="header">
+                <button class="menu-btn" onclick="toggleMenu()">☰</button>
+                <div class="header-actions">
+                    <button class="action-btn" onclick="navigateTo('search')">🔍</button>
+                    <button class="action-btn" onclick="navigateTo('notifications')">
+                        🔔
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Відео контент -->
+            <div class="video-feed">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        Відео контент
+                    </div>
+
+                    <!-- Інформація про відео -->
+                    <div class="video-info">
+                        <div class="video-author">
+                            <div class="author-avatar"></div>
+                            <div>
+                                <div style="font-weight: 600;">@username</div>
+                                <div style="font-size: 12px; color: #999;">Автор</div>
+                            </div>
+                            <button class="action-btn" style="margin-left: auto;">➕ Підписатися</button>
+                        </div>
+                        <div class="video-description">
+                            Опис відео з деталями про контент...
+                        </div>
+                        <div class="video-tags">
+                            <span class="tag">#тренди</span>
+                            <span class="tag">#відео</span>
+                        </div>
+                    </div>
+
+                    <!-- Дії з відео -->
+                    <div class="video-actions">
+                        <div class="action-button">
+                            <div class="action-icon">❤️</div>
+                            <span class="action-count">123.4K</span>
+                        </div>
+                        <div class="action-button" onclick="navigateTo('comments')">
+                            <div class="action-icon">💬</div>
+                            <span class="action-count">1.2K</span>
+                        </div>
+                        <div class="action-button">
+                            <div class="action-icon">⭐</div>
+                            <span class="action-count">45.6K</span>
+                        </div>
+                        <div class="action-button">
+                            <div class="action-icon">↪️</div>
+                            <span class="action-count">Share</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Нижня навігація -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="navigateTo('home')">
+                <div class="nav-icon">🏠</div>
+                <span>Головна</span>
+            </div>
+            <div class="nav-item" onclick="navigateTo('discover')">
+                <div class="nav-icon">🔍</div>
+                <span>Пошук</span>
+            </div>
+            <div class="create-btn" onclick="navigateTo('create')">+</div>
+            <div class="nav-item" onclick="navigateTo('messages')">
+                <div class="nav-icon">💬</div>
+                <span>Повідомлення</span>
+            </div>
+            <div class="nav-item" onclick="navigateTo('profile')">
+                <div class="nav-icon">👤</div>
+                <span>Профіль</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // Відкриття/закриття бокового меню
+        function toggleMenu() {
+            document.querySelector('.side-menu').classList.toggle('active');
+        }
+
+        // Навігація по сторінках
+        function navigateTo(page) {
+            console.log(`Перехід до: ${page}`);
+            // Тут буде логіка навігації до різних сторінок
+            
+            // Оновлення активного стану в нижній навігації
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (['home', 'discover', 'messages', 'profile'].includes(page)) {
+                document.querySelector(`.nav-item:nth-child(${
+                    {home: 1, discover: 2, messages: 4, profile: 5}[page]
+                })`).classList.add('active');
+            }
+
+            // Закриття бокового меню при навігації
+            document.querySelector('.side-menu').classList.remove('active');
+        }
+
+        // Обробка лайків
+        document.querySelector('.action-icon').addEventListener('click', function() {
+            this.style.transform = 'scale(1.2)';
+            setTimeout(() => this.style.transform = 'scale(1)', 200);
+        });
+    </script>

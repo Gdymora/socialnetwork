@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Соціальна мережа - Галерея</title>
+    <style>
+        /* Попередні стилі залишаються... */
+
+        /* Стилі для модального вікна альбому */
+        .album-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .album-modal.active {
+            display: flex;
+        }
+
+        .album-modal-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #333;
+        }
+
+        .album-modal-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .album-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .album-info-bar {
+            padding: 15px;
+            background: #1e1e1e;
+            margin-bottom: 15px;
+            border-radius: 12px;
+        }
+
+        .album-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Стилі для меню налаштувань */
+        .settings-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e1e1e;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .settings-menu.active {
+            transform: translateY(0);
+        }
+
+        .menu-header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .menu-indicator {
+            width: 40px;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            margin: 0 auto 15px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-icon {
+            width: 30px;
+            height: 30px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Overlay для фону */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay для фону -->
+    <div class="modal-overlay" onclick="closeAllModals()"></div>
+
+    <!-- Модальне вікно альбому -->
+    <div class="album-modal">
+        <div class="album-modal-header">
+            <button class="action-btn" onclick="closeAlbum()">←</button>
+            <div class="album-modal-title">
+                <h2>Подорожі</h2>
+            </div>
+            <button class="action-btn">⋮</button>
+        </div>
+        
+        <div class="album-content">
+            <div class="album-info-bar">
+                <p>Створено: 10 жовтня 2023</p>
+                <div class="album-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">125</div>
+                        <div class="stat-label">Фото</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1.2K</div>
+                        <div class="stat-label">Переглядів</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">Коментарів</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="media-grid">
+                <!-- Медіа елементи альбому -->
+                <div class="media-item">
+                    <div class="media-preview">🏖️</div>
+                    <div class="media-type">🖼️</div>
+                </div>
+                <div class="media-item">
+                    <div class="media-preview">🗽</div>
+                    <div class="media-type">🖼️</div>
+                </div>
+                <!-- Більше фото... -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Меню налаштувань -->
+    <div class="settings-menu">
+        <div class="menu-header">
+            <div class="menu-indicator"></div>
+            <h3>Налаштування галереї</h3>
+        </div>
+        <div class="menu-item">
+            <div class="menu-icon">📁</div>
+            <div class="menu-text">
+                <div>Створити альбом</div>
+                <div style="font-size: 12px; color: #999;">Організуйте свої медіа</div>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="menu-icon">🔄</div>
+            <div class="menu-text">
+                <div>Синхронізувати</div>
+                <div style="font-size: 12px; color: #999;">Оновити медіафайли</div>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="menu-icon">🔍</div>
+            <div class="menu-text">
+                <div>Знайти дублікати</div>
+                <div style="font-size: 12px; color: #999;">Очистити галерею</div>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="menu-icon">⚙️</div>
+            <div class="menu-text">
+                <div>Налаштування відображення</div>
+                <div style="font-size: 12px; color: #999;">Змінити вигляд галереї</div>
+            </div>
+        </div>
+        <div class="menu-item" style="color: #FF3B30;">
+            <div class="menu-icon">🗑️</div>
+            <div class="menu-text">
+                <div>Очистити кеш</div>
+                <div style="font-size: 12px; color: #999;">Видалити тимчасові файли</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Відкрити альбом
+        function openAlbum() {
+            document.querySelector('.album-modal').classList.add('active');
+            document.querySelector('.modal-overlay').classList.add('active');
+        }
+
+        // Закрити альбом
+        function closeAlbum() {
+            document.querySelector('.album-modal').classList.remove('active');
+            document.querySelector('.modal-overlay').classList.remove('active');
+        }
+
+        // Відкрити меню налаштувань
+        function openSettings() {
+            document.querySelector('.settings-menu').classList.add('active');
+            document.querySelector('.modal-overlay').classList.add('active');
+        }
+
+        // Закрити меню налаштувань
+        function closeSettings() {
+            document.querySelector('.settings-menu').classList.remove('active');
+            document.querySelector('.modal-overlay').classList.remove('active');
+        }
+
+        // Закрити всі модальні вікна
+        function closeAllModals() {
+            closeAlbum();
+            closeSettings();
+        }
+
+        // Додаємо обробники подій
+        document.querySelector('.album-card').addEventListener('click', openAlbum);
+        document.querySelector('.header-actions button:last-child').addEventListener('click', openSettings);
+
+        // Додаємо свайп для закриття меню налаштувань
+        let startY = 0;
+        const settingsMenu = document.querySelector('.settings-menu');
+
+        settingsMenu.addEventListener('touchstart', function(e) {
+            startY = e.touches[0].clientY;
+        });
+
+        settingsMenu.addEventListener('touchmove', function(e) {
+            let deltaY = e.touches[0].clientY - startY;
+            if (deltaY > 0) { // Свайп вниз
+                settingsMenu.style.transform = `translateY(${deltaY}px)`;
+            }
+        });
+
+        settingsMenu.addEventListener('touchend', function(e) {
+            const deltaY = e.changedTouches[0].clientY - startY;
+            if (deltaY > 100) { // Якщо свайп більше 100px
+                closeSettings();
+            } else {
+                settingsMenu.style.transform = ''; // Повернути на місце
+            }
+        });
+    </script>
+</body>
+</html>

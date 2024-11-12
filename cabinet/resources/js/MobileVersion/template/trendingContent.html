@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренди</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 15px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Категорії */
+        .categories {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-chip {
+            padding: 8px 16px;
+            background: #1e1e1e;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .category-chip.active {
+            background: #FF0050;
+        }
+
+        /* Тренди дня */
+        .trend-container {
+            margin: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .trend-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .fire-tag {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #FF0050;
+            font-size: 14px;
+        }
+
+        .trending-videos {
+            display: flex;
+            overflow-x: auto;
+            padding: 15px;
+            gap: 15px;
+            scrollbar-width: none;
+        }
+
+        .trending-videos::-webkit-scrollbar {
+            display: none;
+        }
+
+        .video-card {
+            flex: 0 0 250px;
+            background: #333;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .video-preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .video-info {
+            padding: 12px;
+        }
+
+        .video-title {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .video-stats {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Популярні хештеги */
+        .hashtags-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .hashtag-card {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .hashtag-card:hover {
+            transform: scale(0.98);
+        }
+
+        .hashtag-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #FF0050;
+            margin-bottom: 5px;
+        }
+
+        .hashtag-stats {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Популярні творці */
+        .creators-list {
+            padding: 15px;
+        }
+
+        .creator-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .creator-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #333;
+            position: relative;
+        }
+
+        .rank-badge {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            width: 24px;
+            height: 24px;
+            background: #FF0050;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #000;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .creator-info {
+            flex: 1;
+        }
+
+        .creator-name {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 4px;
+        }
+
+        .verified-badge {
+            width: 14px;
+            height: 14px;
+            background: #FF0050;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8px;
+        }
+
+        .creator-stats {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .follow-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #FF0050;
+            color: white;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .follow-btn.following {
+            background: transparent;
+            border: 1px solid #333;
+        }
+
+        /* Живий лічильник */
+        .live-counter {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #FF0050;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Звуки в тренді */
+        .trending-sounds {
+            padding: 15px;
+        }
+
+        .sound-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .sound-icon {
+            width: 50px;
+            height: 50px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .sound-info {
+            flex: 1;
+        }
+
+        .sound-name {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .sound-author {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .use-sound-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #FF0050;
+            color: white;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Анімації */
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .trending-videos {
+            animation: slideIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="trends-container">
+        <!-- Шапка -->
+        <div class="header">
+            <h2>Тренди</h2>
+        </div>
+
+        <!-- Категорії -->
+        <div class="categories">
+            <div class="category-chip active">Зараз</div>
+            <div class="category-chip">Музика</div>
+            <div class="category-chip">Танці</div>
+            <div class="category-chip">Гумор</div>
+            <div class="category-chip">Ігри</div>
+            <div class="category-chip">Спорт</div>
+        </div>
+
+        <!-- Тренди дня -->
+        <div class="trend-container">
+            <div class="trend-header">
+                <div class="fire-tag">
+                    🔥 Тренди дня
+                </div>
+                <div class="live-counter">
+                    <div class="pulse-dot"></div>
+                    <span>1.2M переглядів зараз</span>
+                </div>
+            </div>
+            <div class="trending-videos">
+                <div class="video-card">
+                    <div class="video-preview">
+                        🎬
+                        <div class="video-duration">0:30</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">Назва відео</div>
+                        <div class="video-stats">
+                            <span>1.2M переглядів</span>
+                            <span>256K лайків</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- More video cards... -->
+            </div>
+        </div>
+
+        <!-- Популярні хештеги -->
+        <div class="trend-container">
+            <div class="trend-header">
+                <h3>Популярні хештеги</h3>
+            </div>
+            <div class="hashtags-grid">
+                <div class="hashtag-card">
+                    <div class="hashtag-name">#challenge</div>
+                    <div class="hashtag-stats">
+                        1.2M постів • 500K сьогодні
+                    </div>
+                </div>
+                <!-- More hashtag cards... -->
+            </div>
+        </div>
+
+        <!-- Популярні творці -->
+        <div class="trend-container">
+            <div class="trend-header">
+                <h3>Популярні творці</h3>
+            </div>
+            <div class="creators-list">
+                <div class="creator-card">
+                    <div class="creator-avatar">
+                        <div class="rank-badge">1</div>
+                    </div>
+                    <div class="creator-info">
+                        <div class="creator-name">
+                            username
+                            <span class="verified-badge">✓</span>
+                        </div>
+                        <div class="creator-stats">
+                            1.2M підписників • 45M лайків
+                        </div>
+                    </div>
+                    <button class="follow-btn">Підписатися</button>
+                </div>
+                <!-- More creator cards... -->
+            </div>
+        </div>
+
+        <!-- Звуки в тренді -->
+        <div class="trend-container">
+            <div class="trend-header">
+                <h3>Популярні звуки</h3>
+            </div>
+            <div class="trending-sounds">
+                <div class="sound-card">
+                    <div class="sound-icon">♪</div>
+                    <div class="sound-info">
+                        <div class="sound-name">Назва звуку</div>
+                        <div class="sound-author">Автор • 1.2M відео</div>
+                    </div>
+                    <button class="use-sound-btn">Використати</button>
+                </div>
+                <!-- More sound cards... -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Переключення категорій
+        document.querySelectorAll('.category-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.category-chip').forEach(c => {
+                    c.classList.remove('active');
+                });
+                chip.classList.add('active');
+            });
+        });
+
+        // Кнопки підписки
+        document.querySelectorAll('.follow-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('following');
+                btn.textContent = btn.classList.contains('following') ? 
+                    'Підписані' : 'Підписатися';
+            });
+        });
+
+        // Оновлення лічильника переглядів
+        setInterval(() => {
+            const counter = document.querySelector('.live-counter span');
+            const currentViews = parseFloat(counter.textContent) + 0.1;
+            counter.textContent = `${currentViews.toFixed(1)}M переглядів зараз`;
+        }, 5000);
+    </script>
+</body>
+</html>

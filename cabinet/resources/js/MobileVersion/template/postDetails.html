@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пост</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        .post-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка */
+        .post-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* Карусель */
+        .carousel-container {
+            margin-top: 60px;
+            position: relative;
+            background: #000;
+        }
+
+        .carousel {
+            display: flex;
+            scroll-snap-type: x mandatory;
+            overflow-x: scroll;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            position: relative;
+            aspect-ratio: 1;
+            background: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Навігація каруселі */
+        .carousel-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+        }
+
+        .carousel-dot.active {
+            background: #FF0050;
+        }
+
+        /* Кнопки навігації каруселі */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+
+        /* Контент поста */
+        .post-content {
+            padding: 15px;
+            flex: 1;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        .author-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .verified-badge {
+            width: 14px;
+            height: 14px;
+            background: #FF0050;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .post-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            color: #FF0050;
+            font-size: 14px;
+        }
+
+        /* Статистика поста */
+        .post-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Дії з постом */
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        /* Коментарі */
+        .comments-section {
+            padding: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .comment {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Анімації */
+        @keyframes likeAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .action-btn.liked .action-icon {
+            animation: likeAnimation 0.3s ease;
+            background: rgba(255,0,80,0.2);
+            color: #FF0050;
+        }
+
+        /* Додаткові стилі */
+        .share-options {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e1e1e;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .share-options.active {
+            transform: translateY(0);
+        }
+
+        .share-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .share-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .share-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="post-container">
+        <!-- Шапка -->
+        <div class="post-header">
+            <button class="header-btn">←</button>
+            <h2>Пост</h2>
+            <button class="header-btn">⋮</button>
+        </div>
+
+        <!-- Карусель -->
+        <div class="carousel-container">
+            <div class="carousel">
+                <div class="carousel-item">Фото 1</div>
+                <div class="carousel-item">Фото 2</div>
+                <div class="carousel-item">Фото 3</div>
+            </div>
+            <button class="carousel-btn prev">←</button>
+            <button class="carousel-btn next">→</button>
+            <div class="carousel-nav">
+                <div class="carousel-dot active"></div>
+                <div class="carousel-dot"></div>
+                <div class="carousel-dot"></div>
+            </div>
+        </div>
+
+        <!-- Контент поста -->
+        <div class="post-content">
+            <!-- Інформація про автора -->
+            <div class="author-info">
+                <div class="author-avatar"></div>
+                <div>
+                    <div class="author-name">
+                        username
+                        <span class="verified-badge">✓</span>
+                    </div>
+                    <div class="post-time">2 години тому</div>
+                </div>
+            </div>
+
+            <!-- Текст поста -->
+            <div class="post-text">
+                Чудовий день для подорожі! 🌄 Неймовірні краєвиди та захоплюючі пригоди. 
+                Обов'язково повернусь сюди ще раз!
+            </div>
+
+            <!-- Теги -->
+            <div class="post-tags">
+                <span class="tag">#подорож</span>
+                <span class="tag">#природа</span>
+                <span class="tag">#пригоди</span>
+            </div>
+
+            <!-- Статистика -->
+            <div class="post-stats">
+                <div class="stat-item">
+                    <span class="stat-value">1.2K</span>
+                    <span class="stat-label">Лайків</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">234</span>
+                    <span class="stat-label">Коментарів</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">45</span>
+                    <span class="stat-label">Збережень</span>
+                </div>
+            </div>
+
+            <!-- Дії з постом -->
+            <div class="post-actions">
+                <button class="action-btn">
+                    <div class="action-icon">❤️</div>
+                    <span>Лайк</span>
+                </button>
+                <button class="action-btn">
+                    <div class="action-icon">💬</div>
+                    <span>Коментар</span>
+                </button>
+                <button class="action-btn">
+                    <div class="action-icon">⭐</div>
+                    <span>Зберегти</span>
+                </button>
+                <button class="action-btn" onclick="toggleShareOptions()">
+                    <div class="action-icon">↪️</div>
+                    <span>Поділитись</span>
+                </button>
+            </div>
+
+            <!-- Коментарі -->
+            <div class="comments-section">
+                <div class="section-header">
+                    <h3>Коментарі (234)</h3>
+                    <button class="header-btn">Найновіші</button>
+                </div>
+
+                <!-- Коментар -->
+                <div class="comment">
+                    <div class="author-avatar"></div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="author-name">user123</span>
+                            <span class="post-time">1г</span>
+                        </div>
+                        <div class="comment-text">
+                            Неймовірно красиво! 😍 Де це?
+                        </div>
+                        <div class="comment-actions">
+                            <button class="action-btn">
+                                <span>❤️ 45</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>Відповісти</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Опції поширення -->
+    <div class="share-options">
+        <div style="text-align: center;">
+            <h3>Поділитися</h3>
+        </div>
+        <div class="share-grid">
+            <a href="#" class="share-item">
+                <div class="share-icon">📱</div>
+                <span>Історія</span>
+            </a>
+            <a href="#" class="share-item">
+                <div class="share-icon">💬</div>
+                <span>Повідомлення</span>
+            </a>
+            <a href="#" class="share-item">
+                <div class="share-icon">📧</div>
+                <span>Email</span>
+            </a>
+            <a href="#" class="share-item">
+                <div class="share-icon">🔗</div>
+                <span>Копіювати</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Карусель
+        const carousel = document.querySelector('.carousel');
+        const items = carousel.querySelectorAll('.carousel-item');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const prevBtn = document.querySelector('.carousel-btn.prev');
+        const nextBtn = document.querySelector('.carousel-btn.next');
+        let currentIndex = 0;
+
+        // Оновлення активної точки
+        function updateDots() {
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        // Прокрутка до елемента
+       /*  function scrollToItem(index) {
+            items[index].scrollIntoView({ behavior: */
+                </script>

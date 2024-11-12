@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Налаштування</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Шапка */
+        .settings-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Профіль */
+        .profile-section {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #333;
+            margin: 0 auto 15px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .camera-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background: #FF0050;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #000;
+        }
+
+        /* Секції налаштувань */
+        .settings-section {
+            margin: 20px 0;
+        }
+
+        .section-title {
+            padding: 0 20px;
+            margin-bottom: 10px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .setting-item {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e1e1e;
+            cursor: pointer;
+        }
+
+        .setting-item:active {
+            background: #2a2a2a;
+        }
+
+        .setting-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .setting-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-name {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .setting-value {
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Перемикач */
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #333;
+            border-radius: 14px;
+            padding: 2px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #FF0050;
+        }
+
+        .toggle-switch.active::before {
+            transform: translateX(22px);
+        }
+
+        /* Модальні вікна */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            animation: modalShow 0.3s ease;
+        }
+
+        @keyframes modalShow {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Форми */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #999;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-button {
+            width: 100%;
+            padding: 12px;
+            background: #FF0050;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* Тема */
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .theme-option {
+            flex: 1;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .theme-option.light {
+            background: #fff;
+            color: #000;
+        }
+
+        .theme-option.dark {
+            background: #000;
+            border: 1px solid #333;
+        }
+
+        .theme-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+
+        /* Мова */
+        .language-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .language-option:hover {
+            background: #333;
+        }
+
+        .language-flag {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        /* Анімації */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .setting-item:hover .setting-icon {
+            animation: shake 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <!-- Шапка -->
+        <div class="settings-header">
+            <button class="back-btn">←</button>
+            <h2>Налаштування</h2>
+            <div style="width: 24px;"></div>
+        </div>
+
+        <!-- Профіль -->
+        <div class="profile-section">
+            <div class="profile-avatar">
+                <div class="camera-icon">📷</div>
+            </div>
+            <h3>@username</h3>
+            <p style="color: #999; font-size: 14px;">Редагувати профіль</p>
+        </div>
+
+        <!-- Обліковий запис -->
+        <div class="settings-section">
+            <div class="section-title">ОБЛІКОВИЙ ЗАПИС</div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">👤</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Особиста інформація</div>
+                        <div class="setting-description">Ім'я, біографія, email</div>
+                    </div>
+                </div>
+                <div class="setting-value">→</div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">🔒</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Пароль і безпека</div>
+                        <div class="setting-description">Змінити пароль, двофакторна автентифікація</div>
+                    </div>
+                </div>
+                <div class="setting-value">→</div>
+            </div>
+        </div>
+
+        <!-- Приватність -->
+        <div class="settings-section">
+            <div class="section-title">ПРИВАТНІСТЬ</div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">👁️</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Приватний акаунт</div>
+                        <div class="setting-description">Тільки схвалені підписники можуть бачити ваші пости</div>
+                    </div>
+                </div>
+                <div class="toggle-switch"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">💬</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Коментарі</div>
+                        <div class="setting-description">Керувати тим, хто може коментувати</div>
+                    </div>
+                </div>
+                <div class="setting-value">Усі →</div>
+            </div>
+        </div>
+
+        <!-- Сповіщення -->
+        <div class="settings-section">
+            <div class="section-title">СПОВІЩЕННЯ</div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">🔔</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Push-сповіщення</div>
+                        <div class="setting-description">Лайки, коментарі, нові підписники</div>
+                    </div>
+                </div>
+                <div class="toggle-switch active"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">📧</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Email сповіщення</div>
+                        <div class="setting-description">Важливі оновлення та активність</div>
+                    </div>
+                </div>
+                <div class="toggle-switch"></div>
+            </div>
+        </div>
+
+        <!-- Вигляд -->
+        <div class="settings-section">
+            <div class="section-title">ВИГЛЯД</div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">🌙</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Тема</div>
+                        <div class="setting-description">Темна</div>
+                    </div>
+                </div>
+                <div class="setting-value">→</div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">🌐</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Мова</div>
+                        <div class="setting-description">Українська</div>
+                    </div>
+                </div>
+                <div class="setting-value">→</div>
+            </div>
+        </div>
+
+        <!-- Інше -->
+        <div class="settings-section">
+            <div class="section-title">ІНШЕ</div>
+            
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="setting-icon">❓</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Допомога</div>
+                        <div class="setting-description">Центр підтримки, умови використання</div>
+                    </div>
+                </div>
+                <div class="setting-value">→</div>
+            </div>
+
+            <div class="setting-item" style="color: #FF4444;">
+                <div class="setting-left">
+                    <div class="setting-icon" style="background: rgba(255,68,68,0.1);">🚪</div>
+                    <div class="setting-info">
+                        <div class="setting-name">Вийти</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальні вікна -->
+    <!-- Модальне вікно особистої інформації -->
+    <div class="modal" id="personalInfoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Особиста інформація</h3>
+                <button class="back-btn" onclick="closeModal('personalInfoModal')">✕</button>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Ім'я</label>
+                    <input type="text" class="form-input" value="User Name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ім'я користувача</label>
+                    <input type="text" class="form-input" value="@username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Біографія</label>
+                    <textarea class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" value="user@email.com">
+                </div>
+                <button class="form-button">Зберегти</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальне вікно теми -->
+    <div class="modal" id="themeModal">
+        <div class="modal-content">
+            <div class="modal-header">

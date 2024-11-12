@@ -12,6 +12,9 @@ import {
 } from "@/types";
 import { Link } from "@inertiajs/react";
 import React, { ReactElement, ReactNode, useRef, useState } from "react";
+import FriendsSection from "../MobileVersion/Section/FriendsSection";
+import ProfileSection from "../MobileVersion/Section/ProfileSection";
+import GallerySection from "../MobileVersion/Section/GallerySection";
 
 interface MobileLayoutProps {
     user: User; // тільки user обов'язковий
@@ -34,7 +37,7 @@ const MobileLayout = ({
 }: MobileLayoutProps) => {
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
     const [currentSection, setCurrentSection] = useState<
-        "main" | "friends" | "gallery"
+        "main" | "friends" | "gallery" | "profile" | "friendsPost" | "mediaPost"
     >("main");
     const touchStartX = useRef<number>(0);
     const touchStartY = useRef<number>(0);
@@ -56,15 +59,15 @@ const MobileLayout = ({
             if (diffX > 0) {
                 // Свайп вліво
                 setCurrentSection((prev) => {
-                    if (prev === "main") return "friends";
-                    if (prev === "friends") return "gallery";
+                    if (prev === "main") return "friendsPost";
+                    if (prev === "friendsPost") return "mediaPost";
                     return prev;
                 });
             } else {
                 // Свайп вправо
                 setCurrentSection((prev) => {
-                    if (prev === "gallery") return "friends";
-                    if (prev === "friends") return "main";
+                    if (prev === "mediaPost") return "friendsPost";
+                    if (prev === "friendsPost") return "main";
                     return prev;
                 });
             }
@@ -73,20 +76,31 @@ const MobileLayout = ({
 
     const renderContent = () => {
         switch (currentSection) {
-            case "friends":
+            case "friendsPost":
                 return (
-                    <div className="friends-section">
-                        <h2>Friends Section</h2>
+                    <div className="friends-post-section">
+                        <h2>Тут будуть пости від друзів</h2>
                         {/* Тут буде контент друзів */}
                     </div>
                 );
-            case "gallery":
+            case "mediaPost":
                 return (
-                    <div className="gallery-section">
-                        <h2>Gallery Section</h2>
+                    <div className="media-post-section">
+                        <h2>тут буде тільки медіа картинки відео</h2>
                         {/* Тут буде галерея */}
                     </div>
                 );
+            case "friends":
+                return (
+                    <FriendsSection
+                        friendsAndFollowers={friendsAndFollowers}
+                        randomUsersForFriendship={randomUsersForFriendship}
+                    />
+                );
+            case "gallery":
+                return <GallerySection />;
+            case "profile":
+                return <ProfileSection profileData={profileData} />;
             default:
                 return (
                     posts &&
@@ -125,12 +139,12 @@ const MobileLayout = ({
                         />
                         <div
                             className={`indicator ${
-                                currentSection === "friends" ? "active" : ""
+                                currentSection === "friendsPost" ? "active" : ""
                             }`}
                         />
                         <div
                             className={`indicator ${
-                                currentSection === "gallery" ? "active" : ""
+                                currentSection === "mediaPost" ? "active" : ""
                             }`}
                         />
                     </div>
@@ -141,6 +155,7 @@ const MobileLayout = ({
                     <i className="bi bi-camera"></i>
                 </div>
             </div>
+
             <main
                 className="mobile-content"
                 onTouchStart={handleTouchStart}
@@ -153,31 +168,20 @@ const MobileLayout = ({
 
             {/* Нижня навігація */}
             <nav className="bottom-nav">
-                {/*     <Link href="/mobile/dashboard" className="nav-btn">
-                    <i className="bi bi-house"></i>
-                    <span>Home</span>
-                </Link>
-                <Link href="/mobile/gallery" className="nav-btn">
-                    <i className="bi bi-collection"></i>
-                    <span>Gallery</span>
-                </Link>
-                 <Link href="/mobile/profile" className="nav-btn">
-                    <i className="bi bi-person"></i>
-                    <span>Profile</span>
-                </Link> */}
-
-                <button className="nav-btn">
+                <button
+                    className="nav-btn"
+                    onClick={() => setCurrentSection("main")}
+                >
                     <i className="bi bi-house"></i>
                     <span>Home</span>
                 </button>
-                <Link href="/mobile/friends" className="nav-btn">
+                <button
+                    className="nav-btn"
+                    onClick={() => setCurrentSection("friends")}
+                >
                     <i className="bi bi-people"></i>
                     <span>Friends</span>
-                </Link>
-                {/* <button className="nav-btn">
-                    <i className="bi bi-search"></i>
-                    <span>Search</span>
-                </button> */}
+                </button>
                 <button
                     className="nav-btn"
                     onClick={() => setIsPostModalOpen(true)}
@@ -185,11 +189,17 @@ const MobileLayout = ({
                     <i className="bi bi-plus-square"></i>
                     <span>Add</span>
                 </button>
-                <button className="nav-btn">
+                <button
+                    className="nav-btn"
+                    onClick={() => setCurrentSection("gallery")}
+                >
                     <i className="bi bi-collection"></i>
                     <span>Gallery</span>
                 </button>
-                <button className="nav-btn">
+                <button
+                    className="nav-btn"
+                    onClick={() => setCurrentSection("profile")}
+                >
                     <i className="bi bi-person"></i>
                     <span>Profile</span>
                 </button>

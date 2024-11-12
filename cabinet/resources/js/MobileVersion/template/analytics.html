@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Фільтри періоду */
+        .period-filter {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            background: #000;
+            scrollbar-width: none;
+        }
+
+        .period-filter::-webkit-scrollbar {
+            display: none;
+        }
+
+        .period-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #1e1e1e;
+            color: #999;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .period-option.active {
+            background: #FF0050;
+            color: white;
+        }
+
+        /* Основні метрики */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .metric-card {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .metric-title {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .metric-change {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .change-positive {
+            color: #4CAF50;
+        }
+
+        .change-negative {
+            color: #FF4444;
+        }
+
+        /* Графіки */
+        .chart-container {
+            margin: 20px 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chart-area {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            padding: 20px 0;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: #333;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            background: #FF0050;
+        }
+
+        .chart-bar:hover::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF0050;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Таблиця популярних постів */
+        .posts-table {
+            margin: 20px 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .post-row {
+            display: flex;
+            padding: 15px;
+            gap: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .post-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Демографія */
+        .demographics {
+            margin: 20px 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .demo-header {
+            margin-bottom: 15px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .demo-item {
+            background: #333;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .demo-title {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .demo-value {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* Підказки */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+
+        /* Анімації */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .metric-card:hover {
+            animation: pulse 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="analytics-container">
+        <!-- Шапка -->
+        <div class="header">
+            <button style="background: none; border: none; color: white; font-size: 24px;">←</button>
+            <h2>Статистика</h2>
+            <button style="background: none; border: none; color: white; font-size: 20px;">⋮</button>
+        </div>
+
+        <!-- Фільтр періоду -->
+        <div class="period-filter">
+            <div class="period-option active">7 днів</div>
+            <div class="period-option">28 днів</div>
+            <div class="period-option">3 місяці</div>
+            <div class="period-option">6 місяців</div>
+            <div class="period-option">Рік</div>
+        </div>
+
+        <!-- Основні метрики -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-title">Підписники</div>
+                <div class="metric-value">1,234</div>
+                <div class="metric-change change-positive">
+                    <span>↑</span>
+                    <span>12% за тиждень</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Перегляди</div>
+                <div class="metric-value">45.2K</div>
+                <div class="metric-change change-positive">
+                    <span>↑</span>
+                    <span>8% за тиждень</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Лайки</div>
+                <div class="metric-value">12.8K</div>
+                <div class="metric-change change-negative">
+                    <span>↓</span>
+                    <span>3% за тиждень</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Коментарі</div>
+                <div class="metric-value">2,456</div>
+                <div class="metric-change change-positive">
+                    <span>↑</span>
+                    <span>15% за тиждень</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Графік активності -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">Активність за тиждень</div>
+                <div class="tooltip" data-tooltip="Кількість переглядів по днях">ℹ️</div>
+            </div>
+            <div class="chart-area">
+                <div class="chart-bar" style="height: 60%;" data-value="1.2K"></div>
+                <div class="chart-bar" style="height: 80%;" data-value="1.6K"></div>
+                <div class="chart-bar" style="height: 40%;" data-value="800"></div>
+                <div class="chart-bar" style="height: 90%;" data-value="1.8K"></div>
+                <div class="chart-bar" style="height: 70%;" data-value="1.4K"></div>
+                <div class="chart-bar" style="height: 45%;" data-value="900"></div>
+                <div class="chart-bar" style="height: 65%;" data-value="1.3K"></div>
+            </div>
+        </div>
+
+        <!-- Популярні пости -->
+        <div class="posts-table">
+            <div class="table-header">
+                <h3>Найпопулярніші пости</h3>
+            </div>
+            <div class="post-row">
+                <div class="post-preview">🎬</div>
+                <div class="post-info">
+                    <div>Відео про подорож</div>
+                    <div class="post-stats">
+                        <span>👁️ 12.5K</span>
+                        <span>❤️ 2.3K</span>
+                        <span>💬 456</span>
+                    </div>
+                </div>
+            </div>
+            <div class="post-row">
+                <div class="post-preview">📸</div>
+                <div class="post-info">
+                    <div>Фото з концерту</div>
+                    <div class="post-stats">
+                        <span>👁️ 8.9K</span>
+                        <span>❤️ 1.8K</span>
+                        <span>💬 234</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Демографія -->
+        <div class="demographics">
+            <div class="demo-header">
+                <h3>Демографія аудиторії</h3>
+            </div>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <div class="demo-title">Вік</div>
+                    <div class="demo-value">18-24</div>
+                    <div style="font-size: 12px; color: #999;">45% аудиторії</div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-title">Стать</div>
+                    <div class="demo-value">Жін.</div>
+                    <div style="font-size: 12px; color: #999;">60% аудиторії</div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-title">Топ країна</div>
+                    <div class="demo-value">Україна</div>
+                    <div style="font-size: 12px; color: #999;">75% аудиторії</div>
+                </div>
+                <div class="demo-item">
+                    <div class="demo-title">Мова</div>
+                    <div class="demo-value">UA</div>
+                    <div style="font-size: 12px; color: #999;">80% аудиторії</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Перемикання періоду
+        document.querySelectorAll('.period-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.period-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                option.classList.add('active');
+                // Тут можна додати оновлення даних за вибраний період
+            });
+        });
+
+        // Анімація графіків при завантаженні
+        document.querySelectorAll('.chart-bar').forEach(bar => {
+            const height = bar.style.height;
+            bar.style.height = '0';
+            setTimeout(() => {
+                bar.style.height = height;
+            }, 100);
+        });
+
+        // Інтерактивні метрики
+        document.querySelectorAll('.metric-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Тут можна додати відкриття детальної статистики
+            });
+        });
+    </script>
+</body>
+</html>

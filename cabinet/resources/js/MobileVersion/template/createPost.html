@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Створити пост</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Стилі для модального вікна створення */
+        .create-modal {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            display: none;
+        }
+
+        .create-modal.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка */
+        .modal-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .header-btn.close {
+            background: none;
+            color: white;
+        }
+
+        .header-btn.publish {
+            background: #FF0050;
+            color: white;
+        }
+
+        /* Основний контент */
+        .create-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        /* Вибір медіа */
+        .media-selector {
+            aspect-ratio: 1;
+            background: #1e1e1e;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .media-placeholder {
+            font-size: 40px;
+        }
+
+        .media-text {
+            font-size: 16px;
+            color: #999;
+        }
+
+        .media-preview {
+            position: absolute;
+            inset: 0;
+            background: #333;
+            display: none;
+        }
+
+        .media-preview.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Опції публікації */
+        .post-options {
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .option-item {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .option-item:last-child {
+            border-bottom: none;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-icon {
+            width: 30px;
+            height: 30px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Поле опису */
+        .description-input {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            resize: none;
+        }
+
+        textarea::placeholder {
+            color: #999;
+        }
+
+        /* Панель інструментів редагування */
+        .edit-toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e1e1e;
+            padding: 15px;
+            display: none;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .edit-toolbar.active {
+            display: flex;
+        }
+
+        .tool-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+            border: none;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Індикатор завантаження */
+        .upload-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #333;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #FF0050;
+            transition: width 0.3s;
+        }
+
+        /* Вибір музики */
+        .music-selector {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e1e1e;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .music-selector.active {
+            transform: translateY(0);
+        }
+
+        .music-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .music-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .music-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .music-item:hover {
+            background: #333;
+        }
+
+        /* Перемикач */
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #333;
+            border-radius: 14px;
+            padding: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #FF0050;
+        }
+
+        .toggle-switch.active::before {
+            transform: translateX(22px);
+        }
+    </style>
+</head>
+<body>
+    <div class="create-modal active">
+        <div class="modal-header">
+            <button class="header-btn close">Закрити</button>
+            <h2>Новий пост</h2>
+            <button class="header-btn publish">Опублікувати</button>
+        </div>
+
+        <div class="create-content">
+            <!-- Вибір медіа -->
+            <div class="media-selector">
+                <div class="media-placeholder">📷</div>
+                <div class="media-text">Натисніть щоб додати фото або відео</div>
+                <div class="media-preview">
+                    <span style="font-size: 24px;">Попередній перегляд</span>
+                    <div class="upload-progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Поле опису -->
+            <div class="description-input">
+                <textarea placeholder="Опишіть ваш пост..."></textarea>
+            </div>
+
+            <!-- Опції публікації -->
+            <div class="post-options">
+                <div class="option-item">
+                    <div class="option-label">
+                        <div class="option-icon">🎵</div>
+                        <div>
+                            <div>Додати музику</div>
+                            <div style="font-size: 12px; color: #999;">Виберіть трек для посту</div>
+                        </div>
+                    </div>
+                    <button class="header-btn close">Вибрати</button>
+                </div>
+                <div class="option-item">
+                    <div class="option-label">
+                        <div class="option-icon">👥</div>
+                        <div>Відмітити друзів</div>
+                    </div>
+                    <button class="header-btn close">Додати</button>
+                </div>
+                <div class="option-item">
+                    <div class="option-label">
+                        <div class="option-icon">🔒</div>
+                        <div>Приватність</div>
+                    </div>
+                    <div class="toggle-switch"></div>
+                </div>
+                <div class="option-item">
+                    <div class="option-label">
+                        <div class="option-icon">💬</div>
+                        <div>Коментарі</div>
+                    </div>
+                    <div class="toggle-switch active"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Панель інструментів редагування -->
+        <div class="edit-toolbar">
+            <button class="tool-btn">✂️</button>
+            <button class="tool-btn">🎨</button>
+            <button class="tool-btn">📝</button>
+            <button class="tool-btn">⭐</button>
+            <button class="tool-btn">🎵</button>
+        </div>
+
+        <!-- Вибір музики -->
+        <div class="music-selector">
+            <div class="music-header">
+                <h3>Вибрати музику</h3>
+            </div>
+            <div class="music-list">
+                <div class="music-item">
+                    <div class="option-icon">▶️</div>
+                    <div>
+                        <div>Назва треку 1</div>
+                        <div style="font-size: 12px; color: #999;">Виконавець 1</div>
+                    </div>
+                </div>
+                <div class="music-item">
+                    <div class="option-icon">▶️</div>
+                    <div>
+                        <div>Назва треку 2</div>
+                        <div style="font-size: 12px; color: #999;">Виконавець 2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Симуляція завантаження
+        const mediaSelector = document.querySelector('.media-selector');
+        const mediaPreview = document.querySelector('.media-preview');
+        const progressBar = document.querySelector('.progress-bar');
+        const editToolbar = document.querySelector('.edit-toolbar');
+
+        mediaSelector.addEventListener('click', () => {
+            mediaPreview.classList.add('active');
+            editToolbar.classList.add('active');
+            simulateUpload();
+        });
+
+        function simulateUpload() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = `${progress}%`;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, 50);
+        }
+
+        // Перемикачі
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Редактор відео</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            }
+
+            body {
+                background: #000;
+                color: white;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Шапка */
+            .editor-header {
+                padding: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #1a1a1a;
+                border-bottom: 1px solid #333;
+            }
+
+            .header-btn {
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            .cancel-btn {
+                background: none;
+                border: none;
+                color: white;
+            }
+
+            .save-btn {
+                background: #ff0050;
+                border: none;
+                color: white;
+            }
+
+            /* Основний контейнер редактора */
+            .editor-container {
+                flex: 1;
+                display: flex;
+                position: relative;
+            }
+
+            /* Область перегляду */
+            .preview-area {
+                flex: 1;
+                background: #000;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+            }
+
+            .video-preview {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+
+            .preview-frame {
+                width: 100%;
+                max-width: 350px;
+                aspect-ratio: 9/16;
+                background: #1a1a1a;
+                border-radius: 12px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 24px;
+            }
+
+            /* Панель інструментів */
+            .tools-panel {
+                height: 80px;
+                background: #1a1a1a;
+                display: flex;
+                padding: 10px;
+                gap: 10px;
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+            .tools-panel::-webkit-scrollbar {
+                display: none;
+            }
+
+            .tool-btn {
+                min-width: 60px;
+                height: 60px;
+                border-radius: 8px;
+                background: #333;
+                border: none;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 5px;
+                cursor: pointer;
+                font-size: 20px;
+            }
+
+            .tool-btn span {
+                font-size: 12px;
+            }
+
+            .tool-btn.active {
+                background: #ff0050;
+            }
+
+            /* Бокова панель налаштувань */
+            .settings-panel {
+                width: 300px;
+                background: #1a1a1a;
+                border-left: 1px solid #333;
+                display: none;
+                animation: slideIn 0.3s ease;
+            }
+
+            .settings-panel.active {
+                display: block;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                }
+                to {
+                    transform: translateX(0);
+                }
+            }
+
+            .settings-header {
+                padding: 15px;
+                border-bottom: 1px solid #333;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .settings-content {
+                padding: 15px;
+            }
+
+            /* Таймлайн */
+            .timeline {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 150px;
+                background: #1a1a1a;
+                border-top: 1px solid #333;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .timeline-controls {
+                height: 40px;
+                display: flex;
+                align-items: center;
+                padding: 0 15px;
+                gap: 15px;
+            }
+
+            .timeline-btn {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .timeline-slider {
+                height: 70px;
+                padding: 0 15px;
+                position: relative;
+            }
+
+            .timeline-track {
+                height: 50px;
+                background: #333;
+                border-radius: 8px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .timeline-segment {
+                position: absolute;
+                height: 100%;
+                background: #ff0050;
+                opacity: 0.5;
+                cursor: pointer;
+            }
+
+            .time-markers {
+                height: 20px;
+                display: flex;
+                justify-content: space-between;
+                padding: 0 15px;
+                color: #999;
+                font-size: 12px;
+            }
+
+            /* Фільтри */
+            .filters-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .filter-item {
+                aspect-ratio: 1;
+                border-radius: 8px;
+                overflow: hidden;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .filter-preview {
+                width: 100%;
+                height: 100%;
+                background: #333;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .filter-name {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 8px;
+                background: rgba(0, 0, 0, 0.5);
+                font-size: 12px;
+                text-align: center;
+            }
+
+            /* Музична бібліотека */
+            .music-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .music-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 10px;
+                background: #333;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .music-play {
+                width: 40px;
+                height: 40px;
+                border-radius: 20px;
+                background: #ff0050;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 20px;
+            }
+
+            .music-info {
+                flex: 1;
+            }
+
+            .music-title {
+                font-size: 14px;
+                margin-bottom: 4px;
+            }
+
+            .music-duration {
+                font-size: 12px;
+                color: #999;
+            }
+
+            /* Стікери */
+            .stickers-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .sticker-item {
+                aspect-ratio: 1;
+                background: #333;
+                border-radius: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                font-size: 24px;
+            }
+
+            /* Текстові ефекти */
+            .text-editor {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .text-input {
+                padding: 10px;
+                background: #333;
+                border: none;
+                border-radius: 8px;
+                color: white;
+                font-size: 14px;
+            }
+
+            .text-styles {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .style-btn {
+                padding: 8px 16px;
+                background: #333;
+                border: none;
+                border-radius: 20px;
+                color: white;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            .style-btn.active {
+                background: #ff0050;
+            }
+
+            /* Анімації */
+            .animation-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .animation-item {
+                padding: 10px;
+                background: #333;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+            }
+
+            .animation-preview {
+                width: 40px;
+                height: 40px;
+                background: #ff0050;
+                border-radius: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* Повзунки налаштувань */
+            .slider-control {
+                margin: 15px 0;
+            }
+
+            .slider-label {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+            }
+
+            .slider {
+                width: 100%;
+                height: 4px;
+                background: #333;
+                border-radius: 2px;
+                position: relative;
+            }
+
+            .slider-thumb {
+                width: 16px;
+                height: 16px;
+                background: #ff0050;
+                border-radius: 8px;
+                position: absolute;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Шапка -->
+        <div class="editor-header">
+            <button class="header-btn cancel-btn">Скасувати</button>
+            <div>Редагувати відео</div>
+            <button class="header-btn save-btn">Зберегти</button>
+        </div>
+
+        <!-- Основний контейнер -->
+        <div class="editor-container">
+            <!-- Область перегляду -->
+            <div class="preview-area">
+                <div class="video-preview">
+                    <div class="preview-frame">Відео</div>
+                </div>
+                <!-- Панель інструментів -->
+                <div class="tools-panel">
+                    <button class="tool-btn" onclick="showSettings('trim')">
+                        ✂️
+                        <span>Обрізати</span>
+                    </button>
+                    <button class="tool-btn" onclick="showSettings('filters')">
+                        🎨
+                        <span>Фільтри</span>
+                    </button>
+                    <button class="tool-btn" onclick="showSettings('music')">
+                        🎵
+                        <span>Музика</span>
+                    </button>
+                    <button class="tool-btn" onclick="showSettings('text')">
+                        📝
+                        <span>Текст</span>
+                    </button>
+                    <button class="tool-btn" onclick="showSettings('stickers')">
+                        😊
+                        <span>Стікери</span>
+                    </button>
+                    <button class="tool-btn" onclick="showSettings('effects')">
+                        ✨
+                        <span>Ефекти</span>
+                    </button>
+                    <button class="tool-btn" onclick="showSettings('speed')">
+                        ⚡
+                        <span>Швидкість</span>
+                    </button>
+                    <button
+                        class="tool-btn"
+                        onclick="showSettings('transitions')"
+                    >
+                        🔄
+                        <span>Переходи</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Бокова панель налаштувань -->
+            <div class="settings-panel">
+                <div class="settings-header">
+                    <h3>Налаштування</h3>
+                    <button class="tool-btn" onclick="hideSettings()">✕</button>
+                </div>
+                <div class="settings-content">
+                    <!-- Вміст буде динамічно оновлюватись -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Таймлайн -->
+        <div class="timeline">
+            <div class="timeline-controls">
+                <button class="timeline-btn">⏮️</button>
+                <button class="timeline-btn">▶️</button>
+                <button class="timeline-btn">⏭️</button>
+                <span style="color: #999; font-size: 14px">00:00 / 00:30</span>
+            </div>
+            <div class="timeline-slider">
+                <div class="timeline-track">
+                    <div
+                        class="timeline-segment"
+                        style="left: 0; width: 30%"
+                    ></div>
+                </div>
+            </div>
+            <div class="time-markers">
+                <span>0:00</span>
+                <span>0:15</span>
+                <span>0:30</span>
+            </div>
+        </div>
+
+        <script>
+            // Показати панель налаштувань
+            function showSettings(type) {
+                const panel = document.querySelector(".settings-panel");
+                const content = panel.querySelector(".settings-content");
+                panel.classList.add("active");
+
+                // Оновити контент в залежності від типу
+                switch (type) {
+                    case "filters":
+                        content.innerHTML = `
+                        <div class="filters-grid">
+                            <div class="filter-item">
+                                <div class="filter-preview">🌅</div>
+                                <div class="filter-name">Оригінал</div>
+                            </div>
+                            <div class="filter-item">
+                                <div class="filter-preview">🌃</div>
+                                <div class="filter-name">Нічний</div>
+                            </div>
+                            <div class="filter-item">
+                                <div class="filter-preview">🌅</div>
+                                <div class="filter-name">Захід</div>
+                            </div>
+                        </div>
+                    `;
+                        break;
+                    case "music":
+                        content.innerHTML = `
+                        <div class="music-list">
+                            <div class="music-item">
+                                <div class="music-play">▶️</div>
+                                <div class="music-info">
+                                    <div class="music-title">Трек 1</div>
+                                    <div class="music-duration">0:30</div>
+                                </div>
+                            </div>
+                            <div class="music-item">
+                                <div class="music-play">▶️</div>
+                                <div class="music-info">
+                                    <div class="music-title">Трек 2</div>
+                                    <div class="music-duration">0:45</div>
+                                </div>
+                            </div>
+                            `; //todo
+                }
+            }
+        </script>
+    </body>
+</html>

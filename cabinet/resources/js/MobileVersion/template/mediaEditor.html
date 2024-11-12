@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактор медіа</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        .editor-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка редактора */
+        .editor-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .header-btn.close {
+            background: none;
+            color: white;
+        }
+
+        .header-btn.apply {
+            background: #FF0050;
+            color: white;
+        }
+
+        /* Область попереднього перегляду */
+        .preview-area {
+            flex: 1;
+            position: relative;
+            background: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .media-preview {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        /* Інструменти налаштування */
+        .adjustment-tools {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tool-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Слайдер налаштувань */
+        .adjustment-slider {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 100px;
+            height: 40px;
+            display: none;
+        }
+
+        .adjustment-slider.active {
+            display: block;
+        }
+
+        .slider-track {
+            width: 100%;
+            height: 2px;
+            background: #333;
+            position: relative;
+        }
+
+        .slider-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+
+        /* Нижня панель з фільтрами */
+        .bottom-panel {
+            background: #1e1e1e;
+            padding: 15px;
+        }
+
+        /* Вкладки інструментів */
+        .tool-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .tool-tab {
+            color: #999;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        .tool-tab.active {
+            color: white;
+            border-bottom: 2px solid #FF0050;
+        }
+
+        /* Список фільтрів */
+        .filters-list {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .filter-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: #333;
+            cursor: pointer;
+        }
+
+        .filter-name {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Список ефектів */
+        .effects-list {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .effect-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .effect-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        /* Панель інструментів налаштування */
+        .adjust-tools {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .adjust-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .adjust-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Анімації */
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .bottom-panel {
+            animation: slideUp 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <!-- Шапка редактора -->
+        <div class="editor-header">
+            <button class="header-btn close">Назад</button>
+            <h2>Редагувати</h2>
+            <button class="header-btn apply">Застосувати</button>
+        </div>
+
+        <!-- Область попереднього перегляду -->
+        <div class="preview-area">
+            <div class="media-preview">Попередній перегляд</div>
+            
+            <!-- Інструменти налаштування -->
+            <div class="adjustment-tools">
+                <button class="tool-btn">↺</button>
+                <button class="tool-btn">⟲</button>
+                <button class="tool-btn">✂️</button>
+            </div>
+
+            <!-- Слайдер налаштувань -->
+            <div class="adjustment-slider">
+                <div class="slider-track">
+                    <div class="slider-thumb"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Нижня панель -->
+        <div class="bottom-panel">
+            <!-- Вкладки інструментів -->
+            <div class="tool-tabs">
+                <div class="tool-tab active">Фільтри</div>
+                <div class="tool-tab">Ефекти</div>
+                <div class="tool-tab">Налаштування</div>
+            </div>
+
+            <!-- Список фільтрів -->
+            <div class="filters-list">
+                <div class="filter-item">
+                    <div class="filter-preview"></div>
+                    <span class="filter-name">Оригінал</span>
+                </div>
+                <div class="filter-item">
+                    <div class="filter-preview" style="background: #2a2a2a;"></div>
+                    <span class="filter-name">Ч/Б</span>
+                </div>
+                <div class="filter-item">
+                    <div class="filter-preview" style="background: #3a2a2a;"></div>
+                    <span class="filter-name">Сепія</span>
+                </div>
+                <div class="filter-item">
+                    <div class="filter-preview" style="background: #2a3a2a;"></div>
+                    <span class="filter-name">Вінтаж</span>
+                </div>
+                <div class="filter-item">
+                    <div class="filter-preview" style="background: #2a2a3a;"></div>
+                    <span class="filter-name">Яскравий</span>
+                </div>
+            </div>
+
+            <!-- Список ефектів -->
+            <div class="effects-list" style="display: none;">
+                <div class="effect-item">
+                    <div class="effect-preview">✨</div>
+                    <span class="filter-name">Блиск</span>
+                </div>
+                <div class="effect-item">
+                    <div class="effect-preview">🌈</div>
+                    <span class="filter-name">Веселка</span>
+                </div>
+                <div class="effect-item">
+                    <div class="effect-preview">💫</div>
+                    <span class="filter-name">Зірки</span>
+                </div>
+                <div class="effect-item">
+                    <div class="effect-preview">🔮</div>
+                    <span class="filter-name">Магія</span>
+                </div>
+            </div>
+
+            <!-- Інструменти налаштування -->
+            <div class="adjust-tools" style="display: none;">
+                <div class="adjust-item">
+                    <div class="adjust-icon">☀️</div>
+                    <span class="filter-name">Яскравість</span>
+                </div>
+                <div class="adjust-item">
+                    <div class="adjust-icon">◐</div>
+                    <span class="filter-name">Контраст</span>
+                </div>
+                <div class="adjust-item">
+                    <div class="adjust-icon">🎨</div>
+                    <span class="filter-name">Насиченість</span>
+                </div>
+                <div class="adjust-item">
+                    <div class="adjust-icon">🔆</div>
+                    <span class="filter-name">Тіні</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Переключення між вкладками
+        const tabs = document.querySelectorAll('.tool-tab');
+        const filtersList = document.querySelector('.filters-list');
+        const effectsList = document.querySelector('.effects-list');
+        const adjustTools = document.querySelector('.adjust-tools');
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => {
+                // Оновлення активної вкладки
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Показ відповідного контенту
+                filtersList.style.display = index === 0 ? 'flex' : 'none';
+                effectsList.style.display = index === 1 ? 'flex' : 'none';
+                adjustTools.style.display = index === 2 ? 'flex' : 'none';
+            });
+        });
+
+        // Показ слайдера при виборі інструменту налаштування
+        const adjustItems = document.querySelectorAll('.adjust-item');
+        const adjustmentSlider = document.querySelector('.adjustment-slider');
+
+        adjustItems.forEach(item => {
+            item.addEventListener('click', () => {
+                adjustmentSlider.classList.add('active');
+            });
+        });
+
+        // Базова функціональність слайдера
+        const sliderThumb = document.querySelector('.slider-thumb');
+        let isDragging = false;
+
+        sliderThumb.addEventListener('mousedown', () => {
+            isDragging = true;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const slider = document.querySelector('.slider-track');
+            const rect = slider.getBoundingClientRect();
+            const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+            
+            sliderThumb.style.left = `${(x / rect.width) * 100}%`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    </script>
+</body>
+</html>

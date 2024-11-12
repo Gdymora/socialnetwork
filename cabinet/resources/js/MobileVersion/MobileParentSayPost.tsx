@@ -144,21 +144,22 @@ export default function MobileParentSayPost({
                         Media
                     </button>
                 </div>
-                
+
                 <div className="mobile-post-send">
-                <Button
-                    className="mobile-submit-btn"
-                    onClick={handleSubmitCreate}
-                    disabled={disabled}
-                >
-                    Post
-                </Button>
-                <Button
-                    className="mobile-close-btn"
-                    onClick={() => onHandleClose()}
-                >
-                    Close
-                </Button> </div>
+                    <Button
+                        className="mobile-submit-btn"
+                        onClick={handleSubmitCreate}
+                        disabled={disabled}
+                    >
+                        Post
+                    </Button>
+                    <Button
+                        className="mobile-close-btn"
+                        onClick={() => onHandleClose()}
+                    >
+                        Close
+                    </Button>{" "}
+                </div>
             </div>
         </div>
     );

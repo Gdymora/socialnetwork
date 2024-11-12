@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Соціальна мережа</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            background-color: #000;
+            padding-bottom: 60px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* Стилі для домашньої сторінки */
+        .home-content {
+            height: 100%;
+            background: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #2e2e2e;
+            color: white;
+            font-size: 24px;
+        }
+
+        .read-more {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Стилі для сторінки друзів */
+        .friends-list {
+            padding: 60px 20px;
+        }
+
+        .friend-card {
+            background: #333;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        /* Стилі для галереї */
+        .gallery-grid {
+            padding: 60px 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .gallery-item {
+            background: #333;
+            aspect-ratio: 1;
+            border-radius: 8px;
+        }
+
+        /* Стилі для профілю */
+        .profile-content {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: #333;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+
+        /* Стилі для сторінки посту */
+        .post-media {
+            height: 40vh;
+            background: #333;
+            margin-top: 50px;
+        }
+
+        .post-text {
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* Нижня навігація */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #333;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            margin-bottom: 2px;
+        }
+
+        .add-button {
+            background: linear-gradient(45deg, #FF0050, #00F2EA);
+            width: 44px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-item.active {
+            color: #FF0050;
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(255,0,80,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Головна сторінка -->
+    <div id="home-page" class="page active">
+        <div class="home-content">
+            <div class="video-placeholder">Відео контент</div>
+            <button class="read-more" onclick="navigateTo('post-detail-page')">Читати далі</button>
+        </div>
+    </div>
+
+    <!-- Сторінка друзів -->
+    <div id="friends-page" class="page">
+        <div class="header">
+            <h1>Друзі</h1>
+        </div>
+        <div class="friends-list">
+            <div class="friend-card">
+                <h3>Друг 1</h3>
+                <p>@friend1</p>
+            </div>
+            <div class="friend-card">
+                <h3>Друг 2</h3>
+                <p>@friend2</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Галерея -->
+    <div id="gallery-page" class="page">
+        <div class="header">
+            <h1>Галерея</h1>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+        </div>
+    </div>
+
+    <!-- Профіль -->
+    <div id="profile-page" class="page">
+        <div class="header">
+            <h1>Профіль</h1>
+        </div>
+        <div class="profile-content">
+            <div class="profile-avatar"></div>
+            <h2>Ім'я Користувача</h2>
+            <p>@username</p>
+        </div>
+    </div>
+
+    <!-- Детальна сторінка посту -->
+    <div id="post-detail-page" class="page">
+        <div class="header">
+            <button class="back-button" onclick="navigateTo('home-page')">←</button>
+            <h1>Пост</h1>
+        </div>
+        <div class="post-media"></div>
+        <div class="post-text">
+            <h3>Заголовок посту</h3>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                <br><br>
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+        </div>
+    </div>
+
+    <!-- Нижня навігація -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="navigateTo('home-page')">
+            <div class="nav-icon"></div>
+            <span>Головна</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('friends-page')">
+            <div class="nav-icon"></div>
+            <span>Друзі</span>
+        </div>
+        <div class="nav-item">
+            <div class="add-button">+</div>
+            <span>Додати</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('gallery-page')">
+            <div class="nav-icon"></div>
+            <span>Галерея</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile-page')">
+            <div class="nav-icon"></div>
+            <span>Профіль</span>
+        </div>
+    </nav>
+
+    <script>
+        function navigateTo(pageId) {
+            // Сховати всі сторінки
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Показати вибрану сторінку
+            document.getElementById(pageId).classList.add('active');
+
+            // Оновити активну навігаційну кнопку
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Знайти і активувати відповідну навігаційну кнопку
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if (item.getAttribute('onclick')?.includes(pageId)) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

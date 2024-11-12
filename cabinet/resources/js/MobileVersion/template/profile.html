@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Соціальна мережа</title>
+    <style>
+        /* Попередні стилі залишаються... */
+
+        /* Стилі для головної сторінки */
+        .video-container {
+            height: 100%;
+            position: relative;
+            background: #1e1e1e;
+        }
+
+        .video-actions {
+            position: absolute;
+            right: 15px;
+            bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .video-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            z-index: 10;
+        }
+
+        .video-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        /* Стилі для сторінки друзів */
+        .friends-categories {
+            display: flex;
+            padding: 10px;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 50px;
+            background: #000;
+        }
+
+        .category-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .category-chip.active {
+            background: #FF0050;
+        }
+
+        .friend-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .friend-actions {
+            position: absolute;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Стилі для галереї */
+        .gallery-filters {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            margin-top: 50px;
+            border-bottom: 1px solid #333;
+        }
+
+        .gallery-grid {
+            padding: 2px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+
+        .item-stats {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            font-size: 12px;
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover .item-stats {
+            opacity: 1;
+        }
+
+        /* Стилі для кнопок дій */
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: transform 0.2s;
+        }
+
+        .action-btn.primary {
+            background: #FF0050;
+        }
+
+        .action-btn.secondary {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Анімації для лайків */
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .like-animation {
+            animation: heartBeat 0.8s ease;
+        }
+
+        /* Стилі для модального вікна створення посту */
+        .create-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .upload-area {
+            border: 2px dashed #333;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        /* Стилі для повідомлень */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF0050;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 2px solid #000;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Оновлена головна сторінка -->
+    <div id="home-page" class="page active">
+        <div class="video-container">
+            <div class="video-actions">
+                <button class="action-button">
+                    <div class="action-icon">❤️</div>
+                    <span>123K</span>
+                </button>
+                <button class="action-button">
+                    <div class="action-icon">💬</div>
+                    <span>1.2K</span>
+                </button>
+                <button class="action-button">
+                    <div class="action-icon">⭐</div>
+                    <span>56K</span>
+                </button>
+                <button class="action-button">
+                    <div class="action-icon">↪️</div>
+                    <span>Share</span>
+                </button>
+            </div>
+            <div class="video-info">
+                <div class="video-author">
+                    <div class="author-avatar"></div>
+                    <div>
+                        <strong>@username</strong>
+                        <button class="action-btn secondary" style="font-size: 12px; padding: 4px 12px; margin-left: 10px;">
+                            Підписатися
+                        </button>
+                    </div>
+                </div>
+                <p>Опис відео з #хештегами #тренди #вайб</p>
+                <div class="music-info">
+                    <span>🎵</span>
+                    <span>Назва треку - Виконавець</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Оновлена сторінка друзів -->
+    <div id="friends-page" class="page">
+        <div class="header">
+            <h1>Друзі</h1>
+        </div>
+        <div class="friends-categories">
+            <div class="category-chip active">Усі</div>
+            <div class="category-chip">Нові</div>
+            <div class="category-chip">Популярні</div>
+            <div class="category-chip">Рекомендації</div>
+        </div>
+        <div class="friend-list">
+            <div class="friend-card">
+                <div class="author-avatar"></div>
+                <div>
+                    <h3>Ім'я Користувача</h3>
+                    <p style="color: #999; font-size: 14px;">@username</p>
+                    <p style="font-size: 12px; margin-top: 5px;">1.2K підписників</p>
+                </div>
+                <div class="friend-actions">
+                    <button class="action-btn primary">Підписатися</button>
+                </div>
+            </div>
+            <!-- Більше друзів... -->
+        </div>
+    </div>
+
+    <!-- Оновлена галерея -->
+    <div id="gallery-page" class="page">
+        <div class="header">
+            <h1>Галерея</h1>
+        </div>
+        <div class="gallery-filters">
+            <span class="active">Усі</span>
+            <span>Фото</span>
+            <span>Відео</span>
+            <span>Збережені</span>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="item-stats">
+                    <span>❤️ 1.2K</span>
+                    <span>💬 234</span>
+                </div>
+            </div>
+            <!-- Більше елементів галереї... -->
+        </div>
+    </div>
+
+    <!-- Модальне вікно створення посту -->
+    <div class="create-modal">
+        <div class="modal-header">
+            <h2>Створити пост</h2>
+            <button onclick="closeModal()" style="background: none; border: none; color: white; font-size: 24px;">×</button>
+        </div>
+        <div class="upload-area">
+            <div>📤</div>
+            <p>Натисніть щоб завантажити або перетягніть файл</p>
+        </div>
+        <textarea placeholder="Опис вашого посту..." style="width: 100%; background: #333; border: none; padding: 10px; color: white; border-radius: 8px; margin-bottom: 20px;"></textarea>
+        <button class="action-btn primary" style="width: 100%;">Опублікувати</button>
+    </div>
+
+    <script>
+        // Додати обробники подій для лайків
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.querySelector('.action-icon').classList.add('like-animation');
+                setTimeout(() => {
+                    this.querySelector('.action-icon').classList.remove('like-animation');
+                }, 800);
+            });
+        });
+
+        // Функції для модального вікна
+        function openModal() {
+            document.querySelector('.create-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.querySelector('.create-modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

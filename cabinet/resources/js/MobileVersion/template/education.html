@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Навчання</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Категорії */
+        .categories {
+            display: flex;
+            padding: 10px;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            background: #000;
+            border-bottom: 1px solid #333;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category {
+            padding: 8px 16px;
+            background: #1e1e1e;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .category.active {
+            background: #FF0050;
+        }
+
+        /* Популярні курси */
+        .featured-courses {
+            padding: 15px;
+        }
+
+        .course-card {
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .course-preview {
+            aspect-ratio: 16/9;
+            background: #333;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .preview-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+        }
+
+        .course-info {
+            padding: 15px;
+        }
+
+        .course-title {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .creator-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .creator-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background: #333;
+        }
+
+        .course-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Прогрес курсу */
+        .progress-bar {
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #FF0050;
+            width: 30%;
+        }
+
+        /* Розділи */
+        .section-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Картки досягнень */
+        .achievements {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .achievement-card {
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            background: #333;
+            border-radius: 25px;
+            margin: 0 auto 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        /* Список уроків */
+        .lessons-list {
+            padding: 15px;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .lesson-number {
+            width: 30px;
+            height: 30px;
+            background: #333;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            margin-bottom: 5px;
+        }
+
+        .lesson-duration {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Кнопка продовження */
+        .continue-btn {
+            background: #FF0050;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* Анімації */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .achievement-card:hover {
+            animation: pulse 0.3s ease;
+        }
+
+        .lesson-item:hover {
+            background: #2a2a2a;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <div class="header">
+        <button style="background: none; border: none; color: white; font-size: 24px;">←</button>
+        <h2>Навчання</h2>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- Категорії -->
+    <div class="categories">
+        <div class="category active">Все</div>
+        <div class="category">Зйомка</div>
+        <div class="category">Монтаж</div>
+        <div class="category">Просування</div>
+        <div class="category">Музика</div>
+        <div class="category">Сценарій</div>
+    </div>
+
+    <!-- Популярні курси -->
+    <div class="featured-courses">
+        <div class="section-header">
+            <h3>Популярні курси</h3>
+            <span style="color: #999;">Дивитись всі</span>
+        </div>
+
+        <!-- Курс -->
+        <div class="course-card">
+            <div class="course-preview">
+                🎥
+                <div class="preview-overlay">
+                    <div style="font-size: 14px; color: #999;">
+                        12 уроків • 2.5 години
+                    </div>
+                </div>
+            </div>
+            <div class="course-info">
+                <div class="course-title">Основи створення відео</div>
+                <div class="creator-info">
+                    <div class="creator-avatar"></div>
+                    <div>
+                        <div style="font-size: 14px;">Creator Name</div>
+                        <div style="font-size: 12px; color: #999;">1.2M підписників</div>
+                    </div>
+                </div>
+                <div class="course-stats">
+                    <span>⭐ 4.9</span>
+                    <span>👥 12K учнів</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <button class="continue-btn" style="margin-top: 10px;">Продовжити</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Досягнення -->
+    <div class="section-header">
+        <h3>Ваші досягнення</h3>
+    </div>
+    <div class="achievements">
+        <div class="achievement-card">
+            <div class="achievement-icon">🎥</div>
+            <div>Початківець</div>
+            <div style="font-size: 12px; color: #999;">Пройдіть перший курс</div>
+        </div>
+        <div class="achievement-card">
+            <div class="achievement-icon">🎬</div>
+            <div>Монтажер</div>
+            <div style="font-size: 12px; color: #999;">Завершіть курс монтажу</div>
+        </div>
+    </div>
+
+    <!-- Активний курс -->
+    <div class="section-header">
+        <h3>Поточний урок</h3>
+    </div>
+    <div class="lessons-list">
+        <div class="lesson-item">
+            <div class="lesson-number">1</div>
+            <div class="lesson-info">
+                <div class="lesson-title">Вступ до відеозйомки</div>
+                <div class="lesson-duration">15 хвилин</div>
+            </div>
+            <button class="continue-btn">▶️</button>
+        </div>
+        <div class="lesson-item">
+            <div class="lesson-number">2</div>
+            <div class="lesson-info">
+                <div class="lesson-title">Основи композиції</div>
+                <div class="lesson-duration">20 хвилин</div>
+            </div>
+            <span style="color: #999;">🔒</span>
+        </div>
+    </div>
+
+    <script>
+        // Переключення категорій
+        document.querySelectorAll('.category').forEach(category => {
+            category.addEventListener('click', () => {
+                document.querySelectorAll('.category').forEach(c => {
+                    c.classList.remove('active');
+                });
+                category.classList.add('active');
+            });
+        });
+
+        // Анімація досягнень
+        document.querySelectorAll('.achievement-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.animation = 'none';
+                card.offsetHeight; // Перезапуск анімації
+                card.style.animation = 'pulse 0.3s ease';
+            });
+        });
+    </script>
+</body>
+</html>
