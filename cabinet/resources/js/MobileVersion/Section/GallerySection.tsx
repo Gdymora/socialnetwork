@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 interface GallerySectionProps {}
 const GallerySection = () => {
     const [isAlbumOpen, setIsAlbumOpen] = useState(false);
@@ -41,7 +40,7 @@ const GallerySection = () => {
     };
 
     const openSettings = () => {
-        setIsSettingsOpen(prev => !prev);
+        setIsSettingsOpen((prev) => !prev);
     };
 
     const closeSettings = () => {
@@ -54,7 +53,7 @@ const GallerySection = () => {
     };
 
     return (
-        <div className="gallery-section">
+        <div className="scroll-wrapper">
             {/* Overlay */}
             {(isAlbumOpen || isSettingsOpen) && (
                 <div className="modal-overlay" onClick={closeAllModals}></div>
@@ -157,23 +156,7 @@ const GallerySection = () => {
                 </div>
             )}
 
-            <div>
-                {/* Header */}
-                <div className="gallery-header">
-                    <div className="gallery-header-title">Галерея</div>
-                    <div className="gallery-header-actions">
-                        <button
-                            className="action-btn"
-                            onClick={toggleSelectionMode}
-                        >
-                            ☑️
-                        </button>
-                        <button className="action-btn" onClick={()=>openSettings()}>
-                            ⋮
-                        </button>
-                    </div>
-                </div>
-
+            <div className="gallery-container">
                 {/* Selection Header */}
                 {selectionMode && (
                     <div className="selection-header">
@@ -186,7 +169,7 @@ const GallerySection = () => {
                                 <button className="action-btn">🗑️</button>
                                 <button
                                     className="action-btn"
-                                    onClick={()=>toggleSelectionMode()}
+                                    onClick={() => toggleSelectionMode()}
                                 >
                                     ✕
                                 </button>
@@ -194,7 +177,24 @@ const GallerySection = () => {
                         </div>
                     </div>
                 )}
-
+                {/* Header */}
+                <div className="gallery-header">
+                    <div className="gallery-header-title">Галерея</div>
+                    <div className="gallery-header-actions">
+                        <button
+                            className="action-btn"
+                            onClick={toggleSelectionMode}
+                        >
+                            ☑️
+                        </button>
+                        <button
+                            className="action-btn"
+                            onClick={() => openSettings()}
+                        >
+                            ⋮
+                        </button>
+                    </div>
+                </div>
                 {/* Filters */}
                 <div className="filters-container">
                     <div className="filters-scroll">
@@ -213,60 +213,77 @@ const GallerySection = () => {
                         )}
                     </div>
                 </div>
-
-                {/* Albums Section */}
-                <div className="albums-section">
-                    <div className="section-title">Альбоми</div>
-                    <div className="albums-grid">
-                        <div className="album-card" onClick={()=>openAlbum()}>
-                            <div className="album-preview">📸</div>
-                            <div className="album-info">
-                                <div className="album-name">Подорожі</div>
-                                <div className="album-count">125 фото</div>
+                <div className="scroll-wrapper">
+                    {/* Albums Section */}
+                    <div className="albums-section">
+                        <div className="section-title">Альбоми</div>
+                        <div className="albums-grid">
+                            <div
+                                className="album-card"
+                                onClick={() => openAlbum()}
+                            >
+                                <div className="album-preview">📸</div>
+                                <div className="album-info">
+                                    <div className="album-name">Подорожі</div>
+                                    <div className="album-count">125 фото</div>
+                                </div>
                             </div>
-                        </div>
-                        <div className="album-card">
-                            <div className="album-preview">🎬</div>
-                            <div className="album-info">
-                                <div className="album-name">Відео</div>
-                                <div className="album-count">43 відео</div>
+                            <div className="album-card">
+                                <div className="album-preview">🎬</div>
+                                <div className="album-info">
+                                    <div className="album-name">Відео</div>
+                                    <div className="album-count">43 відео</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Media Grid */}
-                <div className="media-grid">
-                    {[1, 2].map((_, index) => (
-                       <div key={`media-group-${index}`}>
-                            
-                            <div
-                                className={`media-item ${
-                                    selectedMedia.has(index) ? "selected" : ""
-                                }`}
-                                key={index}
-                                onClick={() => handleMediaClick(index)}
-                            >
-                                <div className="media-preview">📸</div>
-                                <div className="media-type">🖼️</div>
-                                <div className="media-actions">
-                                    <button className="action-btn">❤️</button>
-                                    <button className="action-btn">💬</button>
-                                    <button className="action-btn">↪️</button>
+                    {/* Media Grid */}
+                    <div className="media-grid">
+                        {[1, 2].map((_, index) => (
+                            <div key={`media-group-${index}`}>
+                                <div
+                                    className={`media-item ${
+                                        selectedMedia.has(index)
+                                            ? "selected"
+                                            : ""
+                                    }`}
+                                    key={index}
+                                    onClick={() => handleMediaClick(index)}
+                                >
+                                    <div className="media-preview">📸</div>
+                                    <div className="media-type">🖼️</div>
+                                    <div className="media-actions">
+                                        <button className="action-btn">
+                                            ❤️
+                                        </button>
+                                        <button className="action-btn">
+                                            💬
+                                        </button>
+                                        <button className="action-btn">
+                                            ↪️
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="media-item">
+                                    <div className="media-preview">🎬</div>
+                                    <div className="media-type">▶️</div>
+                                    <div className="media-select"></div>
+                                    <div className="media-actions">
+                                        <button className="action-btn">
+                                            ❤️
+                                        </button>
+                                        <button className="action-btn">
+                                            💬
+                                        </button>
+                                        <button className="action-btn">
+                                            ↪️
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="media-item">
-                                <div className="media-preview">🎬</div>
-                                <div className="media-type">▶️</div>
-                                <div className="media-select"></div>
-                                <div className="media-actions">
-                                    <button className="action-btn">❤️</button>
-                                    <button className="action-btn">💬</button>
-                                    <button className="action-btn">↪️</button>
-                                </div>
-                            </div>
-                            </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

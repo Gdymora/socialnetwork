@@ -16,11 +16,11 @@ interface MobileParentSayPostProps {
     onClose?: () => void;
 }
 
-export default function MobileParentSayPost({
+const MobileParentSayPost = ({
     profileData,
     onCreatePost,
     onClose,
-}: MobileParentSayPostProps) {
+}: MobileParentSayPostProps) => {
     const {
         data: postCreate,
         error: errorCreate,
@@ -164,3 +164,5 @@ export default function MobileParentSayPost({
         </div>
     );
 }
+
+export default MobileParentSayPost;

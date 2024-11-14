@@ -1,4 +1,4 @@
-import { useState, useRef, ReactNode } from "react";
+import { useState, useRef, ReactNode, useEffect } from "react";
 import MobilePostContent from "./MobilePostContent";
 import {
     FriendsAndFollowers,
@@ -9,6 +9,9 @@ import {
     User,
     postMostViewed,
 } from "@/types";
+import { useDispatch, useSelector } from "react-redux";
+import { nextPost, prevPost, setPosts } from "@/store/slices/postsSlice";
+import { RootState } from "@/store/rootReucer";
 
 interface MobileDashboardProps {
     children?: ReactNode;
@@ -18,29 +21,24 @@ interface MobileDashboardProps {
     postMostViewed?: postMostViewed[];
     randomUsersForFriendship?: RandomUserForFriendship[];
 }
-function MobileDashboard({
+
+const MobileDashboard = ({
     posts,
     profileData,
     friendsAndFollowers,
     postMostViewed,
     randomUsersForFriendship,
-}: MobileDashboardProps) {
-    const [currentPostIndex, setCurrentPostIndex] = useState(0);
+}: MobileDashboardProps) => {
+    const dispatch = useDispatch();
+    const { currentPostIndex } = useSelector((state: RootState) => state.posts);
     const touchStart = useRef<number>(0);
     const [activePage, setActivePage] = useState<"feed" | "post">("feed");
     const currentPost: PostType | null = posts ? posts[currentPostIndex] : null;
-    const handleNextPost = () => {
-        if (posts && currentPostIndex < posts.length - 1) {
-            setCurrentPostIndex((prev) => prev + 1);
+    useEffect(() => {
+        if (posts && posts.length > 0) {
+            dispatch(setPosts(posts));
         }
-    };
-
-    const handlePrevPost = () => {
-        if (currentPostIndex > 0) {
-            setCurrentPostIndex((prev) => prev - 1);
-        }
-    };
-
+    }, [posts, dispatch]);
     return (
         <div className="">
             <div
@@ -57,32 +55,33 @@ function MobileDashboard({
                         const touchEnd = e.changedTouches[0].clientY;
                         const diff = touchStart.current - touchEnd;
 
-                        if (Math.abs(diff) > 50) {
+                        if (Math.abs(diff) > 120) { // Long swipe threshold for full article
+                            setActivePage("post");
+                        } else if (Math.abs(diff) > 30) { // Short swipe threshold for switching posts
                             if (diff > 0) {
-                                handleNextPost();
+                                dispatch(nextPost());
                             } else {
-                                handlePrevPost();
+                                dispatch(prevPost());
                             }
                         }
                     }}
                 >
-                    <div className="post">
-                        {/* Перевіряємо наявність даних перед рендером */}
-                        {currentPost && (
-                            <MobilePostContent
-                                title={currentPost.title || ""}
-                                media={currentPost.media || []}
-                                links={currentPost.links || []}
-                                content={
-                                    typeof currentPost.content === "string"
-                                        ? currentPost.content
-                                        : ""
-                                }
-                                maxLength={100}
-                                onReadMore={() => setActivePage("post")}
-                            />
-                        )}
-                    </div>
+                    {/* Перевіряємо наявність даних перед рендером */}
+                    {currentPost && (
+                        <MobilePostContent
+                            title={currentPost.title || ""}
+                            media={currentPost.media || []}
+                            links={currentPost.links || []}
+                            content={
+                                typeof currentPost.content === "string"
+                                    ? currentPost.content
+                                    : ""
+                            }
+                            maxLength={100}
+                            onReadMore={() => setActivePage("post")}
+                            postContent={false}
+                        />
+                    )}
                 </div>
 
                 <div className="right-actions">
@@ -128,7 +127,7 @@ function MobileDashboard({
                 </div>
 
                 {currentPost && (
-                    <div className="post-content">
+                    <div className="scroll-wrapper">
                         <MobilePostContent
                             title={currentPost.title || ""}
                             media={currentPost.media || []}
@@ -140,6 +139,7 @@ function MobileDashboard({
                             }
                             maxLength={10000}
                             onReadMore={() => setActivePage("post")}
+                            postContent={true}
                         />
                     </div>
                 )}
@@ -162,6 +162,6 @@ function MobileDashboard({
             </div> */}
         </div>
     );
-}
+};
 
 export default MobileDashboard;

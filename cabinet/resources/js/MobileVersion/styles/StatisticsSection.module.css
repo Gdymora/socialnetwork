@@ -1,0 +1,83 @@
+/* styles/StatisticsSection.module.css */
+.analyticsContainer {
+    padding: 20px;
+    background: #000;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.periodFilter {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.periodOption {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: #1e1e1e;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.periodOption.active {
+    background: #FF0050;
+}
+
+.metricsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metricCard {
+    background: #1e1e1e;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.metricChange.positive { color: #4CAF50; }
+.metricChange.negative { color: #FF4444; }
+
+.chartContainer {
+    background: #1e1e1e;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.chartArea {
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.chartBar {
+    flex: 1;
+    background: #FF0050;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.3s;
+}
+
+.demoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.demoItem {
+    background: #1e1e1e;
+    border-radius: 12px;
+    padding: 15px;
+}

@@ -1,0 +1,1 @@
+import{r}from"./app-2181791e.js";function c(s,n){const[t,o]=r.useState(!1),[e]=r.useState(s);return{isExpanded:t,toggleExpanded:a=>{a.preventDefault(),o(!t)},renderContent:()=>{if(e)return t||e.length<=n?e:e.substring(0,n)}}}export{c as u};

@@ -1,0 +1,192 @@
+.notificationsContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h2 {
+    font-size: 12px;
+    font-weight: 300;
+  }
+  
+  .markAllRead {
+    color:  #FF0050;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  
+  .filter-chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: #1e1e1e;
+    color: #999;
+    font-size: 12px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.filter-chip.active {
+    background: #FF0050;
+    color: white;
+}
+  
+  .notificationsSection {
+    margin-bottom: 32px;
+  }
+  
+  .sectionTitle {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+  
+  .notification {
+    display: flex;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: rgb(14, 14, 14);
+    position: relative;
+  }
+  
+  .notification.unread {
+    background: #1d242c;
+  }
+  
+  .avatarContainer {
+    position: relative;
+    margin-right: 16px;
+  }
+  
+  .notificationAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #2a2525;
+  }
+  
+  .notificationIcon {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    background: rgb(36, 23, 23);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .notificationContent {
+    flex: 1;
+  }
+  
+  .notificationText {
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  
+  .notificationText strong {
+    font-weight: 600;
+  }
+  
+  .notificationTime {
+    color: #666;
+    font-size: 12px;
+  }
+  
+  .actionButtons {
+    margin-top: 8px;
+  }
+  
+  .actionButtons button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid  #FF0050;
+    color:  #FF0050;
+    background: rgb(48, 36, 36);
+    cursor: pointer;
+  }
+  
+  .groupAvatars {
+    display: flex;
+    margin-left: 16px;
+  }
+  
+  .groupAvatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #2a2020;
+    border: 2px solid white;
+    margin-left: -8px;
+  }
+  
+  .groupAvatar:first-child {
+    margin-left: 0;
+  }
+  
+  .notificationPreview {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    background: #2a1c1c;
+    margin-left: 16px;
+  }
+  
+  .loadingIndicator {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .loadingDots {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background:  #FF0050;
+    animation: pulse 1.4s infinite ease-in-out;
+  }
+  
+  .dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(0.3);
+      opacity: 0.3;
+    }
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }

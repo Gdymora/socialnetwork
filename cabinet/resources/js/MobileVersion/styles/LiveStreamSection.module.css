@@ -1,0 +1,223 @@
+.liveContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    min-height: 100vh;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .header h2 {
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .backButton {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+  }
+  
+  .categories {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  
+  .categoryChip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #e0e0e0;
+    background:  #1e1e1e;
+    cursor: pointer;
+     white-space: nowrap;
+  }
+  
+  .categoryChip.active {
+    background: #ee3704;
+    color:  #1e1e1e;
+    border-color: #ee3704;
+  }
+  
+  .streamsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 80px;
+  }
+  
+  .streamCard {
+    border-radius: 12px;
+    overflow: hidden;
+    background:  #1e1e1e;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .streamCard:hover {
+    transform: translateY(-4px);
+  }
+  
+  .streamPreview {
+    aspect-ratio: 16/9;
+    background: #402d28;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+  }
+  
+  .streamInfo {
+    padding: 16px;
+  }
+  
+  .streamTitle {
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .streamStats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .liveBadge {
+    background: #ff4444;
+    color:  #1e1e1e;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .createStreamButton {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #ee3704;
+    color:  #1e1e1e;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+  }
+  
+  .createStreamButton:hover {
+    transform: scale(1.1);
+  }
+  
+  .streamModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+  }
+  
+  .streamModal.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .modalContent {
+    background:  #1e1e1e;
+    border-radius: 12px;
+    padding: 24px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+  }
+  
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .modalHeader h3 {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  
+  .closeButton {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .streamPreviewSection {
+    aspect-ratio: 16/9;
+    background: #402d28;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    margin-bottom: 24px;
+  }
+  
+  .formGroup {
+    margin-bottom: 20px;
+  }
+  
+  .formGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .formGroup input,
+  .formGroup select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+  
+  .startStreamButton {
+    width: 100%;
+    padding: 12px;
+    background: #ee3704;
+    color:  #1e1e1e;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .startStreamButton:hover {
+    background: #0052a3;
+  }
